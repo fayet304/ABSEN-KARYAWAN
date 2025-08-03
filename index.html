@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Form Izin Keluar & Pencarian Histori</title>
+  <style>
+    body {
+      background: url('bck.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      font-family: Arial, sans-serif;
+    }
+    h1, h2 { text-align: center; color: #fff; text-shadow: 1px 1px 4px #000; }
+    form {
+      background: rgba(255, 255, 255, 0.95); padding: 20px;
+      border-radius: 10px; max-width: 500px; margin: 20px auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    label { display: block; margin: 10px 0 5px; }
+    select, input, button { width: 100%; padding: 10px; margin-bottom: 15px;
+      border-radius: 5px; border: 1px solid #ccc; }
+    button { background-color: #2c3e50; color: white; cursor: pointer;
+      transition: background 0.3s ease; }
+    button:hover { background-color: #1a252f; }
+    .timer, .duration { text-align: center; font-weight: bold; margin: 10px 0; }
+    .timer span { color: #e74c3c; }
+    .duration span { color: #27ae60; }
+    .peringatan {
+      margin-top: 10px; text-align: center; font-size: 1.1em;
+      font-weight: bold; padding: 10px; border-radius: 5px;
+    }
+    .peringatan.lebih { background-color: #ffcccc; color: #c0392b; }
+    .peringatan.normal { background-color: #ccffcc; color: #2ecc71; }
+    #histori { max-width: 95%; margin: 30px auto; background: white;
+      padding: 20px; border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; }
+    table, th, td { border: 1px solid #999; }
+    th, td { padding: 8px; text-align: center; }
+    .status-normal { color: green; font-weight: bold; }
+    .status-lebih { color: red; font-weight: bold; }
+    .btn-delete {
+      background-color: #c0392b; color: white; padding: 5px 10px;
+      border: none; border-radius: 5px; cursor: pointer;
+    }
+    .btn-delete:hover { background-color: #922b21; }
+  </style>
+</head>
+<body>
+  <h1>Form Izin Keluar</h1>
+  <form id="izinForm">
+    <label for="nama">Nama Karyawan:</label>
+    <select id="nama">
+      <option value="">Pilih Nama</option>
+      <!-- daftar nama -->
+      <option value="MUHAMMAD ALFAYET">MUHAMMAD ALFAYET</option>
+      <option value="MUHAMMAD RIDWAN HIDAYAT">MUHAMMAD RIDWAN HIDAYAT</option>
+      <option value="CUSYATI">CUSYATI</option>
+      <!-- tambahkan nama lainnya -->
+    </select>
+
+    <label for="izin">Jenis Izin:</label>
+    <select id="izin">
+      <option value="">Pilih Jenis Izin</option>
+      <option value="Toilet">Toilet</option>
+      <option value="Membeli Makan">Membeli Makan</option>
+      <option value="Merokok">Merokok</option>
+    </select>
+
+    <button type="button" onclick="mulaiIzin()">Mulai</button>
+    <button type="button" onclick="selesaiIzin()">Selesai</button>
+
+    <div class="timer">Waktu Berjalan: <span id="waktuBerjalan">0 menit 0 detik</span></div>
+    <div class="duration">Durasi Izin: <span id="durasiIzin">0 menit 0 detik</span></div>
+    <div id="peringatanBox" class="peringatan" style="display:none;"></div>
+  </form>
+
+  <div id="histori">
+    <h2>Histori Izin</h2>
+    <form id="cariForm">
+      <label for="filterNama">Filter Nama:</label>
+      <select id="filterNama">
+        <option value="all">Semua</option>
+        <option value="MUHAMMAD ALFAYET">MUHAMMAD ALFAYET</option>
+        <option value="MUHAMMAD RIDWAN HIDAYAT">MUHAMMAD RIDWAN HIDAYAT</option>
+        <option value="CUSYATI">CUSYATI</option>
+      </select>
+
+      <label for="filterTanggal">Filter Tanggal (YYYY-MM-DD):</label>
+      <input type="date" id="filterTanggal">
+
+      <button type="button" onclick="filterHistori()">Cari Histori</button>
+      <button type="button" onclick="exportToExcel()">Export ke Excel</button>
+    </form>
+
+    <table id="historiTabel">
+      <thead>
+        <tr>
+          <th>No</th><th>Nama</th><th>Jenis Izin</th>
+          <th>Mulai</th><th>Selesai</th><th>Durasi</th><th>Status</th><th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/.../exec";
+  const DELETE_PASSWORD = "12345";
+  let startTime, interval, izinStarted=false, sudahDiperingatkan=false, historiData=[];
+
+  function formatMenitDetik(s){ const m=Math.floor(s/60), d=s%60; return m+" menit "+d+" detik"; }
+
+  function mulaiIzin(){
+    const n=document.getElementById("nama").value;
+    const i=document.getElementById("izin").value;
+    if(!n||!i){alert("Pilih nama dan jenis izin.");return;}
+    if(!izinStarted){
+      izinStarted=true; sudahDiperingatkan=false; startTime=Date.now();
+      document.getElementById("peringatanBox").style.display="none";
+      interval=setInterval(()=>{
+        const elapsed=Math.floor((Date.now()-startTime)/1000);
+        document.getElementById("waktuBerjalan").innerText = formatMenitDetik(elapsed);
+        if(elapsed>=900 && !sudahDiperingatkan){ sudahDiperingatkan=true; alert("⚠️ Melebihi batas 15 menit!"); }
+      }, 1000);
+    }
+  }
+
+  async function selesaiIzin(){
+    if(izinStarted){
+      izinStarted=false; clearInterval(interval);
+      const durasiSec=Math.floor((Date.now()-startTime)/1000);
+      const durasiText=formatMenitDetik(durasiSec);
+      document.getElementById("durasiIzin").innerText = durasiText;
+      document.getElementById("waktuBerjalan").innerText = "0 menit 0 detik";
+      const statusText = durasiSec>900 ? "⚠️ Melebihi batas waktu" : "✅ Selamat datang kembali";
+      const statusClass = durasiSec>900 ? "lebih" : "normal";
+      const box = document.getElementById("peringatanBox");
+      box.style.display="block"; box.textContent=statusText; box.className="peringatan "+statusClass;
+
+      const nama=document.getElementById("nama").value;
+      const izin=document.getElementById("izin").value;
+      const mulai=new Date(startTime).toLocaleString("id‑ID");
+      const selesai=new Date().toLocaleString("id‑ID");
+      await fetch(SCRIPT_URL, {
+        method:"POST", body:JSON.stringify({ action:"add", nama, izin, mulai, selesai, durasi:durasiText, status:statusText })
+      });
+      ambilHistori();
+    }
+  }
+
+  async function hapusHistori(idx){
+    const pass=prompt("Password hapus:");
+    if(pass!==DELETE_PASSWORD){alert("Password salah!");return;}
+    await fetch(SCRIPT_URL,{ method:"POST", body:JSON.stringify({ action:"delete", index:idx, password:pass }) });
+    ambilHistori();
+  }
+
+  async function ambilHistori(){
+    try{
+      const res=await fetch(SCRIPT_URL);
+      historiData=await res.json();
+      renderHistori();
+    }catch(e){console.error(e);}
+  }
+
+  function renderHistori(){
+    const tbody=document.querySelector("#historiTabel tbody");
+    tbody.innerHTML="";
+    const fNama=document.getElementById("filterNama").value;
+    const fTgl=document.getElementById("filterTanggal").value;
+    historiData.filter(item=>{
+      const matchNama = fNama==="all" || item.nama===fNama;
+      const matchTgl = !fTgl || item.mulai.startsWith(fTgl);
+      return matchNama && matchTgl;
+    }).forEach((item,i)=>{
+      const cls = item.status.includes("Melebihi") ? "status-lebih" : "status-normal";
+      const tr=document.createElement("tr");
+      tr.innerHTML = `<td>${i+1}</td><td>${item.nama}</td><td>${item.izin}</td>
+        <td>${item.mulai}</td><td>${item.selesai}</td><td>${item.durasi}</td>
+        <td class="${cls}">${item.status}</td>
+        <td><button class="btn-delete" onclick="hapusHistori(${i})">Hapus</button></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function filterHistori(){ renderHistori(); }
+
+  function exportToExcel(){
+    const tbl=document.getElementById("historiTabel");
+    const html=tbl.outerHTML.replace(/ /g, '%20');
+    const link=document.createElement('a');
+    link.href='data:application/vnd.ms-excel,'+html;
+    link.download='Histori_Izin.xls';
+    link.click();
+  }
+
+  window.onload = ambilHistori;
+</script>
+
+</body>
+</html>
