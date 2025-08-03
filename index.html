@@ -3,202 +3,147 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Form Izin Keluar & Pencarian Histori</title>
+  <title>Absensi & Izin</title>
   <style>
     body {
-      background: url('bck.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
+      padding: 0; margin: 0;
+      background: #f0f2f5;
     }
-    h1, h2 { text-align: center; color: #fff; text-shadow: 1px 1px 4px #000; }
-    form {
-      background: rgba(255, 255, 255, 0.95); padding: 20px;
-      border-radius: 10px; max-width: 500px; margin: 20px auto;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    .tabs {
+      display: flex;
+      background: #333;
     }
-    label { display: block; margin: 10px 0 5px; }
-    select, input, button { width: 100%; padding: 10px; margin-bottom: 15px;
-      border-radius: 5px; border: 1px solid #ccc; }
-    button { background-color: #2c3e50; color: white; cursor: pointer;
-      transition: background 0.3s ease; }
-    button:hover { background-color: #1a252f; }
-    .timer, .duration { text-align: center; font-weight: bold; margin: 10px 0; }
-    .timer span { color: #e74c3c; }
-    .duration span { color: #27ae60; }
-    .peringatan {
-      margin-top: 10px; text-align: center; font-size: 1.1em;
-      font-weight: bold; padding: 10px; border-radius: 5px;
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 15px;
+      color: white;
+      cursor: pointer;
     }
-    .peringatan.lebih { background-color: #ffcccc; color: #c0392b; }
-    .peringatan.normal { background-color: #ccffcc; color: #2ecc71; }
-    #histori { max-width: 95%; margin: 30px auto; background: white;
-      padding: 20px; border-radius: 10px; }
-    table { width: 100%; border-collapse: collapse; }
-    table, th, td { border: 1px solid #999; }
-    th, td { padding: 8px; text-align: center; }
-    .status-normal { color: green; font-weight: bold; }
-    .status-lebih { color: red; font-weight: bold; }
-    .btn-delete {
-      background-color: #c0392b; color: white; padding: 5px 10px;
-      border: none; border-radius: 5px; cursor: pointer;
+    .tab.active {
+      background: #2196f3;
     }
-    .btn-delete:hover { background-color: #922b21; }
+    .content {
+      display: none;
+      padding: 20px;
+      background: #fff;
+    }
+    .content.active {
+      display: block;
+    }
+    input, select, button {
+      display: block;
+      margin: 10px 0;
+      padding: 8px;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
-  <h1>Form Izin Keluar</h1>
-  <form id="izinForm">
-    <label for="nama">Nama Karyawan:</label>
-    <select id="nama">
-      <option value="">Pilih Nama</option>
-      <!-- daftar nama -->
-      <option value="MUHAMMAD ALFAYET">MUHAMMAD ALFAYET</option>
-      <option value="MUHAMMAD RIDWAN HIDAYAT">MUHAMMAD RIDWAN HIDAYAT</option>
-      <option value="CUSYATI">CUSYATI</option>
-      <!-- tambahkan nama lainnya -->
-    </select>
-
-    <label for="izin">Jenis Izin:</label>
-    <select id="izin">
-      <option value="">Pilih Jenis Izin</option>
-      <option value="Toilet">Toilet</option>
-      <option value="Membeli Makan">Membeli Makan</option>
-      <option value="Merokok">Merokok</option>
-    </select>
-
-    <button type="button" onclick="mulaiIzin()">Mulai</button>
-    <button type="button" onclick="selesaiIzin()">Selesai</button>
-
-    <div class="timer">Waktu Berjalan: <span id="waktuBerjalan">0 menit 0 detik</span></div>
-    <div class="duration">Durasi Izin: <span id="durasiIzin">0 menit 0 detik</span></div>
-    <div id="peringatanBox" class="peringatan" style="display:none;"></div>
-  </form>
-
-  <div id="histori">
-    <h2>Histori Izin</h2>
-    <form id="cariForm">
-      <label for="filterNama">Filter Nama:</label>
-      <select id="filterNama">
-        <option value="all">Semua</option>
-        <option value="MUHAMMAD ALFAYET">MUHAMMAD ALFAYET</option>
-        <option value="MUHAMMAD RIDWAN HIDAYAT">MUHAMMAD RIDWAN HIDAYAT</option>
-        <option value="CUSYATI">CUSYATI</option>
-      </select>
-
-      <label for="filterTanggal">Filter Tanggal (YYYY-MM-DD):</label>
-      <input type="date" id="filterTanggal">
-
-      <button type="button" onclick="filterHistori()">Cari Histori</button>
-      <button type="button" onclick="exportToExcel()">Export ke Excel</button>
-    </form>
-
-    <table id="historiTabel">
-      <thead>
-        <tr>
-          <th>No</th><th>Nama</th><th>Jenis Izin</th>
-          <th>Mulai</th><th>Selesai</th><th>Durasi</th><th>Status</th><th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('masuk')">Absen Masuk</div>
+    <div class="tab" onclick="switchTab('izin')">Izin Keluar</div>
+    <div class="tab" onclick="switchTab('pulang')">Absen Pulang</div>
   </div>
 
-<script>
-  const SCRIPT_URL = "https://script.google.com/.../exec";
-  const DELETE_PASSWORD = "12345";
-  let startTime, interval, izinStarted=false, sudahDiperingatkan=false, historiData=[];
+  <!-- Tab 1 -->
+  <div class="content active" id="masuk">
+    <h2>Absen Masuk</h2>
+    <input type="text" id="namaMasuk" placeholder="Masukkan Nama"/>
+    <button onclick="absenMasuk()">Absen Masuk</button>
+  </div>
 
-  function formatMenitDetik(s){ const m=Math.floor(s/60), d=s%60; return m+" menit "+d+" detik"; }
+  <!-- Tab 2 -->
+  <div class="content" id="izin">
+    <h2>Izin Keluar</h2>
+    <input type="text" id="namaIzin" placeholder="Nama" readonly />
+    <select id="jenisIzin">
+      <option value="Toilet">Toilet</option>
+      <option value="Istirahat">Istirahat</option>
+      <option value="Keperluan Pribadi">Keperluan Pribadi</option>
+    </select>
+    <button onclick="mulaiIzin()">Mulai Izin</button>
+    <button onclick="selesaiIzin()">Selesai Izin</button>
+    <div>Durasi: <span id="durasi">0 menit</span></div>
+  </div>
 
-  function mulaiIzin(){
-    const n=document.getElementById("nama").value;
-    const i=document.getElementById("izin").value;
-    if(!n||!i){alert("Pilih nama dan jenis izin.");return;}
-    if(!izinStarted){
-      izinStarted=true; sudahDiperingatkan=false; startTime=Date.now();
-      document.getElementById("peringatanBox").style.display="none";
-      interval=setInterval(()=>{
-        const elapsed=Math.floor((Date.now()-startTime)/1000);
-        document.getElementById("waktuBerjalan").innerText = formatMenitDetik(elapsed);
-        if(elapsed>=900 && !sudahDiperingatkan){ sudahDiperingatkan=true; alert("⚠️ Melebihi batas 15 menit!"); }
-      }, 1000);
+  <!-- Tab 3 -->
+  <div class="content" id="pulang">
+    <h2>Absen Pulang</h2>
+    <input type="text" id="namaPulang" placeholder="Nama" readonly />
+    <button onclick="absenPulang()">Absen Pulang</button>
+  </div>
+
+  <script>
+    // TAB SWITCH
+    function switchTab(id) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+      document.querySelector(`[onclick="switchTab('${id}')"]`).classList.add('active');
+      document.getElementById(id).classList.add('active');
     }
-  }
 
-  async function selesaiIzin(){
-    if(izinStarted){
-      izinStarted=false; clearInterval(interval);
-      const durasiSec=Math.floor((Date.now()-startTime)/1000);
-      const durasiText=formatMenitDetik(durasiSec);
-      document.getElementById("durasiIzin").innerText = durasiText;
-      document.getElementById("waktuBerjalan").innerText = "0 menit 0 detik";
-      const statusText = durasiSec>900 ? "⚠️ Melebihi batas waktu" : "✅ Selamat datang kembali";
-      const statusClass = durasiSec>900 ? "lebih" : "normal";
-      const box = document.getElementById("peringatanBox");
-      box.style.display="block"; box.textContent=statusText; box.className="peringatan "+statusClass;
+    // Simpan nama ke localStorage saat absen masuk
+    function absenMasuk() {
+      const nama = document.getElementById("namaMasuk").value;
+      if (!nama) return alert("Masukkan nama!");
+      localStorage.setItem("nama", nama);
+      kirimData("Masuk", { nama: nama, waktu: new Date().toLocaleString() });
+      document.getElementById("namaIzin").value = nama;
+      document.getElementById("namaPulang").value = nama;
+      alert("Absen masuk berhasil!");
+    }
 
-      const nama=document.getElementById("nama").value;
-      const izin=document.getElementById("izin").value;
-      const mulai=new Date(startTime).toLocaleString("id‑ID");
-      const selesai=new Date().toLocaleString("id‑ID");
-      await fetch(SCRIPT_URL, {
-        method:"POST", body:JSON.stringify({ action:"add", nama, izin, mulai, selesai, durasi:durasiText, status:statusText })
+    // Waktu izin
+    let waktuMulai = null;
+
+    function mulaiIzin() {
+      waktuMulai = new Date();
+      alert("Izin dimulai pada " + waktuMulai.toLocaleTimeString());
+    }
+
+    function selesaiIzin() {
+      if (!waktuMulai) return alert("Klik 'Mulai Izin' dulu.");
+      const selesai = new Date();
+      const durasiMenit = Math.round((selesai - waktuMulai) / 60000);
+      document.getElementById("durasi").textContent = durasiMenit + " menit";
+      kirimData("Izin", {
+        nama: localStorage.getItem("nama"),
+        jenis: document.getElementById("jenisIzin").value,
+        mulai: waktuMulai.toLocaleString(),
+        selesai: selesai.toLocaleString(),
+        durasi: durasiMenit + " menit"
       });
-      ambilHistori();
+      waktuMulai = null;
+      alert("Izin selesai.");
     }
-  }
 
-  async function hapusHistori(idx){
-    const pass=prompt("Password hapus:");
-    if(pass!==DELETE_PASSWORD){alert("Password salah!");return;}
-    await fetch(SCRIPT_URL,{ method:"POST", body:JSON.stringify({ action:"delete", index:idx, password:pass }) });
-    ambilHistori();
-  }
+    function absenPulang() {
+      const nama = localStorage.getItem("nama");
+      if (!nama) return alert("Belum login.");
+      kirimData("Pulang", { nama: nama, waktu: new Date().toLocaleString() });
+      alert("Absen pulang berhasil!");
+    }
 
-  async function ambilHistori(){
-    try{
-      const res=await fetch(SCRIPT_URL);
-      historiData=await res.json();
-      renderHistori();
-    }catch(e){console.error(e);}
-  }
+    // Fungsi kirim ke Google Apps Script
+    function kirimData(sheet, data) {
+      const url = "https://script.google.com/macros/s/PASTE_WEB_APP_URL/exec";
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify({ sheet: sheet, data: data }),
+        headers: { "Content-Type": "application/json" }
+      }).catch(e => console.error("Gagal kirim: ", e));
+    }
 
-  function renderHistori(){
-    const tbody=document.querySelector("#historiTabel tbody");
-    tbody.innerHTML="";
-    const fNama=document.getElementById("filterNama").value;
-    const fTgl=document.getElementById("filterTanggal").value;
-    historiData.filter(item=>{
-      const matchNama = fNama==="all" || item.nama===fNama;
-      const matchTgl = !fTgl || item.mulai.startsWith(fTgl);
-      return matchNama && matchTgl;
-    }).forEach((item,i)=>{
-      const cls = item.status.includes("Melebihi") ? "status-lebih" : "status-normal";
-      const tr=document.createElement("tr");
-      tr.innerHTML = `<td>${i+1}</td><td>${item.nama}</td><td>${item.izin}</td>
-        <td>${item.mulai}</td><td>${item.selesai}</td><td>${item.durasi}</td>
-        <td class="${cls}">${item.status}</td>
-        <td><button class="btn-delete" onclick="hapusHistori(${i})">Hapus</button></td>`;
-      tbody.appendChild(tr);
-    });
-  }
-
-  function filterHistori(){ renderHistori(); }
-
-  function exportToExcel(){
-    const tbl=document.getElementById("historiTabel");
-    const html=tbl.outerHTML.replace(/ /g, '%20');
-    const link=document.createElement('a');
-    link.href='data:application/vnd.ms-excel,'+html;
-    link.download='Histori_Izin.xls';
-    link.click();
-  }
-
-  window.onload = ambilHistori;
-</script>
-
+    // Auto isi nama dari localStorage jika sudah login
+    window.onload = () => {
+      const nama = localStorage.getItem("nama");
+      if (nama) {
+        document.getElementById("namaIzin").value = nama;
+        document.getElementById("namaPulang").value = nama;
+      }
+    }
+  </script>
 </body>
 </html>
