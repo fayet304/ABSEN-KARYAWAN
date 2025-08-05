@@ -221,6 +221,19 @@
       if (username === "admin" && password === "12345") {
         document.getElementById("loginPage").style.display = "none";
         document.getElementById("menuPage").style.display = "flex";
+
+        const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
+        const now = new Date();
+        const waktu = now.toLocaleString('id-ID');
+        const agent = /Mobi/i.test(navigator.userAgent) ? "Mobile Browser" : "Desktop Browser";
+        const ip = "192.168.1." + Math.floor(Math.random() * 100 + 1); // IP dummy
+        logs.push({
+          nama: "Admin",
+          waktu,
+          agent,
+          ip
+        });
+        localStorage.setItem("loginLogs", JSON.stringify(logs));
       } else {
         alert("Login gagal! Username atau password salah.");
       }
@@ -250,6 +263,16 @@
           <div id="formMessage" style="margin-top:15px; color: green; font-weight: bold;"></div>
         `;
       } else if (page === 'riwayatLogin') {
+        const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
+        let rows = logs.map(log => `
+          <tr>
+            <td>${log.nama}</td>
+            <td>${log.waktu}</td>
+            <td>${log.agent}</td>
+            <td>${log.ip}</td>
+          </tr>
+        `).join('');
+
         content.innerHTML = `
           <h1>Riwayat Login Karyawan</h1>
           <table>
@@ -262,18 +285,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Admin</td>
-                <td>5 Agustus 2025, 13:45:20</td>
-                <td>Desktop Chrome</td>
-                <td>192.168.1.101</td>
-              </tr>
-              <tr>
-                <td>Rina</td>
-                <td>5 Agustus 2025, 10:12:01</td>
-                <td>Mobile Browser</td>
-                <td>192.168.1.102</td>
-              </tr>
+              ${rows}
             </tbody>
           </table>
         `;
