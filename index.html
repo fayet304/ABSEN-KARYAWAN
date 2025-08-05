@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login & Menu Utama</title>
   <style>
-    /* Pastikan html & body penuh ukuran */
     html, body {
       height: 100%;
       margin: 0;
@@ -97,7 +96,6 @@
       font-size: 13px;
     }
 
-    /* Menu Wrapper full height dan lebar */
     .menu-wrapper {
       display: flex;
       height: 100vh;
@@ -202,11 +200,60 @@
     .button-group button:hover {
       background-color: #2980b9;
     }
+
+    .shift-form {
+      margin-top: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+      max-width: 300px;
+    }
+
+    .shift-form label {
+      font-weight: bold;
+    }
+
+    .shift-form select, .shift-form button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .shift-form button {
+      background-color: green;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .shift-form button:hover {
+      background-color: darkgreen;
+    }
+
+    /* Tambahan styling pesan selamat datang */
+    #welcomeMessage {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #dff0d8;
+      color: #3c763d;
+      border-radius: 10px;
+      font-weight: bold;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
   </style>
 </head>
 <body>
 
-  <!-- Login Container -->
   <div class="login-container" id="loginPage">
     <div class="logo">SELAMAT <span style="color:#0099ff">DATANG</span></div>
     <form onsubmit="handleLogin(event)">
@@ -221,7 +268,6 @@
     <div class="link-bawah">Lupa password? | Daftar akun</div>
   </div>
 
-  <!-- Menu Utama -->
   <div class="menu-wrapper" id="menuPage" style="display:none;">
     <div class="sidebar">
       <h2>🔹 MENU UTAMA</h2>
@@ -230,18 +276,32 @@
         <li onclick="showPage('riwayatLogin')">Riwayat Login Karyawan</li>
         <li onclick="showPage('aktivitasBaru')">Aktivitas Baru Karyawan</li>
         <li onclick="showPage('historyAktivitas')">History Aktivitas Karyawan</li>
+        <li onclick="logout()" style="margin-top: 20px; font-weight:bold; color:#e74c3c; cursor:pointer;">🔒 Logout</li>
       </ul>
     </div>
     <div class="content" id="contentArea"></div>
   </div>
 
   <script>
+    // Cek status login saat halaman dimuat
+    window.onload = function () {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+      if (isLoggedIn === "true") {
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("menuPage").style.display = "flex";
+        showPage("aktivitasBaru");
+      }
+    };
+
     function handleLogin(e) {
       e.preventDefault();
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
       if (username === "admin" && password === "12345") {
+        // Simpan status login
+        localStorage.setItem("isLoggedIn", "true");
+
         document.getElementById("loginPage").style.display = "none";
         document.getElementById("menuPage").style.display = "flex";
 
@@ -253,7 +313,7 @@
         logs.push({ nama: "Admin", waktu, agent, ip });
         localStorage.setItem("loginLogs", JSON.stringify(logs));
 
-        showPage('aktivitasBaru'); // Tampilkan default page
+        showPage('aktivitasBaru');
       } else {
         alert("Login gagal! Username atau password salah.");
       }
@@ -261,6 +321,19 @@
 
     function showPage(page) {
       const content = document.getElementById('contentArea');
+
+      if (page === 'aktivitasBaru') {
+        content.innerHTML = `
+          <h1>Aktivitas Terbaru</h1>
+          <div class="button-group">
+            <button onclick="showShiftForm()">Absen Masuk</button>
+            <button>Izin</button>
+            <button>Absen Pulang</button>
+          </div>
+          <div id="shiftFormContainer"></div>
+          <div id="welcomeMessageContainer"></div>
+        `;
+      }
 
       if (page === 'tambahPemain') {
         content.innerHTML = `
@@ -281,7 +354,6 @@
             <button type="submit" class="btn-blue">Tambah Karyawan Baru</button>
           </form>
           <div id="formMessage" style="margin-top:10px; color:green;"></div>
-
           <div class="floating-box">
             <h3>Pencarian Data Karyawan</h3>
             <div class="form-group">
@@ -295,14 +367,13 @@
             <button onclick="searchKaryawan()" class="btn-blue">Cari</button>
             <div id="hasilCari"></div>
           </div>
-
           <h3>Data Karyawan Terdaftar</h3>
           <div id="dataTabel"></div>
         `;
-
         tampilkanSemuaKaryawan();
+      }
 
-      } else if (page === 'riwayatLogin') {
+      if (page === 'riwayatLogin') {
         const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
         let rows = logs.map(log => `
           <tr>
@@ -324,25 +395,46 @@
                 <th>IP Address</th>
               </tr>
             </thead>
-            <tbody>
-              ${rows}
-            </tbody>
+            <tbody>${rows}</tbody>
           </table>
         `;
+      }
 
-      } else if (page === 'aktivitasBaru') {
-        content.innerHTML = `
-          <h1>Aktivitas Terbaru</h1>
-          <div class="button-group">
-            <button>Absen Masuk</button>
-            <button>Izin</button>
-            <button>Absen Pulang</button>
-          </div>
-        `;
-
-      } else if (page === 'historyAktivitas') {
+      if (page === 'historyAktivitas') {
         content.innerHTML = `<h1>History Aktivitas</h1><p>Fitur belum tersedia.</p>`;
       }
+    }
+
+    function showShiftForm() {
+      document.getElementById("shiftFormContainer").innerHTML = `
+        <div class="shift-form">
+          <label for="shiftSelect">Pilih Shift:</label>
+          <select id="shiftSelect">
+            <option value="Pagi">Shift Pagi</option>
+            <option value="Siang">Shift Siang</option>
+            <option value="Malam">Shift Malam</option>
+          </select>
+          <button onclick="submitShift()">Submit</button>
+        </div>
+      `;
+
+      // Hapus pesan selamat datang saat form muncul
+      document.getElementById("welcomeMessageContainer").innerHTML = "";
+    }
+
+    function submitShift() {
+      const shift = document.getElementById("shiftSelect").value;
+
+      // Tampilkan pesan selamat datang dengan animasi dan styling menarik
+      const welcomeContainer = document.getElementById("welcomeMessageContainer");
+      welcomeContainer.innerHTML = `
+        <div id="welcomeMessage">
+          Selamat datang! Anda telah absen masuk untuk shift <span style="color:#0099ff; font-weight:bold;">${shift}</span>.
+        </div>
+      `;
+
+      // Hapus form setelah submit
+      document.getElementById("shiftFormContainer").innerHTML = "";
     }
 
     function submitPemain(e) {
@@ -400,6 +492,11 @@
       });
       html += "</tbody></table>";
       document.getElementById("hasilCari").innerHTML = html;
+    }
+
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      location.reload();
     }
   </script>
 
