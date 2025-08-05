@@ -4,107 +4,134 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login & Menu Utama</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #0d1a2b; /* Dark Navy */
+            --secondary-color: #f4f4f4; /* Off-White */
+            --accent-color: #c9a76d; /* Muted Gold */
+            --success-color: #4a90e2; /* Soft Blue */
+            --danger-color: #d0021b; /* Dark Red */
+            --text-dark-color: #333333;
+            --text-light-color: #f4f4f4;
+            --bg-dark-color: #121212;
+            --bg-light-color: #f9f9f9;
+            --shadow-color: rgba(0, 0, 0, 0.15);
+            --warning-color: #e74c3c; /* A strong red for warning */
+        }
+
         html, body {
             height: 100%;
             margin: 0;
             padding: 0;
-            width: 100%;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark-color);
         }
 
         body {
-            background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/World_map_blank_without_borders.svg/1920px-World_map_blank_without_borders.svg.png') no-repeat center center fixed;
+            background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)), url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center fixed;
             background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background-color 0.5s ease;
         }
 
         .login-container {
-            max-width: 400px;
-            margin: 80px auto;
+            max-width: 450px;
+            width: 90%;
             background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px var(--shadow-color);
             text-align: center;
-            position: relative;
-            z-index: 1;
+            animation: fadeIn 0.8s ease-in-out;
+            border: 1px solid #e0e0e0;
         }
 
         .logo {
-            font-size: 26px;
-            font-weight: bold;
-            color: #00aaff;
-            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-transform: none;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            color: var(--accent-color);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 25px;
             text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
         }
 
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 16px;
             box-sizing: border-box;
+            background-color: #fefefe;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 8px rgba(201, 167, 109, 0.3);
+            outline: none;
         }
 
         .login-btn {
             width: 100%;
-            padding: 12px;
-            background-color: orange;
+            padding: 16px;
+            background-color: var(--primary-color);
             border: none;
             border-radius: 10px;
-            color: white;
-            font-size: 16px;
+            color: var(--text-light-color);
+            font-size: 17px;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s ease-in-out, transform 0.2s;
+            margin-top: 15px;
+            letter-spacing: 1px;
         }
 
         .login-btn:hover {
-            background-color: darkorange;
-        }
-
-        .btn-blue {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn-blue:hover {
-            background-color: #2980b9;
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
         }
 
         .link-bawah {
-            margin-top: 15px;
+            margin-top: 30px;
             color: #888;
-            font-size: 13px;
+            font-size: 15px;
             user-select: none;
         }
 
         .link-bawah span {
-            color: #0099ff;
+            color: var(--primary-color);
             cursor: pointer;
-            margin: 0 5px;
-            text-decoration: underline;
+            margin: 0 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .link-bawah span:hover {
+            color: var(--accent-color);
         }
 
         /* Modal styling */
@@ -116,51 +143,52 @@
             top: 0;
             width: 100vw;
             height: 100vh;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-            align-items: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
             justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s;
+        }
+
+        .modal.open {
+            opacity: 1;
+            visibility: visible;
         }
 
         .modal-content {
-            background-color: #fff;
-            margin: auto;
-            padding: 20px 30px;
+            background-color: var(--bg-light-color);
+            padding: 40px;
             border-radius: 15px;
             width: 90%;
-            max-width: 400px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-width: 500px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
             position: relative;
+            transform: scale(0.95);
+            transition: transform 0.4s ease;
+            text-align: center;
+        }
+
+        .modal.open .modal-content {
+            transform: scale(1);
         }
 
         .modal-content h2 {
             margin-top: 0;
-            margin-bottom: 20px;
-            color: #3498db;
-            text-align: center;
-        }
-
-        .modal-content label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .modal-content input, .modal-content select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            letter-spacing: 1px;
         }
 
         .modal-content button {
-            background-color: #3498db;
+            background-color: var(--accent-color);
             border: none;
-            padding: 12px 20px;
+            padding: 16px 25px;
             border-radius: 10px;
-            color: white;
+            color: var(--text-light-color);
             font-weight: bold;
             cursor: pointer;
             width: 100%;
@@ -169,48 +197,52 @@
         }
 
         .modal-content button:hover {
-            background-color: #2980b9;
+            background-color: #b8935c;
         }
 
         .close-btn {
             position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 28px;
-            font-weight: bold;
+            top: 15px;
+            right: 25px;
+            font-size: 30px;
+            font-weight: 600;
             color: #aaa;
             cursor: pointer;
             user-select: none;
+            transition: color 0.3s;
         }
 
         .close-btn:hover {
-            color: #000;
+            color: #555;
         }
 
         /* Menu styling */
         .menu-wrapper {
-            display: flex;
+            display: none;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            background-color: #ecf0f1;
+            background-color: var(--bg-light-color);
         }
 
         .sidebar {
-            width: 250px;
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
+            width: 300px;
+            background-color: var(--primary-color);
+            color: var(--text-light-color);
+            padding: 30px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+            font-family: 'Poppins', sans-serif;
         }
 
         .sidebar h2 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #777;
-            padding-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 15px;
             user-select: none;
         }
 
@@ -222,208 +254,395 @@
         }
 
         .sidebar ul li {
-            margin: 15px 0;
+            margin: 20px 0;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 17px;
             user-select: none;
+            position: relative;
+            padding-left: 30px;
             transition: color 0.3s;
         }
 
         .sidebar ul li:hover {
-            text-decoration: underline;
-            color: #00aaff;
+            color: var(--accent-color);
+        }
+
+        .sidebar ul li::before {
+            content: "\2022";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-size: 20px;
+        }
+        
+        .sidebar ul li:hover::before {
+            content: ">";
+        }
+        
+        .sidebar ul li:last-child {
+            margin-top: auto;
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        .sidebar ul li:last-child::before {
+            content: "🔒";
+            color: var(--danger-color);
         }
 
         .content {
             flex-grow: 1;
-            padding: 30px;
+            padding: 50px;
             overflow-y: auto;
             box-sizing: border-box;
-            height: 100vh;
-            background-color: #ecf0f1;
+            background-color: var(--bg-light-color);
+            transition: opacity 0.5s ease;
         }
 
         .content h1 {
-            font-size: 22px;
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
             margin-bottom: 30px;
+            color: var(--primary-color);
         }
         
         .content-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        .content-header h1 {
+            margin-bottom: 0;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             background: white;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            margin-top: 20px;
+            margin-top: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 18px;
+            border-bottom: 1px solid #eee;
             text-align: left;
+        }
+        td {
+            font-size: 15px;
         }
 
         thead {
-            background-color: #3498db;
-            color: white;
+            background-color: var(--primary-color);
+            color: var(--text-light-color);
         }
 
         .floating-box {
             background: white;
-            border: 1px solid #ccc;
-            padding: 20px;
+            border: 1px solid #e0e0e0;
+            padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            box-shadow: 0 2px 15px var(--shadow-color);
+            margin-bottom: 30px;
         }
-
-        .button-group button {
-            margin: 10px;
-            padding: 12px 18px;
-            font-size: 14px;
-            border: none;
-            border-radius: 8px;
-            background-color: #3498db;
+        
+        .btn-blue {
+            background-color: var(--accent-color);
             color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 25px;
+            font-size: 15px;
+            font-weight: bold;
             cursor: pointer;
             transition: background 0.3s;
+            margin-top: 15px;
         }
 
-        .button-group button:hover {
-            background-color: #2980b9;
+        .btn-blue:hover {
+            background-color: #b8935c;
         }
 
-        .shift-form {
-            margin-top: 20px;
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
-            max-width: 300px;
-        }
-
-        .shift-form label {
-            font-weight: bold;
-        }
-
-        .shift-form select, .shift-form button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-        }
-
-        .shift-form button {
-            background-color: green;
-            color: white;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .shift-form button:hover {
-            background-color: darkgreen;
-        }
-
-        /* Tambahan styling pesan selamat datang */
         #welcomeMessage {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #dff0d8;
-            color: #3c763d;
-            border-radius: 10px;
-            font-weight: bold;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #e6f7ff;
+            color: #004085;
+            border-left: 5px solid #0056b3;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
             animation: fadeIn 1s ease forwards;
         }
 
         @keyframes fadeIn {
-            from {opacity: 0;}
-            to {opacity: 1;}
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .edit-btn {
-            background-color: #f1c40f;
-            color: white;
+        .edit-btn, .delete-btn {
             border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            color: white;
             cursor: pointer;
-            margin-right: 5px;
+            margin-right: 8px;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .edit-btn { background-color: var(--accent-color); }
+        .edit-btn:hover { background-color: #b8935c; transform: translateY(-1px); }
+        .delete-btn { background-color: var(--danger-color); }
+        .delete-btn:hover { background-color: #b30018; transform: translateY(-1px); }
+
+        /* Animation for Timer */
+        #izinTimerContainer.start-timer .timer-wrapper {
+            animation: timerStart 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
         
-        .delete-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
+        #izinTimerContainer.stop-timer .timer-wrapper {
+            animation: timerStop 0.5s ease-in forwards;
+        }
+        
+        #timer-container {
+            margin-top: 40px;
+            padding: 30px;
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: border-color 0.4s, background-color 0.4s, box-shadow 0.4s;
         }
 
-        #timer-container {
-            margin-top: 20px;
-            padding: 20px;
-            border: 2px dashed #3498db;
-            border-radius: 15px;
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.8);
+        #timer-container.warning {
+            border: 2px solid var(--warning-color);
+            background-color: rgba(255, 235, 235, 0.95);
+            box-shadow: 0 0 25px rgba(231, 76, 60, 0.4);
+            animation: pulseWarning 1.5s infinite;
         }
+
         #timer-display {
-            font-size: 3em;
-            font-weight: bold;
-            color: #2c3e50;
-            margin: 10px 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 15px 0;
+            transition: transform 0.3s ease-in-out;
         }
+        #timer-display:hover {
+            transform: scale(1.03);
+        }
+
         #timer-info {
-            font-size: 1.2em;
+            font-size: 1.4em;
             color: #555;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
+            font-weight: 300;
         }
+
         .timer-btn {
-            padding: 12px 25px;
-            font-size: 16px;
+            padding: 16px 30px;
+            font-size: 17px;
             font-weight: bold;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
+
         .timer-btn.stop {
-            background-color: #e74c3c;
+            background-color: var(--danger-color);
             color: white;
+            animation: pulse 1.5s infinite;
         }
         .timer-btn.stop:hover {
-            background-color: #c0392b;
+            background-color: #b30018;
+            animation: none;
+        }
+        
+        #timer-alert {
+            font-weight: 600;
+            color: var(--warning-color);
+            margin-top: 15px;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: fadeIn 0.5s ease-in-out;
         }
 
-        .izin-options {
+        /* Keyframes for animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes timerStart {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes timerStop {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.1); opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(208, 2, 27, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(208, 2, 27, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(208, 2, 27, 0); }
+        }
+
+        @keyframes pulseWarning {
+            0% { box-shadow: 0 0 15px rgba(231, 76, 60, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(231, 76, 60, 0.6); }
+            100% { box-shadow: 0 0 15px rgba(231, 76, 60, 0.4); }
+        }
+
+        /* New Styles for Aktivitas Baru Karyawan */
+        .aktivitas-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .aktivitas-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .aktivitas-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .aktivitas-card .icon {
+            font-size: 5em;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            transition: color 0.3s;
+        }
+
+        .aktivitas-card:hover .icon {
+            color: var(--accent-color);
+        }
+
+        .aktivitas-card h3 {
+            margin: 0;
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--text-dark-color);
+        }
+
+        .aktivitas-card.izin .icon { color: var(--accent-color); }
+        .aktivitas-card.pulang .icon { color: var(--danger-color); }
+
+        /* Modal styling with icons */
+        .modal-content .izin-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .modal-content .izin-options .izin-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 18px;
+            border-radius: 10px;
+            border: none;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .modal-content .izin-options .izin-btn:hover {
+            background-color: #b8935c;
+        }
+        .modal-content .izin-options .izin-btn .fa-solid {
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+
+        /* Modal for Absen Masuk */
+        .shift-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .shift-options .shift-btn {
+            background-color: var(--success-color);
+            color: white;
+            padding: 18px;
+            border-radius: 10px;
+            border: none;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .shift-options .shift-btn:hover {
+            background-color: #3b74b6;
+        }
+
+        /* Modal for Absen Pulang */
+        .pulang-modal-content h2 {
+            color: var(--danger-color);
+        }
+        .pulang-message {
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+        }
+        .pulang-btn {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 18px 35px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .pulang-btn:hover {
+            background-color: #b30018;
+        }
+
+        /* New CSS for the new timer layout */
+        .timer-wrapper {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
     </style>
 </head>
 <body>
 
     <div class="login-container" id="loginPage">
-        <div class="logo">SELAMAT <span style="color:#0099ff">DATANG</span></div>
+        <div class="logo">Manajemen <span>Karyawan</span></div>
         <form onsubmit="handleLogin(event)">
             <div class="form-group">
-                <input type="text" id="username" placeholder="USERNAME" required />
+                <input type="text" id="username" placeholder="Username" required />
             </div>
             <div class="form-group">
-                <input type="password" id="password" placeholder="PASSWORD" required />
+                <input type="password" id="password" placeholder="Password" required />
             </div>
-            <button type="submit" class="login-btn">LOGIN</button>
+            <button type="submit" class="login-btn">Login</button>
         </form>
         <div class="link-bawah">
             <span onclick="openModal('modalLupa')">Lupa password?</span> | 
@@ -431,15 +650,15 @@
         </div>
     </div>
 
-    <div class="menu-wrapper" id="menuPage" style="display:none;">
+    <div class="menu-wrapper" id="menuPage">
         <div class="sidebar">
-            <h2>🔹 MENU UTAMA</h2>
+            <h2>MENU UTAMA</h2>
             <ul>
-                <li id="menuDataUser" onclick="showPage('tambahPemain')">Data User</li>
-                <li onclick="showPage('riwayatLogin')">Riwayat Login Karyawan</li>
-                <li onclick="showPage('aktivitasBaru')">Aktivitas Baru Karyawan</li>
-                <li onclick="showPage('historyAktivitas')">History Aktivitas Karyawan</li>
-                <li onclick="logout()" style="margin-top: 20px; font-weight:bold; color:#e74c3c; cursor:pointer;">🔒 Logout</li>
+                <li id="menuDataUser" onclick="showPage('tambahPemain')"><i class="fa-solid fa-users"></i> Data User</li>
+                <li onclick="showPage('riwayatLogin')"><i class="fa-solid fa-history"></i> Riwayat Login</li>
+                <li onclick="showPage('aktivitasBaru')"><i class="fa-solid fa-bell"></i> Aktivitas Baru</li>
+                <li onclick="showPage('historyAktivitas')"><i class="fa-solid fa-list-alt"></i> History Aktivitas</li>
+                <li onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Logout</li>
             </ul>
         </div>
         <div class="content" id="contentArea"></div>
@@ -448,36 +667,42 @@
     
     <div id="modalDaftar" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modalDaftar')">×</span>
+            <span class="close-btn" onclick="closeModal('modalDaftar')">&times;</span>
             <h2>Daftar Akun Baru</h2>
             <form id="formDaftar" onsubmit="handleDaftar(event)">
-                <label for="daftarUsername">Username:</label>
-                <input type="text" id="daftarUsername" required />
-                <label for="daftarPassword">Password:</label>
-                <input type="password" id="daftarPassword" required />
+                <div class="form-group">
+                    <label for="daftarUsername">Username:</label>
+                    <input type="text" id="daftarUsername" required />
+                </div>
+                <div class="form-group">
+                    <label for="daftarPassword">Password:</label>
+                    <input type="password" id="daftarPassword" required />
+                </div>
                 <button type="submit">Daftar</button>
             </form>
-            <div id="daftarMessage" style="margin-top:10px; color:green;"></div>
+            <div id="daftarMessage" style="margin-top:15px; text-align: center;"></div>
         </div>
     </div>
 
     
     <div id="modalLupa" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modalLupa')">×</span>
+            <span class="close-btn" onclick="closeModal('modalLupa')">&times;</span>
             <h2>Lupa Password</h2>
             <form id="formLupa" onsubmit="handleLupa(event)">
-                <label for="lupaUsername">Masukkan Username:</label>
-                <input type="text" id="lupaUsername" required />
+                <div class="form-group">
+                    <label for="lupaUsername">Masukkan Username:</label>
+                    <input type="text" id="lupaUsername" required />
+                </div>
                 <button type="submit">Cari Password</button>
             </form>
-            <div id="lupaMessage" style="margin-top:10px; color:red; font-weight:bold;"></div>
+            <div id="lupaMessage" style="margin-top:15px; text-align: center; font-weight: 600;"></div>
         </div>
     </div>
 
     <div id="modalEditUser" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modalEditUser')">×</span>
+            <span class="close-btn" onclick="closeModal('modalEditUser')">&times;</span>
             <h2>Edit Data User</h2>
             <form id="formEditUser" onsubmit="submitEditUser(event)">
                 <input type="hidden" id="editOriginalUsername" />
@@ -515,22 +740,45 @@
                 </div>
                 <button type="submit" class="btn-blue">Simpan Perubahan</button>
             </form>
-            <div id="editMessage" style="margin-top:10px; color:green;"></div>
+            <div id="editMessage" style="margin-top:15px; text-align: center;"></div>
         </div>
     </div>
 
     <div id="modalPilihanIzin" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('modalPilihanIzin')">×</span>
+            <span class="close-btn" onclick="closeModal('modalPilihanIzin')">&times;</span>
             <h2>Pilihan Keterangan Izin</h2>
             <div class="izin-options">
-                <button class="btn-blue" onclick="startIzinTimer('Toilet')">Toilet</button>
-                <button class="btn-blue" onclick="startIzinTimer('Beli Makan')">Beli Makan</button>
-                <button class="btn-blue" onclick="startIzinTimer('Merokok')">Merokok</button>
+                <button class="izin-btn" onclick="startIzinTimer('Toilet')"><i class="fa-solid fa-toilet"></i> Toilet</button>
+                <button class="izin-btn" onclick="startIzinTimer('Beli Makan')"><i class="fa-solid fa-utensils"></i> Beli Makan</button>
+                <button class="izin-btn" onclick="startIzinTimer('Merokok')"><i class="fa-solid fa-smoking"></i> Merokok</button>
             </div>
         </div>
     </div>
 
+    <div id="modalAbsenMasuk" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modalAbsenMasuk')">&times;</span>
+            <h2>Pilih Shift Absen Masuk</h2>
+            <div class="shift-options">
+                <button class="shift-btn" onclick="submitShift('Pagi')">Absen Shift Pagi</button>
+                <button class="shift-btn" onclick="submitShift('Siang')">Absen Shift Siang</button>
+                <button class="shift-btn" onclick="submitShift('Malam')">Absen Shift Malam</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalAbsenPulang" class="modal">
+        <div class="modal-content pulang-modal-content">
+            <span class="close-btn" onclick="closeModal('modalAbsenPulang')">&times;</span>
+            <h2>Absen Pulang</h2>
+            <p class="pulang-message">
+                Terima kasih atas kerja keras Anda hari ini! <br>
+                <strong>Istirahatlah yang cukup, dan sampai jumpa esok hari!</strong>
+            </p>
+            <button class="pulang-btn" onclick="confirmAbsenPulang()">Ya, Absen Pulang</button>
+        </div>
+    </div>
 
     <script>
         // Global variable for the timer interval
@@ -539,10 +787,18 @@
         // --- Modal controls ---
         function openModal(id) {
             document.getElementById(id).style.display = "flex";
+            setTimeout(() => {
+                document.getElementById(id).classList.add('open');
+            }, 10);
         }
 
         function closeModal(id) {
-            document.getElementById(id).style.display = "none";
+            const modal = document.getElementById(id);
+            modal.classList.remove('open');
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 400);
+            
             // Reset messages and forms on close
             if(id === "modalDaftar") {
                 document.getElementById("formDaftar").reset();
@@ -556,9 +812,6 @@
                 document.getElementById("formEditUser").reset();
                 document.getElementById("editMessage").textContent = "";
             }
-            if (id === "modalPilihanIzin") {
-                // No form to reset here
-            }
         }
 
         // Tutup modal jika klik di luar konten modal
@@ -567,6 +820,8 @@
             const modalLupa = document.getElementById("modalLupa");
             const modalEdit = document.getElementById("modalEditUser");
             const modalIzin = document.getElementById("modalPilihanIzin");
+            const modalAbsen = document.getElementById("modalAbsenMasuk");
+            const modalPulang = document.getElementById("modalAbsenPulang");
             if (event.target === modalDaftar) {
                 closeModal('modalDaftar');
             }
@@ -578,6 +833,12 @@
             }
             if (event.target === modalIzin) {
                 closeModal('modalPilihanIzin');
+            }
+            if (event.target === modalAbsen) {
+                closeModal('modalAbsenMasuk');
+            }
+            if (event.target === modalPulang) {
+                closeModal('modalAbsenPulang');
             }
         };
 
@@ -597,7 +858,6 @@
             const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
             const user = users.find(u => u.username === currentUser);
             
-            // Cek jika user adalah admin, tampilkan menu "Data User"
             if (user && user.role === "Admin") {
                 document.getElementById("menuDataUser").style.display = "list-item";
             } else {
@@ -613,7 +873,6 @@
             let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
             const adminUser = {username: "admin", password: "12345", role: "Admin", divisi: "Admin", email: "admin@example.com", shift: ""};
             
-            // Jika belum ada user admin, tambahkan ke daftar
             if (!users.find(u => u.username === "admin")) {
                 users.unshift(adminUser);
                 localStorage.setItem("userAccounts", JSON.stringify(users));
@@ -630,7 +889,6 @@
 
                 checkUserRoleAndDisplayMenu();
 
-                // Simpan log login
                 const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
                 const now = new Date();
                 const waktu = now.toLocaleString('id-ID');
@@ -651,7 +909,8 @@
             const password = document.getElementById("daftarPassword").value;
 
             if (!username || !password) {
-                alert("Username dan password wajib diisi!");
+                document.getElementById("daftarMessage").style.color = "red";
+                document.getElementById("daftarMessage").textContent = "Username dan password wajib diisi!";
                 return;
             }
 
@@ -662,7 +921,6 @@
                 return;
             }
 
-            // Default role untuk pendaftaran baru adalah "User"
             users.push({username, password, role: "User", divisi: "", email: "", shift: ""});
             localStorage.setItem("userAccounts", JSON.stringify(users));
 
@@ -670,7 +928,6 @@
             document.getElementById("daftarMessage").textContent = "Akun berhasil didaftarkan! Silakan login.";
             document.getElementById("formDaftar").reset();
 
-            // Auto-close modal setelah 2 detik
             setTimeout(() => closeModal('modalDaftar'), 2000);
         }
 
@@ -689,429 +946,77 @@
             }
         }
 
-        // --- Menu utama dan konten lainnya tetap sama ---
         function showPage(page) {
             const content = document.getElementById('contentArea');
             const currentUser = localStorage.getItem("currentUser");
             const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
             const user = users.find(u => u.username === currentUser);
 
-            if (page === 'aktivitasBaru') {
-                content.innerHTML = `
-                    <h1>Aktivitas Terbaru</h1>
-                    <div class="button-group">
-                        <button onclick="showShiftForm()">Absen Masuk</button>
-                        <button onclick="openModal('modalPilihanIzin')">Izin</button>
-                        <button>Absen Pulang</button>
-                    </div>
-                    <div id="shiftFormContainer"></div>
-                    <div id="welcomeMessageContainer"></div>
-                    <div id="izinTimerContainer"></div>
-                `;
-                // Check for running timer on page load
-                checkRunningTimer();
+            const allMenuItems = document.querySelectorAll('.sidebar ul li');
+            allMenuItems.forEach(item => item.classList.remove('active'));
+            const activeMenuItem = document.querySelector(`[onclick="showPage('${page}')"]`);
+            if (activeMenuItem) {
+                activeMenuItem.classList.add('active');
             }
 
-            if (page === 'tambahPemain') {
-                // Periksa role user yang sedang login, hanya admin yang bisa akses
-                if (!user || user.role !== "Admin") {
-                    content.innerHTML = `<h1>Akses Ditolak</h1><p>Maaf, Anda tidak memiliki izin untuk mengakses halaman ini.</p>`;
-                    return;
-                }
-
-                content.innerHTML = `
-                    <h1>Tambah User Baru</h1>
-                    <form id="formTambahUser" onsubmit="submitUser(event)">
-                        <div class="form-group">
-                            <label for="roleUser">Role:</label>
-                            <select id="roleUser">
-                                <option value="User">User</option>
-                                <option value="Admin">Admin</option>
-                            </select>
+            content.style.opacity = 0;
+            setTimeout(() => {
+                if (page === 'aktivitasBaru') {
+                    content.innerHTML = `
+                        <h1>Aktivitas Terbaru</h1>
+                        <div id="welcomeMessageContainer"></div>
+                        <div class="aktivitas-container">
+                            <div class="aktivitas-card" onclick="openModal('modalAbsenMasuk')">
+                                <span class="icon"><i class="fa-solid fa-sign-in-alt"></i></span>
+                                <h3>Absen Masuk</h3>
+                            </div>
+                            <div class="aktivitas-card izin" onclick="openModal('modalPilihanIzin')">
+                                <span class="icon"><i class="fa-solid fa-hourglass-half"></i></span>
+                                <h3>Izin</h3>
+                            </div>
+                            <div class="aktivitas-card pulang" onclick="openModal('modalAbsenPulang')">
+                                <span class="icon"><i class="fa-solid fa-sign-out-alt"></i></span>
+                                <h3>Absen Pulang</h3>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="shiftUser">Shift:</label>
-                            <select id="shiftUser">
-                                <option value="Pagi">Pagi</option>
-                                <option value="Siang">Siang</option>
-                                <option value="Malam">Malam</option>
-                                <option value="">-</option>
-                            </select>
+                        <div id="izinTimerContainer"></div>
+                    `;
+                    const welcomeMsgContainer = document.getElementById("welcomeMessageContainer");
+                    if (welcomeMsgContainer) {
+                        const welcomeMessage = document.createElement('div');
+                        welcomeMessage.id = 'welcomeMessage';
+                        welcomeMessage.innerHTML = `Halo, **${currentUser}**! Selamat datang di sistem manajemen karyawan.`;
+                        welcomeMsgContainer.appendChild(welcomeMessage);
+                    }
+                    checkRunningTimer();
+                } else if (page === 'tambahPemain') {
+                    if (!user || user.role !== "Admin") {
+                        content.innerHTML = '<h1>Akses Ditolak</h1><p>Anda tidak memiliki izin untuk melihat halaman ini.</p>';
+                        return;
+                    }
+                    content.innerHTML = `
+                        <div class="content-header">
+                            <h1>Data User</h1>
+                            <button class="btn-blue" onclick="refreshUserTable()">Refresh</button>
                         </div>
-                        <div class="form-group">
-                            <label for="namaUser">Username</label>
-                            <input type="text" id="namaUser" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="passwordUser">Password</label>
-                            <input type="password" id="passwordUser" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="divisiUser">Divisi</label>
-                            <input type="text" id="divisiUser" />
-                        </div>
-                        <div class="form-group">
-                            <label for="emailUser">Email</label>
-                            <input type="email" id="emailUser" />
-                        </div>
-                        <button type="submit" class="btn-blue">Tambah User Baru</button>
-                    </form>
-                    <div id="formMessage" style="margin-top:10px; color:green;"></div>
-                    <div class="floating-box">
-                        <h3>Pencarian Data User</h3>
-                        <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" id="searchUsername" />
-                        </div>
-                        <button onclick="searchUser()" class="btn-blue">Cari</button>
-                        <div id="hasilCari"></div>
-                    </div>
-                    <h3>Data Semua User</h3>
-                    <div id="dataTabel"></div>
-                `;
-                tampilkanSemuaUser();
-            }
-
-            if (page === 'riwayatLogin') {
-                const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
-                let rows = logs.map((log, index) => `
-                    <tr>
-                        <td><input type="checkbox" name="logCheckbox" value="${index}"></td>
-                        <td>${log.nama}</td>
-                        <td>${log.waktu}</td>
-                        <td>${log.agent}</td>
-                        <td>${log.ip}</td>
-                    </tr>
-                `).join('');
-
-                content.innerHTML = `
-                    <div class="content-header">
+                        <table id="userTable"></table>
+                    `;
+                    renderDataUser();
+                } else if (page === 'riwayatLogin') {
+                    content.innerHTML = `
                         <h1>Riwayat Login Karyawan</h1>
-                        <button class="delete-btn" onclick="deleteSelectedLogs()">Hapus yang Dipilih</button>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox" id="checkAllLogs"></th>
-                                <th>Nama Karyawan</th>
-                                <th>Tanggal & Waktu</th>
-                                <th>Aplikasi Web Login</th>
-                                <th>IP Address</th>
-                            </tr>
-                        </thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                `;
-                // Menambahkan fungsionalitas "pilih semua"
-                const checkAll = document.getElementById('checkAllLogs');
-                if(checkAll) {
-                    checkAll.addEventListener('change', (e) => {
-                        const checkboxes = document.getElementsByName('logCheckbox');
-                        checkboxes.forEach(cb => cb.checked = e.target.checked);
-                    });
+                        <table id="riwayatLoginTable"></table>
+                    `;
+                    renderRiwayatLogin();
+                } else if (page === 'historyAktivitas') {
+                    content.innerHTML = `
+                        <h1>History Aktivitas Karyawan</h1>
+                        <table id="historyAktivitasTable"></table>
+                    `;
+                    renderHistoryAktivitas();
                 }
-            }
-            
-            // Kode untuk "History Aktivitas Karyawan"
-            if (page === 'historyAktivitas') {
-                content.innerHTML = `
-                    <h1>History Aktivitas Karyawan</h1>
-                    <div class="floating-box">
-                        <h3>Cari Riwayat Berdasarkan Nama</h3>
-                        <div class="form-group">
-                            <label for="namaAktivitas">Nama Karyawan</label>
-                            <input type="text" id="namaAktivitas" required />
-                        </div>
-                        <button onclick="searchAktivitas()" class="btn-blue">Cari Riwayat</button>
-                    </div>
-                    <div id="hasilAktivitas">
-                        <p>Silakan masukkan nama karyawan untuk mencari riwayat aktivitas.</p>
-                    </div>
-                `;
-            }
-        }
-
-        function showShiftForm() {
-            document.getElementById("shiftFormContainer").innerHTML = `
-                <div class="shift-form">
-                    <label for="shiftSelect">Pilih Shift:</label>
-                    <select id="shiftSelect">
-                        <option value="Pagi">Shift Pagi</option>
-                        <option value="Siang">Shift Siang</option>
-                        <option value="Malam">Shift Malam</option>
-                    </select>
-                    <button onclick="submitShift()">Submit</button>
-                </div>
-            `;
-
-            document.getElementById("welcomeMessageContainer").innerHTML = "";
-        }
-
-        function submitShift() {
-            const shift = document.getElementById("shiftSelect").value;
-            const welcomeContainer = document.getElementById("welcomeMessageContainer");
-            welcomeContainer.innerHTML = `
-                <div id="welcomeMessage">
-                    Selamat datang! Anda telah absen masuk untuk shift <span style="color:#0099ff; font-weight:bold;">${shift}</span>.
-                </div>
-            `;
-            document.getElementById("shiftFormContainer").innerHTML = "";
-
-            // Simpan riwayat aktivitas ke localStorage
-            const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
-            const currentUser = localStorage.getItem("currentUser");
-            const now = new Date();
-            const waktu = now.toLocaleString('id-ID');
-            aktivitas.push({ nama: currentUser, jenis: "Absen Masuk", shift, waktu: now.toISOString() }); // Simpan waktu dalam format ISO string
-            localStorage.setItem("aktivitasKaryawan", JSON.stringify(aktivitas));
-        }
-
-        // Fungsi untuk memulai timer izin
-        function startIzinTimer(alasan) {
-            closeModal('modalPilihanIzin');
-            const startTime = Date.now();
-            localStorage.setItem('izinStartTime', startTime);
-            localStorage.setItem('izinAlasan', alasan);
-
-            const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
-            const currentUser = localStorage.getItem("currentUser");
-            const now = new Date();
-            const waktu = now.toLocaleString('id-ID');
-            aktivitas.push({ nama: currentUser, jenis: "Mulai Izin", keterangan: alasan, waktu: now.toISOString() });
-            localStorage.setItem("aktivitasKaryawan", JSON.stringify(aktivitas));
-
-            updateTimerDisplay();
-        }
-
-        // Fungsi untuk menghentikan timer izin
-        function stopIzinTimer() {
-            const endTime = Date.now();
-            const startTime = localStorage.getItem('izinStartTime');
-            const alasan = localStorage.getItem('izinAlasan');
-            
-            if (startTime) {
-                const durationMs = endTime - parseInt(startTime, 10);
-                const durationMinutes = Math.floor(durationMs / 60000);
-                const durationSeconds = Math.floor((durationMs % 60000) / 1000);
-                alert(`Izin "${alasan}" selesai. Durasi: ${durationMinutes} menit, ${durationSeconds} detik.`);
-
-                const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
-                const currentUser = localStorage.getItem("currentUser");
-                const now = new Date();
-                const waktu = now.toLocaleString('id-ID');
-                aktivitas.push({ nama: currentUser, jenis: "Selesai Izin", keterangan: alasan, waktu: now.toISOString(), durasi: `${durationMinutes}m ${durationSeconds}s` });
-                localStorage.setItem("aktivitasKaryawan", JSON.stringify(aktivitas));
-            }
-
-            // Hentikan interval dan hapus data dari localStorage
-            clearInterval(timerInterval);
-            localStorage.removeItem('izinStartTime');
-            localStorage.removeItem('izinAlasan');
-            document.getElementById('izinTimerContainer').innerHTML = '';
-        }
-
-        // Fungsi untuk memperbarui tampilan timer
-        function updateTimerDisplay() {
-            const container = document.getElementById('izinTimerContainer');
-            const startTime = localStorage.getItem('izinStartTime');
-            const alasan = localStorage.getItem('izinAlasan');
-
-            if (!startTime || !container) {
-                return;
-            }
-
-            if (timerInterval) {
-                clearInterval(timerInterval);
-            }
-
-            container.innerHTML = `
-                <div id="timer-container">
-                    <p id="timer-info">Anda sedang izin untuk: <br><b>${alasan}</b></p>
-                    <div id="timer-display">00:00:00</div>
-                    <button class="timer-btn stop" onclick="stopIzinTimer()">Selesai</button>
-                </div>
-            `;
-
-            const timerDisplay = document.getElementById('timer-display');
-
-            timerInterval = setInterval(() => {
-                const elapsed = Date.now() - parseInt(startTime, 10);
-                const seconds = Math.floor((elapsed / 1000) % 60);
-                const minutes = Math.floor((elapsed / (1000 * 60)) % 60);
-                const hours = Math.floor((elapsed / (1000 * 60 * 60)) % 24);
-
-                const format = (num) => String(num).padStart(2, '0');
-                timerDisplay.textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
-            }, 1000);
-        }
-
-        // Fungsi untuk memeriksa apakah ada timer yang sedang berjalan saat halaman dimuat
-        function checkRunningTimer() {
-            const startTime = localStorage.getItem('izinStartTime');
-            if (startTime) {
-                updateTimerDisplay();
-            }
-        }
-
-
-        // Fungsi yang diubah untuk menambahkan user baru
-        function submitUser(e) {
-            e.preventDefault();
-            const role = document.getElementById('roleUser').value;
-            const shift = document.getElementById('shiftUser').value;
-            const username = document.getElementById('namaUser').value.trim();
-            const password = document.getElementById('passwordUser').value.trim();
-            const divisi = document.getElementById('divisiUser').value.trim();
-            const email = document.getElementById('emailUser').value.trim();
-
-            if (!username || !password) {
-                alert("Username dan Password wajib diisi!");
-                return;
-            }
-
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            if (users.find(u => u.username === username)) {
-                document.getElementById("formMessage").style.color = "red";
-                document.getElementById("formMessage").textContent = "Username sudah terdaftar.";
-                return;
-            }
-            
-            users.push({username, password, role, divisi, email, shift});
-            localStorage.setItem("userAccounts", JSON.stringify(users));
-
-            document.getElementById('formMessage').style.color = "green";
-            document.getElementById('formMessage').textContent = `User "${username}" berhasil ditambahkan.`;
-            document.getElementById('formTambahUser').reset();
-            tampilkanSemuaUser();
-        }
-
-        // Fungsi yang diubah untuk menampilkan semua user dengan tombol edit & hapus
-        function tampilkanSemuaUser() {
-            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            if (users.length === 0) {
-                document.getElementById("dataTabel").innerHTML = "<p>Tidak ada data user terdaftar.</p>";
-                return;
-            }
-            let html = "<table><thead><tr><th>Role</th><th>Shift</th><th>Username</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
-            users.forEach((u, index) => {
-                html += `<tr>
-                    <td>${u.role || 'User'}</td>
-                    <td>${u.shift || '-'}</td>
-                    <td>${u.username}</td>
-                    <td>${u.divisi || '-'}</td>
-                    <td>${u.email || '-'}</td>
-                    <td>
-                        <button class="edit-btn" onclick="editUser('${u.username}')">Edit</button>
-                        <button class="delete-btn" onclick="deleteUser('${u.username}')">Hapus</button>
-                    </td>
-                </tr>`;
-            });
-            html += `</tbody></table>`;
-            document.getElementById("dataTabel").innerHTML = html;
-        }
-
-        // Fungsi untuk mencari user
-        function searchUser() {
-            const searchUsername = document.getElementById('searchUsername').value.trim();
-            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const user = users.find(u => u.username.toLowerCase() === searchUsername.toLowerCase());
-            const hasilCariDiv = document.getElementById('hasilCari');
-
-            if (user) {
-                hasilCariDiv.innerHTML = `
-                    <h4>Hasil Pencarian:</h4>
-                    <p><b>Username:</b> ${user.username}</p>
-                    <p><b>Role:</b> ${user.role}</p>
-                    <p><b>Shift:</b> ${user.shift || '-'}</p>
-                    <p><b>Divisi:</b> ${user.divisi || '-'}</p>
-                    <p><b>Email:</b> ${user.email || '-'}</p>
-                `;
-            } else {
-                hasilCariDiv.innerHTML = `<p>User dengan username "${searchUsername}" tidak ditemukan.</p>`;
-            }
-        }
-
-        // Fungsi untuk edit user
-        function editUser(username) {
-            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const userToEdit = users.find(u => u.username === username);
-
-            if (userToEdit) {
-                document.getElementById('editOriginalUsername').value = userToEdit.username;
-                document.getElementById('editRole').value = userToEdit.role;
-                document.getElementById('editShift').value = userToEdit.shift;
-                document.getElementById('editUsername').value = userToEdit.username;
-                document.getElementById('editPassword').value = userToEdit.password;
-                document.getElementById('editDivisi').value = userToEdit.divisi;
-                document.getElementById('editEmail').value = userToEdit.email;
-                openModal('modalEditUser');
-            }
-        }
-
-        // Fungsi untuk submit perubahan user
-        function submitEditUser(e) {
-            e.preventDefault();
-            const originalUsername = document.getElementById('editOriginalUsername').value;
-            const newRole = document.getElementById('editRole').value;
-            const newShift = document.getElementById('editShift').value;
-            const newUsername = document.getElementById('editUsername').value.trim();
-            const newPassword = document.getElementById('editPassword').value.trim();
-            const newDivisi = document.getElementById('editDivisi').value.trim();
-            const newEmail = document.getElementById('editEmail').value.trim();
-
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const userIndex = users.findIndex(u => u.username === originalUsername);
-
-            if (userIndex !== -1) {
-                users[userIndex] = {
-                    username: newUsername,
-                    password: newPassword,
-                    role: newRole,
-                    shift: newShift,
-                    divisi: newDivisi,
-                    email: newEmail
-                };
-                localStorage.setItem("userAccounts", JSON.stringify(users));
-                closeModal('modalEditUser');
-                tampilkanSemuaUser();
-                document.getElementById('formMessage').textContent = `User "${originalUsername}" berhasil diupdate.`;
-            } else {
-                document.getElementById('editMessage').textContent = "User tidak ditemukan.";
-                document.getElementById('editMessage').style.color = "red";
-            }
-        }
-
-        // Fungsi untuk hapus user
-        function deleteUser(username) {
-            if (confirm(`Apakah Anda yakin ingin menghapus user "${username}"?`)) {
-                let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-                users = users.filter(u => u.username !== username);
-                localStorage.setItem("userAccounts", JSON.stringify(users));
-                tampilkanSemuaUser();
-                document.getElementById('formMessage').textContent = `User "${username}" berhasil dihapus.`;
-                document.getElementById('formMessage').style.color = "green";
-            }
-        }
-
-        // Fungsi untuk menghapus log yang dipilih
-        function deleteSelectedLogs() {
-            const checkboxes = document.getElementsByName('logCheckbox');
-            const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
-            const indicesToDelete = [];
-            checkboxes.forEach((cb, index) => {
-                if (cb.checked) {
-                    indicesToDelete.push(index);
-                }
-            });
-
-            if (indicesToDelete.length > 0 && confirm(`Apakah Anda yakin ingin menghapus ${indicesToDelete.length} riwayat login?`)) {
-                // Hapus log dari yang paling akhir agar index tidak berubah
-                for (let i = indicesToDelete.length - 1; i >= 0; i--) {
-                    logs.splice(indicesToDelete[i], 1);
-                }
-                localStorage.setItem("loginLogs", JSON.stringify(logs));
-                showPage('riwayatLogin'); // Muat ulang halaman riwayat login
-            }
+                content.style.opacity = 1;
+            }, 500); // Wait for transition
         }
         
         function logout() {
@@ -1120,97 +1025,293 @@
             window.location.reload();
         }
 
-        // Fungsi utama untuk pencarian aktivitas karyawan (sudah diperbaiki)
-        function searchAktivitas() {
-            const namaCari = document.getElementById('namaAktivitas').value.trim();
-            const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
-            const hasil = aktivitas.filter(a => a.nama.toLowerCase() === namaCari.toLowerCase());
-            const hasilAktivitasDiv = document.getElementById('hasilAktivitas');
-
-            if (hasil.length === 0) {
-                hasilAktivitasDiv.innerHTML = `<p>Tidak ada riwayat aktivitas untuk karyawan "${namaCari}".</p>`;
-                return;
-            }
-
-            const batasTelatPagi = 9; // Jam 9 pagi
-            const batasIzinMenit = 15; // 15 menit
-
+        // --- Data management functions ---
+        function renderDataUser() {
+            const table = document.getElementById("userTable");
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            
             let html = `
-                <div class="content-header">
-                    <h3>Riwayat Aktivitas untuk ${namaCari}</h3>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nama Karyawan</th>
-                            <th>Aktivitas</th>
-                            <th>Jam Mulai</th>
-                            <th>Jam Selesai</th>
-                            <th>Durasi / Keterangan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Role</th>
+                        <th>Shift</th>
+                        <th>Divisi</th>
+                        <th>Email</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
             `;
-
-            hasil.forEach(item => {
-                let jamMulai = item.waktu ? new Date(item.waktu).toLocaleString('id-ID') : '-';
-                let jamSelesai = '-';
-                let durasiKeterangan = item.keterangan || item.shift || '-';
-                let aksi = '-';
-
-                // Logika untuk Absen Masuk
-                if (item.jenis === 'Absen Masuk') {
-                    const waktuMasuk = new Date(item.waktu);
-                    if (waktuMasuk.getHours() >= batasTelatPagi) {
-                        aksi = `<span style="color:red; font-weight:bold;">TERLAMBAT</span>`;
-                    }
-                } 
-                // Logika untuk Izin
-                else if (item.jenis === 'Selesai Izin') {
-                    const mulaiIzinItem = aktivitas.find(a => 
-                        a.nama === item.nama && 
-                        a.jenis === 'Mulai Izin' && 
-                        a.keterangan === item.keterangan &&
-                        a.waktu && 
-                        new Date(a.waktu).toDateString() === new Date(item.waktu).toDateString()
-                    );
-                    
-                    if (mulaiIzinItem) {
-                        jamMulai = new Date(mulaiIzinItem.waktu).toLocaleString('id-ID');
-                    }
-                    jamSelesai = new Date(item.waktu).toLocaleString('id-ID');
-                    durasiKeterangan = item.durasi;
-
-                    const parts = item.durasi.match(/(\d+)m (\d+)s/);
-                    if (parts) {
-                        const totalMenit = parseInt(parts[1], 10);
-                        if (totalMenit > batasIzinMenit) {
-                            aksi = `<span style="color:red; font-weight:bold;">MELEBIHI BATAS WAKTU</span>`;
-                        }
-                    }
-                } else if (item.jenis === 'Mulai Izin') {
-                    durasiKeterangan = item.keterangan;
-                }
-
+            users.forEach(user => {
                 html += `
                     <tr>
-                        <td>${item.nama}</td>
-                        <td>${item.jenis}</td>
-                        <td>${jamMulai}</td>
-                        <td>${jamSelesai}</td>
-                        <td>${durasiKeterangan}</td>
-                        <td>${aksi}</td>
+                        <td>${user.username}</td>
+                        <td>${user.password}</td>
+                        <td>${user.role}</td>
+                        <td>${user.shift}</td>
+                        <td>${user.divisi}</td>
+                        <td>${user.email}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editUser('${user.username}')">Edit</button>
+                            <button class="delete-btn" onclick="deleteUser('${user.username}')">Hapus</button>
+                        </td>
                     </tr>
                 `;
             });
-
-            html += `
-                    </tbody>
-                </table>
-            `;
-            hasilAktivitasDiv.innerHTML = html;
+            html += `</tbody>`;
+            table.innerHTML = html;
         }
+
+        function editUser(username) {
+            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const user = users.find(u => u.username === username);
+            if (!user) return;
+            
+            document.getElementById("editOriginalUsername").value = user.username;
+            document.getElementById("editRole").value = user.role;
+            document.getElementById("editShift").value = user.shift;
+            document.getElementById("editUsername").value = user.username;
+            document.getElementById("editPassword").value = user.password;
+            document.getElementById("editDivisi").value = user.divisi;
+            document.getElementById("editEmail").value = user.email;
+            openModal('modalEditUser');
+        }
+
+        function submitEditUser(e) {
+            e.preventDefault();
+            const originalUsername = document.getElementById("editOriginalUsername").value;
+            const newRole = document.getElementById("editRole").value;
+            const newShift = document.getElementById("editShift").value;
+            const newUsername = document.getElementById("editUsername").value;
+            const newPassword = document.getElementById("editPassword").value;
+            const newDivisi = document.getElementById("editDivisi").value;
+            const newEmail = document.getElementById("editEmail").value;
+            
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            let userIndex = users.findIndex(u => u.username === originalUsername);
+            
+            if (userIndex !== -1) {
+                users[userIndex].role = newRole;
+                users[userIndex].shift = newShift;
+                users[userIndex].username = newUsername;
+                users[userIndex].password = newPassword;
+                users[userIndex].divisi = newDivisi;
+                users[userIndex].email = newEmail;
+                localStorage.setItem("userAccounts", JSON.stringify(users));
+                document.getElementById("editMessage").style.color = "green";
+                document.getElementById("editMessage").textContent = "Data user berhasil diperbarui!";
+                renderDataUser();
+                setTimeout(() => closeModal('modalEditUser'), 1500);
+            } else {
+                document.getElementById("editMessage").style.color = "red";
+                document.getElementById("editMessage").textContent = "Gagal memperbarui data user.";
+            }
+        }
+
+        function deleteUser(username) {
+            if (!confirm(`Yakin ingin menghapus user "${username}"?`)) return;
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            users = users.filter(u => u.username !== username);
+            localStorage.setItem("userAccounts", JSON.stringify(users));
+            renderDataUser();
+        }
+
+        function renderRiwayatLogin() {
+            const table = document.getElementById("riwayatLoginTable");
+            const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
+            
+            let html = `
+                <thead>
+                    <tr>
+                        <th>Nama Karyawan</th>
+                        <th>Waktu Login</th>
+                        <th>Perangkat</th>
+                        <th>Alamat IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            logs.reverse().forEach(log => {
+                html += `
+                    <tr>
+                        <td>${log.nama}</td>
+                        <td>${log.waktu}</td>
+                        <td>${log.agent}</td>
+                        <td>${log.ip}</td>
+                    </tr>
+                `;
+            });
+            html += `</tbody>`;
+            table.innerHTML = html;
+        }
+
+        function refreshUserTable() {
+            renderDataUser();
+        }
+
+        function submitShift(shift) {
+            const currentUser = localStorage.getItem("currentUser");
+            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const userIndex = users.findIndex(u => u.username === currentUser);
+
+            if (userIndex !== -1) {
+                users[userIndex].shift = shift;
+                localStorage.setItem("userAccounts", JSON.stringify(users));
+
+                const activity = {
+                    nama: currentUser,
+                    waktu: new Date().toLocaleString('id-ID'),
+                    jenis: 'Absen Masuk',
+                    keterangan: `Shift ${shift}`
+                };
+                saveActivity(activity);
+                
+                alert(`Absen masuk untuk shift ${shift} berhasil!`);
+                closeModal('modalAbsenMasuk');
+                showPage('aktivitasBaru');
+            }
+        }
+
+        let timerStartTime = 0;
+        let timerReason = "";
+
+        function startIzinTimer(reason) {
+            timerReason = reason;
+            timerStartTime = Date.now();
+            localStorage.setItem('timerRunning', 'true');
+            localStorage.setItem('timerStartTime', timerStartTime);
+            localStorage.setItem('timerReason', reason);
+            closeModal('modalPilihanIzin');
+            showPage('aktivitasBaru');
+            renderTimer();
+        }
+        
+        function renderTimer() {
+            const timerContainer = document.getElementById("izinTimerContainer");
+            if (!timerContainer) return;
+
+            const now = Date.now();
+            const elapsedSeconds = Math.floor((now - timerStartTime) / 1000);
+            const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+            
+            let hours = Math.floor(elapsedSeconds / 3600);
+            let minutes = Math.floor((elapsedSeconds % 3600) / 60);
+            let seconds = elapsedSeconds % 60;
+
+            hours = hours.toString().padStart(2, '0');
+            minutes = minutes.toString().padStart(2, '0');
+            seconds = seconds.toString().padStart(2, '0');
+            
+            const isWarning = elapsedMinutes >= 15;
+            const timerWarningHtml = isWarning ? `<div id="timer-alert">Melebihi Batas Waktu Izin!</div>` : '';
+
+            const timerHtml = `
+                <div class="timer-wrapper">
+                    <div id="timer-container" class="${isWarning ? 'warning' : ''}">
+                        <p id="timer-info">Timer untuk Izin: <strong>${timerReason}</strong></p>
+                        <div id="timer-display">${hours}:${minutes}:${seconds}</div>
+                        ${timerWarningHtml}
+                    </div>
+                    <button class="timer-btn stop" onclick="stopIzinTimer()">Stop Timer</button>
+                </div>
+            `;
+            timerContainer.innerHTML = timerHtml;
+            timerContainer.classList.add('start-timer');
+        }
+
+        function checkRunningTimer() {
+            if (localStorage.getItem('timerRunning') === 'true') {
+                timerStartTime = parseInt(localStorage.getItem('timerStartTime'));
+                timerReason = localStorage.getItem('timerReason');
+                
+                renderTimer();
+                timerInterval = setInterval(() => {
+                    renderTimer();
+                }, 1000);
+            }
+        }
+
+        function stopIzinTimer() {
+            const elapsedSeconds = Math.floor((Date.now() - timerStartTime) / 1000);
+            const minutes = Math.floor(elapsedSeconds / 60);
+            
+            if (confirm(`Izin selesai. Durasi: ${minutes} menit. Simpan aktivitas ini?`)) {
+                const activity = {
+                    nama: localStorage.getItem("currentUser"),
+                    waktu: new Date().toLocaleString('id-ID'),
+                    jenis: 'Izin',
+                    keterangan: `${timerReason} selama ${minutes} menit`
+                };
+                saveActivity(activity);
+            }
+            
+            clearInterval(timerInterval);
+            timerInterval = null;
+            localStorage.removeItem('timerRunning');
+            localStorage.removeItem('timerStartTime');
+            localStorage.removeItem('timerReason');
+            
+            const timerContainer = document.getElementById("izinTimerContainer");
+            timerContainer.classList.remove('start-timer');
+            timerContainer.classList.add('stop-timer');
+            setTimeout(() => {
+                timerContainer.innerHTML = '';
+                timerContainer.classList.remove('stop-timer');
+            }, 500);
+        }
+
+        function confirmAbsenPulang() {
+            const currentUser = localStorage.getItem("currentUser");
+            const activity = {
+                nama: currentUser,
+                waktu: new Date().toLocaleString('id-ID'),
+                jenis: 'Absen Pulang',
+                keterangan: 'Selesai kerja'
+            };
+            saveActivity(activity);
+            
+            alert('Absen pulang berhasil! Sampai jumpa besok.');
+            closeModal('modalAbsenPulang');
+        }
+
+        function saveActivity(activity) {
+            const history = JSON.parse(localStorage.getItem("activityHistory") || "[]");
+            history.push(activity);
+            localStorage.setItem("activityHistory", JSON.stringify(history));
+        }
+
+        function renderHistoryAktivitas() {
+            const table = document.getElementById("historyAktivitasTable");
+            const history = JSON.parse(localStorage.getItem("activityHistory") || "[]");
+            
+            let html = `
+                <thead>
+                    <tr>
+                        <th>Nama Karyawan</th>
+                        <th>Waktu</th>
+                        <th>Jenis Aktivitas</th>
+                        <th>Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+            history.reverse().forEach(log => {
+                html += `
+                    <tr>
+                        <td>${log.nama}</td>
+                        <td>${log.waktu}</td>
+                        <td>${log.jenis}</td>
+                        <td>${log.keterangan}</td>
+                    </tr>
+                `;
+            });
+            html += `</tbody>`;
+            table.innerHTML = html;
+        }
+
     </script>
+
 </body>
 </html>
