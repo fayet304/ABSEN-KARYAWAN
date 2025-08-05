@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login & Menu Utama</title>
   <style>
+    /* --- (style tetap sama seperti yang kamu kirim sebelumnya, aku tambahkan styling modal di bawah) --- */
+
     html, body {
       height: 100%;
       margin: 0;
@@ -26,6 +28,8 @@
       border-radius: 20px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
     .logo {
@@ -94,8 +98,97 @@
       margin-top: 15px;
       color: #888;
       font-size: 13px;
+      user-select: none;
     }
 
+    .link-bawah span {
+      color: #0099ff;
+      cursor: pointer;
+      margin: 0 5px;
+      text-decoration: underline;
+    }
+
+    /* Modal styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 20px 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #3498db;
+      text-align: center;
+    }
+
+    .modal-content label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .modal-content button {
+      background-color: #3498db;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .modal-content button:hover {
+      background-color: #2980b9;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #aaa;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .close-btn:hover {
+      color: #000;
+    }
+
+    /* Menu styling (tetap sama, tidak diubah) */
     .menu-wrapper {
       display: flex;
       height: 100vh;
@@ -265,7 +358,10 @@
       </div>
       <button type="submit" class="login-btn">LOGIN</button>
     </form>
-    <div class="link-bawah">Lupa password? | Daftar akun</div>
+    <div class="link-bawah">
+      <span onclick="openModal('modalLupa')">Lupa password?</span> | 
+      <span onclick="openModal('modalDaftar')">Daftar akun</span>
+    </div>
   </div>
 
   <div class="menu-wrapper" id="menuPage" style="display:none;">
@@ -282,8 +378,68 @@
     <div class="content" id="contentArea"></div>
   </div>
 
+  <!-- Modal Daftar Akun -->
+  <div id="modalDaftar" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('modalDaftar')">&times;</span>
+      <h2>Daftar Akun Baru</h2>
+      <form id="formDaftar" onsubmit="handleDaftar(event)">
+        <label for="daftarUsername">Username:</label>
+        <input type="text" id="daftarUsername" required />
+        <label for="daftarPassword">Password:</label>
+        <input type="password" id="daftarPassword" required />
+        <button type="submit">Daftar</button>
+      </form>
+      <div id="daftarMessage" style="margin-top:10px; color:green;"></div>
+    </div>
+  </div>
+
+  <!-- Modal Lupa Password -->
+  <div id="modalLupa" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('modalLupa')">&times;</span>
+      <h2>Lupa Password</h2>
+      <form id="formLupa" onsubmit="handleLupa(event)">
+        <label for="lupaUsername">Masukkan Username:</label>
+        <input type="text" id="lupaUsername" required />
+        <button type="submit">Cari Password</button>
+      </form>
+      <div id="lupaMessage" style="margin-top:10px; color:red; font-weight:bold;"></div>
+    </div>
+  </div>
+
   <script>
-    // Cek status login saat halaman dimuat
+    // --- Modal controls ---
+    function openModal(id) {
+      document.getElementById(id).style.display = "flex";
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = "none";
+      // Reset messages and forms on close
+      if(id === "modalDaftar") {
+        document.getElementById("formDaftar").reset();
+        document.getElementById("daftarMessage").textContent = "";
+      }
+      if(id === "modalLupa") {
+        document.getElementById("formLupa").reset();
+        document.getElementById("lupaMessage").textContent = "";
+      }
+    }
+
+    // Tutup modal jika klik di luar konten modal
+    window.onclick = function(event) {
+      const modalDaftar = document.getElementById("modalDaftar");
+      const modalLupa = document.getElementById("modalLupa");
+      if (event.target === modalDaftar) {
+        closeModal('modalDaftar');
+      }
+      if (event.target === modalLupa) {
+        closeModal('modalLupa');
+      }
+    };
+
+    // --- Login & Register ---
     window.onload = function () {
       const isLoggedIn = localStorage.getItem("isLoggedIn");
       if (isLoggedIn === "true") {
@@ -298,19 +454,31 @@
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
-      if (username === "admin" && password === "12345") {
-        // Simpan status login
+      // Cek akun di localStorage
+      const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+
+      // Cek admin default jika tidak ada user terdaftar
+      const adminUser = {username: "admin", password: "12345"};
+
+      let userFound = users.find(u => u.username === username && u.password === password);
+      if (!userFound && username === adminUser.username && password === adminUser.password) {
+        userFound = adminUser;
+      }
+
+      if (userFound) {
         localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("currentUser", username);
 
         document.getElementById("loginPage").style.display = "none";
         document.getElementById("menuPage").style.display = "flex";
 
+        // Simpan log login
         const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
         const now = new Date();
         const waktu = now.toLocaleString('id-ID');
         const agent = /Mobi/i.test(navigator.userAgent) ? "Mobile Browser" : "Desktop Browser";
         const ip = "192.168.1." + Math.floor(Math.random() * 100 + 1);
-        logs.push({ nama: "Admin", waktu, agent, ip });
+        logs.push({ nama: username, waktu, agent, ip });
         localStorage.setItem("loginLogs", JSON.stringify(logs));
 
         showPage('aktivitasBaru');
@@ -319,6 +487,55 @@
       }
     }
 
+    function handleDaftar(e) {
+      e.preventDefault();
+      const username = document.getElementById("daftarUsername").value.trim();
+      const password = document.getElementById("daftarPassword").value;
+
+      if (!username || !password) {
+        alert("Username dan password wajib diisi!");
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+      if (users.find(u => u.username === username)) {
+        document.getElementById("daftarMessage").style.color = "red";
+        document.getElementById("daftarMessage").textContent = "Username sudah terdaftar.";
+        return;
+      }
+
+      users.push({username, password});
+      localStorage.setItem("userAccounts", JSON.stringify(users));
+
+      document.getElementById("daftarMessage").style.color = "green";
+      document.getElementById("daftarMessage").textContent = "Akun berhasil didaftarkan! Silakan login.";
+      document.getElementById("formDaftar").reset();
+
+      // Auto-close modal setelah 2 detik
+      setTimeout(() => closeModal('modalDaftar'), 2000);
+    }
+
+    function handleLupa(e) {
+      e.preventDefault();
+      const username = document.getElementById("lupaUsername").value.trim();
+
+      const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+      if (username === "admin") {
+        document.getElementById("lupaMessage").style.color = "green";
+        document.getElementById("lupaMessage").textContent = `Password admin adalah: 12345`;
+        return;
+      }
+      const user = users.find(u => u.username === username);
+      if (user) {
+        document.getElementById("lupaMessage").style.color = "green";
+        document.getElementById("lupaMessage").textContent = `Password untuk username "${username}" adalah: ${user.password}`;
+      } else {
+        document.getElementById("lupaMessage").style.color = "red";
+        document.getElementById("lupaMessage").textContent = "Username tidak ditemukan.";
+      }
+    }
+
+    // --- Menu utama dan konten lainnya tetap sama ---
     function showPage(page) {
       const content = document.getElementById('contentArea');
 
@@ -418,22 +635,17 @@
         </div>
       `;
 
-      // Hapus pesan selamat datang saat form muncul
       document.getElementById("welcomeMessageContainer").innerHTML = "";
     }
 
     function submitShift() {
       const shift = document.getElementById("shiftSelect").value;
-
-      // Tampilkan pesan selamat datang dengan animasi dan styling menarik
       const welcomeContainer = document.getElementById("welcomeMessageContainer");
       welcomeContainer.innerHTML = `
         <div id="welcomeMessage">
           Selamat datang! Anda telah absen masuk untuk shift <span style="color:#0099ff; font-weight:bold;">${shift}</span>.
         </div>
       `;
-
-      // Hapus form setelah submit
       document.getElementById("shiftFormContainer").innerHTML = "";
     }
 
@@ -496,6 +708,7 @@
 
     function logout() {
       localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("currentUser");
       location.reload();
     }
   </script>
