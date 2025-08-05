@@ -5,9 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login & Menu Utama</title>
   <style>
-    body {
+    /* Pastikan html & body penuh ukuran */
+    html, body {
+      height: 100%;
       margin: 0;
+      padding: 0;
+      width: 100%;
       font-family: Arial, sans-serif;
+    }
+
+    body {
       background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/World_map_blank_without_borders.svg/1920px-World_map_blank_without_borders.svg.png') no-repeat center center fixed;
       background-size: cover;
     }
@@ -48,7 +55,6 @@
       border-radius: 8px;
       font-size: 14px;
       box-sizing: border-box;
-      resize: vertical;
     }
 
     .login-btn {
@@ -73,8 +79,8 @@
       color: white;
       border: none;
       border-radius: 10px;
-      padding: 12px 20px;
-      font-size: 16px;
+      padding: 10px 20px;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
       transition: background 0.3s;
@@ -91,9 +97,13 @@
       font-size: 13px;
     }
 
+    /* Menu Wrapper full height dan lebar */
     .menu-wrapper {
       display: flex;
       height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background-color: #ecf0f1;
     }
 
     .sidebar {
@@ -102,6 +112,8 @@
       color: white;
       padding: 20px;
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
     }
 
     .sidebar h2 {
@@ -109,50 +121,41 @@
       margin-bottom: 20px;
       border-bottom: 1px solid #777;
       padding-bottom: 10px;
+      user-select: none;
     }
 
     .sidebar ul {
       list-style: none;
       padding: 0;
+      margin: 0;
+      flex-grow: 1;
     }
 
     .sidebar ul li {
       margin: 15px 0;
       cursor: pointer;
       font-size: 15px;
+      user-select: none;
+      transition: color 0.3s;
     }
 
     .sidebar ul li:hover {
       text-decoration: underline;
+      color: #00aaff;
     }
 
     .content {
-      flex: 1;
-      padding: 40px;
-      background-color: #ecf0f1;
+      flex-grow: 1;
+      padding: 30px;
       overflow-y: auto;
-      position: relative;
-      max-width: 900px;
+      box-sizing: border-box;
+      height: 100vh;
+      background-color: #ecf0f1;
     }
 
     .content h1 {
       font-size: 22px;
       margin-bottom: 30px;
-    }
-
-    .button-group button {
-      margin: 10px;
-      padding: 12px 18px;
-      font-size: 14px;
-      border: none;
-      border-radius: 8px;
-      background-color: #3498db;
-      color: white;
-      cursor: pointer;
-    }
-
-    .button-group button:hover {
-      background-color: #2980b9;
     }
 
     table {
@@ -161,7 +164,7 @@
       background: white;
       border-radius: 10px;
       overflow: hidden;
-      margin-top: 15px;
+      margin-top: 20px;
     }
 
     th, td {
@@ -175,16 +178,30 @@
       color: white;
     }
 
-    /* Form pencarian sekarang non-floating */
-    .floating-search {
+    .floating-box {
       background: white;
+      border: 1px solid #ccc;
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      margin-top: 30px;
-      max-width: 480px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
 
+    .button-group button {
+      margin: 10px;
+      padding: 12px 18px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .button-group button:hover {
+      background-color: #2980b9;
+    }
   </style>
 </head>
 <body>
@@ -215,15 +232,7 @@
         <li onclick="showPage('historyAktivitas')">History Aktivitas Karyawan</li>
       </ul>
     </div>
-    <div class="content" id="contentArea">
-      <!-- Default konten: Aktivitas Baru -->
-      <h1>Aktivitas Terbaru</h1>
-      <div class="button-group">
-        <button>Absen Masuk</button>
-        <button>Izin</button>
-        <button>Absen Pulang</button>
-      </div>
-    </div>
+    <div class="content" id="contentArea"></div>
   </div>
 
   <script>
@@ -240,14 +249,11 @@
         const now = new Date();
         const waktu = now.toLocaleString('id-ID');
         const agent = /Mobi/i.test(navigator.userAgent) ? "Mobile Browser" : "Desktop Browser";
-        const ip = "192.168.1." + Math.floor(Math.random() * 100 + 1); // IP dummy
-        logs.push({
-          nama: "Admin",
-          waktu,
-          agent,
-          ip
-        });
+        const ip = "192.168.1." + Math.floor(Math.random() * 100 + 1);
+        logs.push({ nama: "Admin", waktu, agent, ip });
         localStorage.setItem("loginLogs", JSON.stringify(logs));
+
+        showPage('aktivitasBaru'); // Tampilkan default page
       } else {
         alert("Login gagal! Username atau password salah.");
       }
@@ -262,43 +268,40 @@
           <form id="formTambahPemain" onsubmit="submitPemain(event)">
             <div class="form-group">
               <label for="namaLengkap">Nama Lengkap</label>
-              <input type="text" id="namaLengkap" name="namaLengkap" required />
+              <input type="text" id="namaLengkap" required />
             </div>
             <div class="form-group">
               <label for="emailPemain">Email</label>
-              <input type="email" id="emailPemain" name="emailPemain" required />
+              <input type="email" id="emailPemain" required />
             </div>
             <div class="form-group">
               <label for="keteranganPemain">Keterangan</label>
-              <textarea id="keteranganPemain" name="keteranganPemain" rows="4"></textarea>
+              <textarea id="keteranganPemain" rows="3"></textarea>
             </div>
             <button type="submit" class="btn-blue">Tambah Karyawan Baru</button>
           </form>
+          <div id="formMessage" style="margin-top:10px; color:green;"></div>
 
-          <!-- Form pencarian di bawah form tambah -->
-          <div class="floating-search" id="floatingSearch">
-            <h2>Pencarian Data Karyawan</h2>
+          <div class="floating-box">
+            <h3>Pencarian Data Karyawan</h3>
             <div class="form-group">
-              <label for="searchNama">Nama Lengkap</label>
-              <input type="text" id="searchNama" placeholder="Cari berdasarkan Nama Lengkap" />
+              <label>Nama Lengkap</label>
+              <input type="text" id="searchNama" />
             </div>
             <div class="form-group">
-              <label for="searchKeterangan">Keterangan</label>
-              <input type="text" id="searchKeterangan" placeholder="Cari berdasarkan Keterangan" />
+              <label>Keterangan</label>
+              <input type="text" id="searchKeterangan" />
             </div>
-            <button type="button" onclick="cariKaryawan()">Cari</button>
+            <button onclick="searchKaryawan()" class="btn-blue">Cari</button>
+            <div id="hasilCari"></div>
           </div>
 
-          <!-- Tempat menampilkan hasil pencarian -->
-          <div id="searchResults"></div>
-
-          <!-- Tempat menampilkan semua data karyawan -->
-          <h2 style="margin-top:40px;">Daftar Semua Karyawan</h2>
-          <div id="allKaryawan"></div>
+          <h3>Data Karyawan Terdaftar</h3>
+          <div id="dataTabel"></div>
         `;
 
-        // Setelah konten berubah, langsung tampilkan semua data karyawan
         tampilkanSemuaKaryawan();
+
       } else if (page === 'riwayatLogin') {
         const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
         let rows = logs.map(log => `
@@ -326,6 +329,7 @@
             </tbody>
           </table>
         `;
+
       } else if (page === 'aktivitasBaru') {
         content.innerHTML = `
           <h1>Aktivitas Terbaru</h1>
@@ -335,6 +339,7 @@
             <button>Absen Pulang</button>
           </div>
         `;
+
       } else if (page === 'historyAktivitas') {
         content.innerHTML = `<h1>History Aktivitas</h1><p>Fitur belum tersedia.</p>`;
       }
@@ -347,117 +352,54 @@
       const keterangan = document.getElementById('keteranganPemain').value.trim();
 
       if (!nama || !email) {
-        alert('Nama lengkap dan email harus diisi.');
+        alert("Nama dan Email wajib diisi!");
         return;
       }
 
-      // Ambil data karyawan dari localStorage
-      const dataKaryawan = JSON.parse(localStorage.getItem('dataKaryawan') || '[]');
+      const data = JSON.parse(localStorage.getItem("dataKaryawan") || "[]");
+      data.push({ nama, email, keterangan });
+      localStorage.setItem("dataKaryawan", JSON.stringify(data));
 
-      // Tambah data baru
-      dataKaryawan.push({
-        nama,
-        email,
-        keterangan
-      });
-
-      // Simpan kembali ke localStorage
-      localStorage.setItem('dataKaryawan', JSON.stringify(dataKaryawan));
-
-      // Tampilkan pesan berhasil
-      const msg = document.getElementById('formMessage');
-      if (msg) {
-        msg.textContent = `Karyawan "${nama}" berhasil ditambahkan!`;
-      }
-
-      // Reset form
+      document.getElementById('formMessage').textContent = `Karyawan "${nama}" berhasil ditambahkan.`;
       document.getElementById('formTambahPemain').reset();
-
-      // Perbarui daftar semua karyawan
       tampilkanSemuaKaryawan();
     }
 
-    function cariKaryawan() {
-      const namaCari = document.getElementById('searchNama').value.trim().toLowerCase();
-      const ketCari = document.getElementById('searchKeterangan').value.trim().toLowerCase();
-
-      if (!namaCari && !ketCari) {
-        alert('Isi minimal satu kolom pencarian.');
+    function tampilkanSemuaKaryawan() {
+      const data = JSON.parse(localStorage.getItem("dataKaryawan") || "[]");
+      if (data.length === 0) {
+        document.getElementById("dataTabel").innerHTML = "<p>Tidak ada data karyawan terdaftar.</p>";
         return;
       }
-
-      const dataKaryawan = JSON.parse(localStorage.getItem('dataKaryawan') || '[]');
-
-      // Filter data sesuai input pencarian
-      const hasil = dataKaryawan.filter(item => {
-        const namaMatch = namaCari ? item.nama.toLowerCase().includes(namaCari) : true;
-        const ketMatch = ketCari ? item.keterangan.toLowerCase().includes(ketCari) : true;
-        return namaMatch && ketMatch;
+      let html = "<table><thead><tr><th>Nama</th><th>Email</th><th>Keterangan</th></tr></thead><tbody>";
+      data.forEach(d => {
+        html += `<tr><td>${d.nama}</td><td>${d.email}</td><td>${d.keterangan}</td></tr>`;
       });
-
-      let hasilHTML = '';
-
-      if (hasil.length === 0) {
-        hasilHTML = `<p>Tidak ditemukan data karyawan yang sesuai.</p>`;
-      } else {
-        hasilHTML = `
-          <table>
-            <thead>
-              <tr>
-                <th>Nama Lengkap</th>
-                <th>Email</th>
-                <th>Keterangan</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${hasil.map(item => `
-                <tr>
-                  <td>${item.nama}</td>
-                  <td>${item.email}</td>
-                  <td>${item.keterangan}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        `;
-      }
-
-      document.getElementById('searchResults').innerHTML = `
-        <h3>Hasil Pencarian</h3>
-        ${hasilHTML}
-      `;
+      html += "</tbody></table>";
+      document.getElementById("dataTabel").innerHTML = html;
     }
 
-    function tampilkanSemuaKaryawan() {
-      const dataKaryawan = JSON.parse(localStorage.getItem('dataKaryawan') || '[]');
+    function searchKaryawan() {
+      const namaCari = document.getElementById("searchNama").value.toLowerCase();
+      const ketCari = document.getElementById("searchKeterangan").value.toLowerCase();
+      const data = JSON.parse(localStorage.getItem("dataKaryawan") || "[]");
 
-      if (dataKaryawan.length === 0) {
-        document.getElementById('allKaryawan').innerHTML = '<p>Belum ada data karyawan yang didaftarkan.</p>';
+      const hasil = data.filter(d =>
+        d.nama.toLowerCase().includes(namaCari) &&
+        d.keterangan.toLowerCase().includes(ketCari)
+      );
+
+      if (hasil.length === 0) {
+        document.getElementById("hasilCari").innerHTML = "<p style='color:red;'>Data tidak ditemukan.</p>";
         return;
       }
 
-      let semuaHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>Nama Lengkap</th>
-              <th>Email</th>
-              <th>Keterangan</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${dataKaryawan.map(item => `
-              <tr>
-                <td>${item.nama}</td>
-                <td>${item.email}</td>
-                <td>${item.keterangan}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      `;
-
-      document.getElementById('allKaryawan').innerHTML = semuaHTML;
+      let html = "<table><thead><tr><th>Nama</th><th>Email</th><th>Keterangan</th></tr></thead><tbody>";
+      hasil.forEach(d => {
+        html += `<tr><td>${d.nama}</td><td>${d.email}</td><td>${d.keterangan}</td></tr>`;
+      });
+      html += "</tbody></table>";
+      document.getElementById("hasilCari").innerHTML = html;
     }
   </script>
 
