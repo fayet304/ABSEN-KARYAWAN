@@ -447,6 +447,15 @@
             </select>
         </div>
         <div class="form-group">
+            <label for="editShift">Shift:</label>
+            <select id="editShift">
+                <option value="Pagi">Pagi</option>
+                <option value="Siang">Siang</option>
+                <option value="Malam">Malam</option>
+                <option value="">-</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label for="editUsername">Username:</label>
             <input type="text" id="editUsername" required />
         </div>
@@ -538,7 +547,7 @@
       const password = document.getElementById('password').value;
 
       let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-      const adminUser = {username: "admin", password: "12345", role: "Admin", divisi: "Admin", email: "admin@example.com"};
+      const adminUser = {username: "admin", password: "12345", role: "Admin", divisi: "Admin", email: "admin@example.com", shift: ""};
       
       // Jika belum ada user admin, tambahkan ke daftar
       if (!users.find(u => u.username === "admin")) {
@@ -590,7 +599,7 @@
       }
 
       // Default role untuk pendaftaran baru adalah "User"
-      users.push({username, password, role: "User", divisi: "", email: ""});
+      users.push({username, password, role: "User", divisi: "", email: "", shift: ""});
       localStorage.setItem("userAccounts", JSON.stringify(users));
 
       document.getElementById("daftarMessage").style.color = "green";
@@ -651,6 +660,15 @@
                 <select id="roleUser">
                     <option value="User">User</option>
                     <option value="Admin">Admin</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="shiftUser">Shift:</label>
+                <select id="shiftUser">
+                    <option value="Pagi">Pagi</option>
+                    <option value="Siang">Siang</option>
+                    <option value="Malam">Malam</option>
+                    <option value="">-</option>
                 </select>
             </div>
             <div class="form-group">
@@ -785,6 +803,7 @@
     function submitUser(e) {
       e.preventDefault();
       const role = document.getElementById('roleUser').value;
+      const shift = document.getElementById('shiftUser').value;
       const username = document.getElementById('namaUser').value.trim();
       const password = document.getElementById('passwordUser').value.trim();
       const divisi = document.getElementById('divisiUser').value.trim();
@@ -802,7 +821,7 @@
         return;
       }
       
-      users.push({username, password, role, divisi, email});
+      users.push({username, password, role, divisi, email, shift});
       localStorage.setItem("userAccounts", JSON.stringify(users));
 
       document.getElementById('formMessage').style.color = "green";
@@ -818,10 +837,11 @@
         document.getElementById("dataTabel").innerHTML = "<p>Tidak ada data user terdaftar.</p>";
         return;
       }
-      let html = "<table><thead><tr><th>Role</th><th>Username</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
+      let html = "<table><thead><tr><th>Role</th><th>Shift</th><th>Username</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
       users.forEach((u, index) => {
         html += `<tr>
             <td>${u.role || 'User'}</td>
+            <td>${u.shift || '-'}</td>
             <td>${u.username}</td>
             <td>${u.divisi || '-'}</td>
             <td>${u.email || '-'}</td>
@@ -842,6 +862,7 @@
 
         document.getElementById('editOriginalUsername').value = user.username;
         document.getElementById('editRole').value = user.role;
+        document.getElementById('editShift').value = user.shift;
         document.getElementById('editUsername').value = user.username;
         document.getElementById('editPassword').value = user.password;
         document.getElementById('editDivisi').value = user.divisi;
@@ -855,6 +876,7 @@
         e.preventDefault();
         const originalUsername = document.getElementById('editOriginalUsername').value;
         const newRole = document.getElementById('editRole').value;
+        const newShift = document.getElementById('editShift').value;
         const newUsername = document.getElementById('editUsername').value.trim();
         const newPassword = document.getElementById('editPassword').value.trim();
         const newDivisi = document.getElementById('editDivisi').value.trim();
@@ -870,6 +892,7 @@
 
         if (userIndex !== -1) {
             users[userIndex].role = newRole;
+            users[userIndex].shift = newShift;
             users[userIndex].username = newUsername;
             users[userIndex].password = newPassword;
             users[userIndex].divisi = newDivisi;
@@ -915,12 +938,13 @@
         return;
       }
 
-      let html = "<table><thead><tr><th>Role</th><th>Username</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
+      let html = "<table><thead><tr><th>Role</th><th>Shift</th><th>Username</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
       hasil.forEach((u, index) => {
         // Asumsi hasil pencarian tidak mengubah index asli, jadi perlu dicari lagi
         const originalIndex = users.findIndex(user => user.username === u.username);
         html += `<tr>
             <td>${u.role || 'User'}</td>
+            <td>${u.shift || '-'}</td>
             <td>${u.username}</td>
             <td>${u.divisi || '-'}</td>
             <td>${u.email || '-'}</td>
