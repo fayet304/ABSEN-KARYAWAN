@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login & Menu Utama</title>
   <style>
-    /* --- (style tetap sama seperti yang kamu kirim sebelumnya, aku tambahkan styling modal di bawah) --- */
-
     html, body {
       height: 100%;
       margin: 0;
@@ -51,7 +49,8 @@
     }
 
     .form-group input,
-    .form-group textarea {
+    .form-group textarea,
+    .form-group select {
       width: 100%;
       padding: 10px;
       border: 1px solid #ccc;
@@ -147,7 +146,7 @@
       margin-bottom: 8px;
     }
 
-    .modal-content input {
+    .modal-content input, .modal-content select {
       width: 100%;
       padding: 10px;
       margin-bottom: 15px;
@@ -188,7 +187,7 @@
       color: #000;
     }
 
-    /* Menu styling (tetap sama, tidak diubah) */
+    /* Menu styling */
     .menu-wrapper {
       display: flex;
       height: 100vh;
@@ -247,6 +246,13 @@
     .content h1 {
       font-size: 22px;
       margin-bottom: 30px;
+    }
+    
+    .content-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
     }
 
     table {
@@ -351,6 +357,16 @@
       padding: 5px 10px;
       border-radius: 5px;
       cursor: pointer;
+      margin-right: 5px;
+    }
+    
+    .delete-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -377,7 +393,7 @@
     <div class="sidebar">
       <h2>🔹 MENU UTAMA</h2>
       <ul>
-        <li onclick="showPage('tambahPemain')">Data User</li>
+        <li id="menuDataUser" onclick="showPage('tambahPemain')">Data User</li>
         <li onclick="showPage('riwayatLogin')">Riwayat Login Karyawan</li>
         <li onclick="showPage('aktivitasBaru')">Aktivitas Baru Karyawan</li>
         <li onclick="showPage('historyAktivitas')">History Aktivitas Karyawan</li>
@@ -423,6 +439,13 @@
       <h2>Edit Data User</h2>
       <form id="formEditUser" onsubmit="submitEditUser(event)">
         <input type="hidden" id="editOriginalUsername" />
+        <div class="form-group">
+            <label for="editRole">Role:</label>
+            <select id="editRole">
+                <option value="User">User</option>
+                <option value="Admin">Admin</option>
+            </select>
+        </div>
         <div class="form-group">
             <label for="editUsername">Username:</label>
             <input type="text" id="editUsername" required />
@@ -491,20 +514,33 @@
       if (isLoggedIn === "true") {
         document.getElementById("loginPage").style.display = "none";
         document.getElementById("menuPage").style.display = "flex";
+        checkUserRoleAndDisplayMenu();
         showPage("aktivitasBaru");
       }
     };
+
+    function checkUserRoleAndDisplayMenu() {
+        const currentUser = localStorage.getItem("currentUser");
+        const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+        const user = users.find(u => u.username === currentUser);
+        
+        // Cek jika user adalah admin, tampilkan menu "Data User"
+        if (user && user.role === "Admin") {
+            document.getElementById("menuDataUser").style.display = "list-item";
+        } else {
+            document.getElementById("menuDataUser").style.display = "none";
+        }
+    }
 
     function handleLogin(e) {
       e.preventDefault();
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
-      // Cek akun di localStorage
-      const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-
-      // Cek admin default jika tidak ada user terdaftar
-      const adminUser = {username: "admin", password: "12345", divisi: "Admin", email: "admin@example.com"};
+      let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+      const adminUser = {username: "admin", password: "12345", role: "Admin", divisi: "Admin", email: "admin@example.com"};
+      
+      // Jika belum ada user admin, tambahkan ke daftar
       if (!users.find(u => u.username === "admin")) {
         users.unshift(adminUser);
         localStorage.setItem("userAccounts", JSON.stringify(users));
@@ -518,6 +554,8 @@
 
         document.getElementById("loginPage").style.display = "none";
         document.getElementById("menuPage").style.display = "flex";
+
+        checkUserRoleAndDisplayMenu();
 
         // Simpan log login
         const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
@@ -551,7 +589,8 @@
         return;
       }
 
-      users.push({username, password, divisi: "", email: ""}); // Simpan divisi dan email kosong
+      // Default role untuk pendaftaran baru adalah "User"
+      users.push({username, password, role: "User", divisi: "", email: ""});
       localStorage.setItem("userAccounts", JSON.stringify(users));
 
       document.getElementById("daftarMessage").style.color = "green";
@@ -580,6 +619,9 @@
     // --- Menu utama dan konten lainnya tetap sama ---
     function showPage(page) {
       const content = document.getElementById('contentArea');
+      const currentUser = localStorage.getItem("currentUser");
+      const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+      const user = users.find(u => u.username === currentUser);
 
       if (page === 'aktivitasBaru') {
         content.innerHTML = `
@@ -595,9 +637,22 @@
       }
 
       if (page === 'tambahPemain') {
+          // Periksa role user yang sedang login, hanya admin yang bisa akses
+          if (!user || user.role !== "Admin") {
+              content.innerHTML = `<h1>Akses Ditolak</h1><p>Maaf, Anda tidak memiliki izin untuk mengakses halaman ini.</p>`;
+              return;
+          }
+
         content.innerHTML = `
           <h1>Tambah User Baru</h1>
           <form id="formTambahUser" onsubmit="submitUser(event)">
+            <div class="form-group">
+                <label for="roleUser">Role:</label>
+                <select id="roleUser">
+                    <option value="User">User</option>
+                    <option value="Admin">Admin</option>
+                </select>
+            </div>
             <div class="form-group">
               <label for="namaUser">Username</label>
               <input type="text" id="namaUser" required />
@@ -634,8 +689,9 @@
 
       if (page === 'riwayatLogin') {
         const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
-        let rows = logs.map(log => `
+        let rows = logs.map((log, index) => `
           <tr>
+            <td><input type="checkbox" name="logCheckbox" value="${index}"></td>
             <td>${log.nama}</td>
             <td>${log.waktu}</td>
             <td>${log.agent}</td>
@@ -644,10 +700,14 @@
         `).join('');
 
         content.innerHTML = `
-          <h1>Riwayat Login Karyawan</h1>
+          <div class="content-header">
+            <h1>Riwayat Login Karyawan</h1>
+            <button class="delete-btn" onclick="deleteSelectedLogs()">Hapus yang Dipilih</button>
+          </div>
           <table>
             <thead>
               <tr>
+                <th><input type="checkbox" id="checkAllLogs"></th>
                 <th>Nama Karyawan</th>
                 <th>Tanggal & Waktu</th>
                 <th>Aplikasi Web Login</th>
@@ -657,6 +717,14 @@
             <tbody>${rows}</tbody>
           </table>
         `;
+        // Menambahkan fungsionalitas "pilih semua"
+        const checkAll = document.getElementById('checkAllLogs');
+        if(checkAll) {
+          checkAll.addEventListener('change', (e) => {
+            const checkboxes = document.getElementsByName('logCheckbox');
+            checkboxes.forEach(cb => cb.checked = e.target.checked);
+          });
+        }
       }
 
       // Kode untuk "History Aktivitas Karyawan"
@@ -716,6 +784,7 @@
     // Fungsi yang diubah untuk menambahkan user baru
     function submitUser(e) {
       e.preventDefault();
+      const role = document.getElementById('roleUser').value;
       const username = document.getElementById('namaUser').value.trim();
       const password = document.getElementById('passwordUser').value.trim();
       const divisi = document.getElementById('divisiUser').value.trim();
@@ -733,7 +802,7 @@
         return;
       }
       
-      users.push({username, password, divisi, email});
+      users.push({username, password, role, divisi, email});
       localStorage.setItem("userAccounts", JSON.stringify(users));
 
       document.getElementById('formMessage').style.color = "green";
@@ -742,21 +811,24 @@
       tampilkanSemuaUser();
     }
 
-    // Fungsi yang diubah untuk menampilkan semua user dengan tombol edit
+    // Fungsi yang diubah untuk menampilkan semua user dengan tombol edit & hapus
     function tampilkanSemuaUser() {
       const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
       if (users.length === 0) {
         document.getElementById("dataTabel").innerHTML = "<p>Tidak ada data user terdaftar.</p>";
         return;
       }
-      let html = "<table><thead><tr><th>Username</th><th>Password</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
+      let html = "<table><thead><tr><th>Role</th><th>Username</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
       users.forEach((u, index) => {
         html += `<tr>
+            <td>${u.role || 'User'}</td>
             <td>${u.username}</td>
-            <td>${u.password}</td>
             <td>${u.divisi || '-'}</td>
             <td>${u.email || '-'}</td>
-            <td><button class="edit-btn" onclick="openEditModal(${index})">Edit</button></td>
+            <td>
+                <button class="edit-btn" onclick="openEditModal(${index})">Edit</button>
+                <button class="delete-btn" onclick="deleteUser(${index})">Hapus</button>
+            </td>
         </tr>`;
       });
       html += "</tbody></table>";
@@ -769,6 +841,7 @@
         const user = users[index];
 
         document.getElementById('editOriginalUsername').value = user.username;
+        document.getElementById('editRole').value = user.role;
         document.getElementById('editUsername').value = user.username;
         document.getElementById('editPassword').value = user.password;
         document.getElementById('editDivisi').value = user.divisi;
@@ -781,6 +854,7 @@
     function submitEditUser(e) {
         e.preventDefault();
         const originalUsername = document.getElementById('editOriginalUsername').value;
+        const newRole = document.getElementById('editRole').value;
         const newUsername = document.getElementById('editUsername').value.trim();
         const newPassword = document.getElementById('editPassword').value.trim();
         const newDivisi = document.getElementById('editDivisi').value.trim();
@@ -795,6 +869,7 @@
         const userIndex = users.findIndex(u => u.username === originalUsername);
 
         if (userIndex !== -1) {
+            users[userIndex].role = newRole;
             users[userIndex].username = newUsername;
             users[userIndex].password = newPassword;
             users[userIndex].divisi = newDivisi;
@@ -808,6 +883,21 @@
         }
 
         setTimeout(() => closeModal('modalEditUser'), 2000);
+    }
+    
+    // Fungsi untuk menghapus user
+    function deleteUser(index) {
+        if (confirm("Apakah Anda yakin ingin menghapus user ini?")) {
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            // Cek apakah user yang akan dihapus adalah admin utama
+            if (users[index].username === "admin") {
+                alert("Anda tidak bisa menghapus akun admin utama.");
+                return;
+            }
+            users.splice(index, 1);
+            localStorage.setItem("userAccounts", JSON.stringify(users));
+            tampilkanSemuaUser();
+        }
     }
 
 
@@ -825,20 +915,51 @@
         return;
       }
 
-      let html = "<table><thead><tr><th>Username</th><th>Password</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
+      let html = "<table><thead><tr><th>Role</th><th>Username</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
       hasil.forEach((u, index) => {
         // Asumsi hasil pencarian tidak mengubah index asli, jadi perlu dicari lagi
         const originalIndex = users.findIndex(user => user.username === u.username);
         html += `<tr>
+            <td>${u.role || 'User'}</td>
             <td>${u.username}</td>
-            <td>${u.password}</td>
             <td>${u.divisi || '-'}</td>
             <td>${u.email || '-'}</td>
-            <td><button class="edit-btn" onclick="openEditModal(${originalIndex})">Edit</button></td>
+            <td>
+                <button class="edit-btn" onclick="openEditModal(${originalIndex})">Edit</button>
+                <button class="delete-btn" onclick="deleteUser(${originalIndex})">Hapus</button>
+            </td>
         </tr>`;
       });
       html += "</tbody></table>";
       document.getElementById("hasilCari").innerHTML = html;
+    }
+
+    // Fungsi untuk menghapus log yang dipilih
+    function deleteSelectedLogs() {
+        if (!confirm("Apakah Anda yakin ingin menghapus riwayat login yang dipilih?")) {
+            return;
+        }
+
+        let logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
+        const checkboxes = document.getElementsByName('logCheckbox');
+        const indicesToDelete = [];
+
+        // Kumpulkan index dari checkbox yang dicentang
+        checkboxes.forEach((cb, index) => {
+            if (cb.checked) {
+                indicesToDelete.push(index);
+            }
+        });
+
+        // Hapus log dari yang paling akhir untuk menghindari perubahan index
+        for (let i = indicesToDelete.length - 1; i >= 0; i--) {
+            logs.splice(indicesToDelete[i], 1);
+        }
+
+        localStorage.setItem("loginLogs", JSON.stringify(logs));
+        
+        // Muat ulang halaman riwayat login untuk menampilkan data terbaru
+        showPage('riwayatLogin');
     }
 
     function searchAktivitas() {
