@@ -2,587 +2,88 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>Login Admin & User</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SELAMAT DATANG</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
-    .container { display: flex; justify-content: center; gap: 30px; margin-top: 50px; }
-    .box { width: 320px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
-    input, select { width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; border: 1px solid #ccc; }
-    button { padding: 10px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 5px; }
-    button:disabled { background: #999; cursor: not-allowed; }
-    header { background: #2c3e50; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-    .menu { display: flex; gap: 10px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-    th { background: #ecf0f1; }
-    tr:nth-child(even) { background: #f9f9f9; }
-    #main, #absensi-page { display: none; padding: 20px; }
-    .hidden { display: none; }
-    #izin-form { display:none; margin-top:20px; padding:15px; background:#fff; border-radius:8px; box-shadow:0 0 5px #bbb; color: black; }
-    .status-tepat { background: #2ecc71; color: white; }
-    .status-terlambat { background: #e74c3c; color: white; }
-    .status-izin { background: #f1c40f; }
-    #riwayat-izin-aktif { margin-bottom: 10px; font-weight: bold; }
-    #user-izin-aktif-list { list-style-type: none; padding-left: 0; margin-top: 10px; }
-    #user-izin-aktif-list li { margin-bottom: 5px; }
-    .btn-edit { background: #27ae60; }
-    .btn-hapus { background: #c0392b; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/World_map_blank_without_borders.svg/1920px-World_map_blank_without_borders.svg.png') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .login-container {
+      width: 360px;
+      margin: 80px auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+      color: #00aaff;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .form-group input::placeholder {
+      text-transform: uppercase;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: orange;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .login-btn:hover {
+      background-color: darkorange;
+    }
+
+    .link-bawah {
+      margin-top: 15px;
+      color: #888;
+      font-size: 13px;
+    }
   </style>
 </head>
 <body>
-
-<!-- LOGIN PILIHAN -->
-<div class="container" id="login-page">
-  <!-- ADMIN LOGIN -->
-  <div class="box">
-    <h2>Login Admin</h2>
-    <input type="text" id="admin-username" placeholder="User Name" />
-    <input type="password" id="admin-password" placeholder="Password" />
-    <button onclick="loginAdmin()">Login Admin</button>
-    <p id="admin-error" style="color:red;"></p>
+  <div class="login-container">
+    <div class="logo">SELAMAT <span style="color:#0099ff">DATANG</span></div>
+    <form>
+      <div class="form-group">
+        <input type="text" placeholder="USERNAME" required />
+      </div>
+      <div class="form-group">
+        <input type="password" placeholder="PASSWORD" required />
+      </div>
+      <button type="submit" class="login-btn">LOGIN</button>
+    </form>
+    <div class="link-bawah">Lupa password? | Daftar akun</div>
   </div>
-
-  <!-- USER LOGIN -->
-  <div class="box">
-    <h2>Login User</h2>
-    <select id="user-nama"></select>
-    <select id="user-divisi">
-      <option>Marketing</option>
-      <option>Operator Kasir</option>
-    </select>
-    <select id="user-shift">
-      <option value="Pagi">Pagi</option>
-      <option value="Siang">Siang</option>
-      <option value="Malam">Malam</option>
-    </select>
-    <button onclick="loginUser()">Absen & Masuk</button>
-  </div>
-</div>
-
-<!-- DASHBOARD ADMIN -->
-<div id="main">
-  <header>
-    <h2>Dashboard Admin</h2>
-    <div class="menu">
-      <button onclick="showTab('riwayat')">Riwayat Lengkap</button>
-      <button onclick="showTab('anggota')">Tambah/Edit Anggota</button>
-      <button onclick="logoutAdmin()">Logout Admin</button>
-    </div>
-  </header>
-
-  <!-- TAB RIWAYAT -->
-  <div id="tab-riwayat" class="hidden">
-    <div id="riwayat-izin-aktif"></div>
-    <label for="filter-user">Filter User:</label>
-    <select id="filter-user" onchange="filterRiwayat()"></select>
-    <button onclick="filterRiwayat()">Cari</button>
-    <table id="riwayat-table">
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>Nama</th>
-          <th>Divisi</th>
-          <th>Kegiatan</th>
-          <th>Alasan/Durasi</th>
-          <th>Tanggal</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <!-- TAB ANGGOTA -->
-  <div id="tab-anggota" class="hidden">
-    <h3>Tambah / Edit Anggota</h3>
-    <input type="hidden" id="edit-index" value="-1" />
-    <input type="text" id="anggota-nama" placeholder="Nama Lengkap" />
-    <input type="email" id="anggota-email" placeholder="Email" />
-    <select id="anggota-divisi">
-      <option value="">-- Pilih Divisi --</option>
-      <option value="Marketing">Marketing</option>
-      <option value="Operator Kasir">Operator Kasir</option>
-    </select>
-    <button onclick="saveAnggota()">Simpan</button>
-    <button onclick="resetAnggotaForm()">Batal</button>
-
-    <table id="anggota-table" style="margin-top:20px;">
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>Nama Lengkap</th>
-          <th>Email</th>
-          <th>Divisi</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</div>
-
-<!-- HALAMAN ABSENSI USER -->
-<div id="absensi-page">
-  <h2>Riwayat Lengkap (Absensi + Izin Keluar)</h2>
-  <table id="absensi-table">
-    <thead>
-      <tr>
-        <th>No</th>
-        <th>Nama</th>
-        <th>Divisi</th>
-        <th>Kegiatan</th>
-        <th>Alasan/Durasi</th>
-        <th>Tanggal</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <button onclick="toggleIzinForm()">Ajukan Izin Keluar</button>
-  <div id="izin-form">
-    <h3>Form Izin Keluar</h3>
-    <select id="izin-alasan-select">
-      <option value="">-- Pilih Alasan Izin --</option>
-      <option value="Toilet">Toilet</option>
-      <option value="Beli Makan">Beli Makan</option>
-      <option value="Merokok">Merokok</option>
-    </select>
-    <div style="margin:10px 0;">
-      Durasi: <span id="izin-timer">00:00</span>
-    </div>
-    <button id="start-timer-btn" onclick="startTimer()">Mulai</button>
-    <button id="stop-timer-btn" onclick="stopTimer()" disabled>Selesai</button>
-  </div>
-
-  <ul id="user-izin-aktif-list"></ul>
-
-  <br />
-  <button onclick="logoutUser()">Logout User</button>
-</div>
-
-<script>
-  const correctUsername = "absen";
-  const correctPassword = "@jaya88";
-  const shiftRules = { Pagi: "08:00", Siang: "16:00", Malam: "22:00" };
-  let currentUser = "";
-  let izinStartTime = null;
-  let izinTimerInterval = null;
-
-  window.onload = function () {
-    loadAnggotaData();
-    loadUserDropdown();
-    loadFilterDropdown();
-    const roleAdmin = localStorage.getItem("roleAdmin");
-    const user = localStorage.getItem("currentUser");
-    if (roleAdmin === "admin") {
-      showAdminDashboard();
-    } else if (user) {
-      currentUser = user;
-      showUserDashboard();
-    }
-    loadTimerFromStorage();
-    loadUserIzinAktif();
-    loadAdminIzinAktifList();
-  };
-
-  // ==== LOGIN & LOGOUT ADMIN ====
-  function loginAdmin() {
-    const username = document.getElementById("admin-username").value;
-    const password = document.getElementById("admin-password").value;
-    if (username === correctUsername && password === correctPassword) {
-      localStorage.setItem("roleAdmin", "admin");
-      document.getElementById("login-page").style.display = "none";
-      showAdminDashboard();
-    } else {
-      document.getElementById("admin-error").innerText = "User Name atau Password salah!";
-    }
-  }
-
-  function logoutAdmin() {
-    localStorage.removeItem("roleAdmin");
-    document.getElementById("main").style.display = "none";
-    document.getElementById("login-page").style.display = "flex";
-  }
-
-  // ==== LOGIN & LOGOUT USER ====
-  function loginUser() {
-    const nama = document.getElementById("user-nama").value;
-    const divisi = document.getElementById("user-divisi").value;
-    const shift = document.getElementById("user-shift").value;
-    if (!nama) {
-      alert("Harap pilih nama!");
-      return;
-    }
-    const jamMasuk = new Date().toLocaleTimeString("id-ID", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    const tanggal = new Date().toLocaleDateString("id-ID");
-    const status = jamMasuk > shiftRules[shift] ? "Terlambat" : "Tepat Waktu";
-
-    // Simpan absensi ke riwayat dengan status "Selesai"
-    let riwayatData = JSON.parse(localStorage.getItem("riwayat") || "[]");
-    riwayatData.push({
-      nama,
-      divisi,
-      kegiatan: "Absensi",
-      alasan: "-",
-      tanggal,
-      status,
-    });
-    localStorage.setItem("riwayat", JSON.stringify(riwayatData));
-
-    currentUser = nama;
-    localStorage.setItem("currentUser", nama);
-    localStorage.setItem("currentDivisi", divisi);
-
-    document.getElementById("login-page").style.display = "none";
-    showUserDashboard();
-  }
-
-  function logoutUser() {
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("currentDivisi");
-    currentUser = "";
-    document.getElementById("absensi-page").style.display = "none";
-    document.getElementById("login-page").style.display = "flex";
-  }
-
-  // ==== SHOW DASHBOARD & TABS ====
-  function showAdminDashboard() {
-    document.getElementById("main").style.display = "block";
-    document.getElementById("absensi-page").style.display = "none";
-    showTab("riwayat");
-  }
-
-  function showUserDashboard() {
-    document.getElementById("main").style.display = "none";
-    document.getElementById("absensi-page").style.display = "block";
-    loadUserRiwayat(currentUser);
-  }
-
-  function showTab(tab) {
-    ["riwayat", "anggota"].forEach((t) => {
-      document.getElementById("tab-" + t).classList.add("hidden");
-    });
-    document.getElementById("tab-" + tab).classList.remove("hidden");
-    if (tab === "riwayat") {
-      loadRiwayatData();
-      loadAdminIzinAktifList();
-    } else if (tab === "anggota") {
-      loadAnggotaData();
-    }
-  }
-
-  // ==== ANGGOTA ====
-  function loadAnggotaData() {
-    const anggota = JSON.parse(localStorage.getItem("anggota") || "[]");
-    const tbody = document.getElementById("anggota-table").getElementsByTagName("tbody")[0];
-    tbody.innerHTML = "";
-    anggota.forEach((a, i) => {
-      const row = tbody.insertRow();
-      row.insertCell(0).innerText = i + 1;
-      row.insertCell(1).innerText = a.nama;
-      row.insertCell(2).innerText = a.email;
-      row.insertCell(3).innerText = a.divisi;
-      const aksiCell = row.insertCell(4);
-
-      const editBtn = document.createElement("button");
-      editBtn.innerText = "Edit";
-      editBtn.className = "btn-edit";
-      editBtn.onclick = () => editAnggota(i);
-      aksiCell.appendChild(editBtn);
-
-      const hapusBtn = document.createElement("button");
-      hapusBtn.innerText = "Hapus";
-      hapusBtn.className = "btn-hapus";
-      hapusBtn.onclick = () => {
-        if (confirm(`Hapus anggota ${a.nama}?`)) {
-          deleteAnggota(i);
-        }
-      };
-      aksiCell.appendChild(hapusBtn);
-    });
-
-    loadUserDropdown();
-    loadFilterDropdown();
-  }
-
-  function saveAnggota() {
-    const idx = parseInt(document.getElementById("edit-index").value);
-    const nama = document.getElementById("anggota-nama").value.trim();
-    const email = document.getElementById("anggota-email").value.trim();
-    const divisi = document.getElementById("anggota-divisi").value;
-    if (!nama || !email || !divisi) {
-      alert("Harap isi semua data anggota!");
-      return;
-    }
-    let anggota = JSON.parse(localStorage.getItem("anggota") || "[]");
-    if (idx === -1) {
-      anggota.push({ nama, email, divisi });
-    } else {
-      anggota[idx] = { nama, email, divisi };
-    }
-    localStorage.setItem("anggota", JSON.stringify(anggota));
-    resetAnggotaForm();
-    loadAnggotaData();
-  }
-
-  function editAnggota(index) {
-    const anggota = JSON.parse(localStorage.getItem("anggota") || "[]");
-    if (!anggota[index]) return;
-    const a = anggota[index];
-    document.getElementById("edit-index").value = index;
-    document.getElementById("anggota-nama").value = a.nama;
-    document.getElementById("anggota-email").value = a.email;
-    document.getElementById("anggota-divisi").value = a.divisi;
-  }
-
-  function deleteAnggota(index) {
-    let anggota = JSON.parse(localStorage.getItem("anggota") || "[]");
-    anggota.splice(index, 1);
-    localStorage.setItem("anggota", JSON.stringify(anggota));
-    loadAnggotaData();
-  }
-
-  function resetAnggotaForm() {
-    document.getElementById("edit-index").value = -1;
-    document.getElementById("anggota-nama").value = "";
-    document.getElementById("anggota-email").value = "";
-    document.getElementById("anggota-divisi").value = "";
-  }
-
-  // ==== RIWAYAT ABSENSI & IZIN ====
-  function loadRiwayatData() {
-    const tbody = document.getElementById("riwayat-table").getElementsByTagName("tbody")[0];
-    tbody.innerHTML = "";
-    let riwayatData = JSON.parse(localStorage.getItem("riwayat") || "[]");
-    const filterUser = document.getElementById("filter-user").value;
-    if (filterUser) {
-      riwayatData = riwayatData.filter((d) => d.nama === filterUser);
-    }
-    riwayatData.forEach((d, i) => {
-      const row = tbody.insertRow();
-      row.insertCell(0).innerText = i + 1;
-      row.insertCell(1).innerText = d.nama;
-      row.insertCell(2).innerText = d.divisi;
-      row.insertCell(3).innerText = d.kegiatan;
-      row.insertCell(4).innerText = d.kegiatan === "Absensi" ? "-" : d.durasi || d.alasan || "-";
-      row.insertCell(5).innerText = d.tanggal;
-      row.insertCell(6).innerText = d.status || "-";
-    });
-  }
-
-  function loadUserRiwayat(nama) {
-    const tbody = document.getElementById("absensi-table").getElementsByTagName("tbody")[0];
-    tbody.innerHTML = "";
-    let riwayatData = JSON.parse(localStorage.getItem("riwayat") || "[]");
-    riwayatData = riwayatData.filter((d) => d.nama === nama);
-    riwayatData.forEach((d, i) => {
-      const row = tbody.insertRow();
-      row.insertCell(0).innerText = i + 1;
-      row.insertCell(1).innerText = d.nama;
-      row.insertCell(2).innerText = d.divisi;
-      row.insertCell(3).innerText = d.kegiatan;
-      row.insertCell(4).innerText = d.kegiatan === "Absensi" ? "-" : d.durasi || d.alasan || "-";
-      row.insertCell(5).innerText = d.tanggal;
-      row.insertCell(6).innerText = d.status || "-";
-    });
-  }
-
-  // ==== FILTER USER ====
-  function loadUserDropdown() {
-    const select = document.getElementById("user-nama");
-    select.innerHTML = "<option value=''>Pilih Nama</option>";
-    const anggota = JSON.parse(localStorage.getItem("anggota") || "[]");
-    anggota.forEach((a) => {
-      const option = document.createElement("option");
-      option.value = a.nama;
-      option.text = a.nama;
-      select.appendChild(option);
-    });
-  }
-  function loadFilterDropdown() {
-    const select = document.getElementById("filter-user");
-    select.innerHTML = "<option value=''>-- Semua User --</option>";
-    const anggota = JSON.parse(localStorage.getItem("anggota") || "[]");
-    anggota.forEach((a) => {
-      const option = document.createElement("option");
-      option.value = a.nama;
-      option.text = a.nama;
-      select.appendChild(option);
-    });
-  }
-
-  function filterRiwayat() {
-    loadRiwayatData();
-  }
-
-  // ==== FORM IZIN USER & TIMER ====
-  function toggleIzinForm() {
-    const form = document.getElementById("izin-form");
-    form.style.display = form.style.display === "block" ? "none" : "block";
-  }
-
-  function startTimer() {
-    const alasan = document.getElementById("izin-alasan-select").value;
-    if (!alasan) {
-      alert("Pilih alasan izin dulu!");
-      return;
-    }
-    if (izinTimerInterval) return; // sudah jalan
-
-    izinStartTime = Date.now();
-    localStorage.setItem("izinStartTime", izinStartTime);
-    localStorage.setItem("izinAlasan", alasan);
-    document.getElementById("start-timer-btn").disabled = true;
-    document.getElementById("stop-timer-btn").disabled = false;
-    updateTimer();
-    izinTimerInterval = setInterval(updateTimer, 1000);
-
-    updateIzinFormBackground(true, 0);
-    addUserIzinAktif(currentUser, alasan);
-  }
-
-  function stopTimer() {
-    if (!izinTimerInterval) return;
-    clearInterval(izinTimerInterval);
-    izinTimerInterval = null;
-
-    const endTime = Date.now();
-    const durasiMs = endTime - izinStartTime;
-    const durasiMenit = Math.floor(durasiMs / 60000);
-    const durasiDetik = Math.floor((durasiMs % 60000) / 1000);
-    const durasiFormatted = `${durasiMenit} menit ${durasiDetik} detik`;
-
-    const tanggal = new Date().toLocaleDateString("id-ID");
-    const alasan = localStorage.getItem("izinAlasan") || "-";
-    const divisi = localStorage.getItem("currentDivisi") || "-";
-
-    // Simpan izin ke riwayat
-    let riwayatData = JSON.parse(localStorage.getItem("riwayat") || "[]");
-    riwayatData.push({
-      nama: currentUser,
-      divisi,
-      kegiatan: "Izin Keluar",
-      alasan,
-      durasi: durasiFormatted,
-      tanggal,
-      status: "Selesai",
-    });
-    localStorage.setItem("riwayat", JSON.stringify(riwayatData));
-
-    // Hapus izin aktif user
-    removeUserIzinAktif(currentUser);
-
-    alert("Izin selesai dan disimpan.");
-    resetTimer();
-    loadUserRiwayat(currentUser);
-    loadAdminIzinAktifList();
-  }
-
-  function updateTimer() {
-    if (!izinStartTime) return;
-    const now = Date.now();
-    const diff = now - izinStartTime;
-    const menit = Math.floor(diff / 60000);
-    const detik = Math.floor((diff % 60000) / 1000);
-    document.getElementById("izin-timer").innerText =
-      (menit < 10 ? "0" : "") +
-      menit +
-      ":" +
-      (detik < 10 ? "0" : "") +
-      detik;
-
-    updateIzinFormBackground(true, menit);
-  }
-
-  function updateIzinFormBackground(isActive, menit) {
-    const form = document.getElementById("izin-form");
-    if (!isActive) {
-      form.style.backgroundColor = "white";
-      return;
-    }
-    if (menit >= 15) {
-      form.style.backgroundColor = "#e74c3c"; // merah
-    } else {
-      form.style.backgroundColor = "#2ecc71"; // hijau
-    }
-  }
-
-  function resetTimer() {
-    izinStartTime = null;
-    localStorage.removeItem("izinStartTime");
-    localStorage.removeItem("izinAlasan");
-    document.getElementById("izin-timer").innerText = "00:00";
-    document.getElementById("start-timer-btn").disabled = false;
-    document.getElementById("stop-timer-btn").disabled = true;
-    updateIzinFormBackground(false);
-  }
-
-  function loadTimerFromStorage() {
-    const storedStart = localStorage.getItem("izinStartTime");
-    if (storedStart) {
-      izinStartTime = parseInt(storedStart);
-      const alasan = localStorage.getItem("izinAlasan") || "";
-      if (izinStartTime && alasan) {
-        document.getElementById("izin-alasan-select").value = alasan;
-        document.getElementById("start-timer-btn").disabled = true;
-        document.getElementById("stop-timer-btn").disabled = false;
-        updateTimer();
-        izinTimerInterval = setInterval(updateTimer, 1000);
-        updateIzinFormBackground(true, Math.floor((Date.now() - izinStartTime) / 60000));
-      }
-    }
-  }
-
-  // ==== IZIN AKTIF USER LIST ====
-  // User aktif yg sedang izin (untuk user panel)
-  function addUserIzinAktif(nama, alasan) {
-    let aktifList = JSON.parse(localStorage.getItem("userIzinAktif") || "[]");
-    if (!aktifList.some((x) => x.nama === nama)) {
-      aktifList.push({ nama, alasan, startTime: Date.now() });
-      localStorage.setItem("userIzinAktif", JSON.stringify(aktifList));
-      loadUserIzinAktif();
-      loadAdminIzinAktifList();
-    }
-  }
-
-  function removeUserIzinAktif(nama) {
-    let aktifList = JSON.parse(localStorage.getItem("userIzinAktif") || "[]");
-    aktifList = aktifList.filter((x) => x.nama !== nama);
-    localStorage.setItem("userIzinAktif", JSON.stringify(aktifList));
-    loadUserIzinAktif();
-    loadAdminIzinAktifList();
-  }
-
-  function loadUserIzinAktif() {
-    const ul = document.getElementById("user-izin-aktif-list");
-    ul.innerHTML = "";
-    let aktifList = JSON.parse(localStorage.getItem("userIzinAktif") || "[]");
-    aktifList.forEach((u) => {
-      const li = document.createElement("li");
-      li.innerText = `${u.nama} - ${u.alasan}`;
-      ul.appendChild(li);
-    });
-  }
-
-  // Admin lihat siapa yg sedang izin aktif
-  function loadAdminIzinAktifList() {
-    const div = document.getElementById("riwayat-izin-aktif");
-    let aktifList = JSON.parse(localStorage.getItem("userIzinAktif") || "[]");
-    if (aktifList.length === 0) {
-      div.innerText = "Tidak ada izin aktif saat ini.";
-      return;
-    }
-    div.innerHTML = "<b>Daftar Izin Aktif:</b><br>";
-    aktifList.forEach((u) => {
-      div.innerHTML += `${u.nama} (${u.alasan})<br>`;
-    });
-  }
-</script>
-
 </body>
 </html>
