@@ -131,6 +131,8 @@
       padding: 40px;
       background-color: #ecf0f1;
       overflow-y: auto;
+      position: relative;
+      max-width: 900px;
     }
 
     .content h1 {
@@ -159,6 +161,7 @@
       background: white;
       border-radius: 10px;
       overflow: hidden;
+      margin-top: 15px;
     }
 
     th, td {
@@ -171,6 +174,17 @@
       background-color: #3498db;
       color: white;
     }
+
+    /* Form pencarian sekarang non-floating */
+    .floating-search {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      margin-top: 30px;
+      max-width: 480px;
+    }
+
   </style>
 </head>
 <body>
@@ -260,8 +274,31 @@
             </div>
             <button type="submit" class="btn-blue">Tambah Karyawan Baru</button>
           </form>
-          <div id="formMessage" style="margin-top:15px; color: green; font-weight: bold;"></div>
+
+          <!-- Form pencarian di bawah form tambah -->
+          <div class="floating-search" id="floatingSearch">
+            <h2>Pencarian Data Karyawan</h2>
+            <div class="form-group">
+              <label for="searchNama">Nama Lengkap</label>
+              <input type="text" id="searchNama" placeholder="Cari berdasarkan Nama Lengkap" />
+            </div>
+            <div class="form-group">
+              <label for="searchKeterangan">Keterangan</label>
+              <input type="text" id="searchKeterangan" placeholder="Cari berdasarkan Keterangan" />
+            </div>
+            <button type="button" onclick="cariKaryawan()">Cari</button>
+          </div>
+
+          <!-- Tempat menampilkan hasil pencarian -->
+          <div id="searchResults"></div>
+
+          <!-- Tempat menampilkan semua data karyawan -->
+          <h2 style="margin-top:40px;">Daftar Semua Karyawan</h2>
+          <div id="allKaryawan"></div>
         `;
+
+        // Setelah konten berubah, langsung tampilkan semua data karyawan
+        tampilkanSemuaKaryawan();
       } else if (page === 'riwayatLogin') {
         const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
         let rows = logs.map(log => `
@@ -314,9 +351,113 @@
         return;
       }
 
+      // Ambil data karyawan dari localStorage
+      const dataKaryawan = JSON.parse(localStorage.getItem('dataKaryawan') || '[]');
+
+      // Tambah data baru
+      dataKaryawan.push({
+        nama,
+        email,
+        keterangan
+      });
+
+      // Simpan kembali ke localStorage
+      localStorage.setItem('dataKaryawan', JSON.stringify(dataKaryawan));
+
+      // Tampilkan pesan berhasil
       const msg = document.getElementById('formMessage');
-      msg.textContent = `Karyawan "${nama}" berhasil ditambahkan!`;
+      if (msg) {
+        msg.textContent = `Karyawan "${nama}" berhasil ditambahkan!`;
+      }
+
+      // Reset form
       document.getElementById('formTambahPemain').reset();
+
+      // Perbarui daftar semua karyawan
+      tampilkanSemuaKaryawan();
+    }
+
+    function cariKaryawan() {
+      const namaCari = document.getElementById('searchNama').value.trim().toLowerCase();
+      const ketCari = document.getElementById('searchKeterangan').value.trim().toLowerCase();
+
+      if (!namaCari && !ketCari) {
+        alert('Isi minimal satu kolom pencarian.');
+        return;
+      }
+
+      const dataKaryawan = JSON.parse(localStorage.getItem('dataKaryawan') || '[]');
+
+      // Filter data sesuai input pencarian
+      const hasil = dataKaryawan.filter(item => {
+        const namaMatch = namaCari ? item.nama.toLowerCase().includes(namaCari) : true;
+        const ketMatch = ketCari ? item.keterangan.toLowerCase().includes(ketCari) : true;
+        return namaMatch && ketMatch;
+      });
+
+      let hasilHTML = '';
+
+      if (hasil.length === 0) {
+        hasilHTML = `<p>Tidak ditemukan data karyawan yang sesuai.</p>`;
+      } else {
+        hasilHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Lengkap</th>
+                <th>Email</th>
+                <th>Keterangan</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${hasil.map(item => `
+                <tr>
+                  <td>${item.nama}</td>
+                  <td>${item.email}</td>
+                  <td>${item.keterangan}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      document.getElementById('searchResults').innerHTML = `
+        <h3>Hasil Pencarian</h3>
+        ${hasilHTML}
+      `;
+    }
+
+    function tampilkanSemuaKaryawan() {
+      const dataKaryawan = JSON.parse(localStorage.getItem('dataKaryawan') || '[]');
+
+      if (dataKaryawan.length === 0) {
+        document.getElementById('allKaryawan').innerHTML = '<p>Belum ada data karyawan yang didaftarkan.</p>';
+        return;
+      }
+
+      let semuaHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Nama Lengkap</th>
+              <th>Email</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${dataKaryawan.map(item => `
+              <tr>
+                <td>${item.nama}</td>
+                <td>${item.email}</td>
+                <td>${item.keterangan}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+
+      document.getElementById('allKaryawan').innerHTML = semuaHTML;
     }
   </script>
 
