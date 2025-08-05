@@ -649,20 +649,6 @@
       document.getElementById("shiftFormContainer").innerHTML = "";
     }
 
-    if (page === 'historyAktivitas') {
-  content.innerHTML = `
-    <h1>History Aktivitas Karyawan</h1>
-    <form onsubmit="cariRiwayat(event)" style="margin-bottom:20px;">
-      <div class="form-group">
-        <label for="namaHistory">Nama Lengkap Karyawan:</label>
-        <input type="text" id="namaHistory" placeholder="Contoh: Budi Santoso" required />
-      </div>
-      <button type="submit" class="btn-blue">Cari Riwayat</button>
-    </form>
-    <div id="hasilRiwayat"></div>
-  `;
-}
-
     function submitPemain(e) {
       e.preventDefault();
       const nama = document.getElementById('namaLengkap').value.trim();
@@ -712,49 +698,6 @@
         return;
       }
 
-      function cariRiwayatAktivitas(e) {
-  e.preventDefault();
-  const namaInput = document.getElementById("cariNamaRiwayat").value.trim().toLowerCase();
-  const hasilContainer = document.getElementById("hasilRiwayatAktivitas");
-
-  const dataAktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
-
-  const hasil = dataAktivitas.filter(item =>
-    item.nama.toLowerCase().includes(namaInput)
-  );
-
-  if (hasil.length === 0) {
-    hasilContainer.innerHTML = `<p style="color:red;">Tidak ada riwayat aktivitas untuk nama tersebut.</p>`;
-    return;
-  }
-
-  let html = `
-    <table>
-      <thead>
-        <tr>
-          <th>Nama</th>
-          <th>Waktu</th>
-          <th>Aktivitas</th>
-          <th>Shift</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-  hasil.forEach(item => {
-    html += `
-      <tr>
-        <td>${item.nama}</td>
-        <td>${item.waktu}</td>
-        <td>${item.aktivitas}</td>
-        <td>${item.shift || '-'}</td>
-      </tr>
-    `;
-  });
-  html += `</tbody></table>`;
-
-  hasilContainer.innerHTML = html;
-}
-
       let html = "<table><thead><tr><th>Nama</th><th>Email</th><th>Keterangan</th></tr></thead><tbody>";
       hasil.forEach(d => {
         html += `<tr><td>${d.nama}</td><td>${d.email}</td><td>${d.keterangan}</td></tr>`;
@@ -772,4 +715,3 @@
 
 </body>
 </html>
-
