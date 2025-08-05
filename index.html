@@ -343,6 +343,15 @@
       from {opacity: 0;}
       to {opacity: 1;}
     }
+
+    .edit-btn {
+      background-color: #f1c40f;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -368,7 +377,7 @@
     <div class="sidebar">
       <h2>🔹 MENU UTAMA</h2>
       <ul>
-        <li onclick="showPage('tambahPemain')">Tambah Karyawan</li>
+        <li onclick="showPage('tambahPemain')">Data User</li>
         <li onclick="showPage('riwayatLogin')">Riwayat Login Karyawan</li>
         <li onclick="showPage('aktivitasBaru')">Aktivitas Baru Karyawan</li>
         <li onclick="showPage('historyAktivitas')">History Aktivitas Karyawan</li>
@@ -408,6 +417,35 @@
     </div>
   </div>
 
+  <div id="modalEditUser" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('modalEditUser')">×</span>
+      <h2>Edit Data User</h2>
+      <form id="formEditUser" onsubmit="submitEditUser(event)">
+        <input type="hidden" id="editOriginalUsername" />
+        <div class="form-group">
+            <label for="editUsername">Username:</label>
+            <input type="text" id="editUsername" required />
+        </div>
+        <div class="form-group">
+            <label for="editPassword">Password:</label>
+            <input type="text" id="editPassword" required />
+        </div>
+        <div class="form-group">
+            <label for="editDivisi">Divisi:</label>
+            <input type="text" id="editDivisi" />
+        </div>
+        <div class="form-group">
+            <label for="editEmail">Email:</label>
+            <input type="email" id="editEmail" />
+        </div>
+        <button type="submit" class="btn-blue">Simpan Perubahan</button>
+      </form>
+      <div id="editMessage" style="margin-top:10px; color:green;"></div>
+    </div>
+  </div>
+
+
   <script>
     // --- Modal controls ---
     function openModal(id) {
@@ -425,17 +463,25 @@
         document.getElementById("formLupa").reset();
         document.getElementById("lupaMessage").textContent = "";
       }
+      if (id === "modalEditUser") {
+        document.getElementById("formEditUser").reset();
+        document.getElementById("editMessage").textContent = "";
+      }
     }
 
     // Tutup modal jika klik di luar konten modal
     window.onclick = function(event) {
       const modalDaftar = document.getElementById("modalDaftar");
       const modalLupa = document.getElementById("modalLupa");
+      const modalEdit = document.getElementById("modalEditUser");
       if (event.target === modalDaftar) {
         closeModal('modalDaftar');
       }
       if (event.target === modalLupa) {
         closeModal('modalLupa');
+      }
+      if (event.target === modalEdit) {
+        closeModal('modalEditUser');
       }
     };
 
@@ -458,12 +504,13 @@
       const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
 
       // Cek admin default jika tidak ada user terdaftar
-      const adminUser = {username: "admin", password: "12345"};
+      const adminUser = {username: "admin", password: "12345", divisi: "Admin", email: "admin@example.com"};
+      if (!users.find(u => u.username === "admin")) {
+        users.unshift(adminUser);
+        localStorage.setItem("userAccounts", JSON.stringify(users));
+      }
 
       let userFound = users.find(u => u.username === username && u.password === password);
-      if (!userFound && username === adminUser.username && password === adminUser.password) {
-        userFound = adminUser;
-      }
 
       if (userFound) {
         localStorage.setItem("isLoggedIn", "true");
@@ -504,7 +551,7 @@
         return;
       }
 
-      users.push({username, password});
+      users.push({username, password, divisi: "", email: ""}); // Simpan divisi dan email kosong
       localStorage.setItem("userAccounts", JSON.stringify(users));
 
       document.getElementById("daftarMessage").style.color = "green";
@@ -520,11 +567,6 @@
       const username = document.getElementById("lupaUsername").value.trim();
 
       const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-      if (username === "admin") {
-        document.getElementById("lupaMessage").style.color = "green";
-        document.getElementById("lupaMessage").textContent = `Password admin adalah: 12345`;
-        return;
-      }
       const user = users.find(u => u.username === username);
       if (user) {
         document.getElementById("lupaMessage").style.color = "green";
@@ -554,40 +596,40 @@
 
       if (page === 'tambahPemain') {
         content.innerHTML = `
-          <h1>Tambah Karyawan</h1>
-          <form id="formTambahPemain" onsubmit="submitPemain(event)">
+          <h1>Tambah User Baru</h1>
+          <form id="formTambahUser" onsubmit="submitUser(event)">
             <div class="form-group">
-              <label for="namaLengkap">Nama Lengkap</label>
-              <input type="text" id="namaLengkap" required />
+              <label for="namaUser">Username</label>
+              <input type="text" id="namaUser" required />
             </div>
             <div class="form-group">
-              <label for="emailPemain">Email</label>
-              <input type="email" id="emailPemain" required />
+              <label for="passwordUser">Password</label>
+              <input type="password" id="passwordUser" required />
             </div>
             <div class="form-group">
-              <label for="keteranganPemain">Keterangan</label>
-              <textarea id="keteranganPemain" rows="3"></textarea>
+                <label for="divisiUser">Divisi</label>
+                <input type="text" id="divisiUser" />
             </div>
-            <button type="submit" class="btn-blue">Tambah Karyawan Baru</button>
+            <div class="form-group">
+                <label for="emailUser">Email</label>
+                <input type="email" id="emailUser" />
+            </div>
+            <button type="submit" class="btn-blue">Tambah User Baru</button>
           </form>
           <div id="formMessage" style="margin-top:10px; color:green;"></div>
           <div class="floating-box">
-            <h3>Pencarian Data Karyawan</h3>
+            <h3>Pencarian Data User</h3>
             <div class="form-group">
-              <label>Nama Lengkap</label>
-              <input type="text" id="searchNama" />
+              <label>Username</label>
+              <input type="text" id="searchUsername" />
             </div>
-            <div class="form-group">
-              <label>Keterangan</label>
-              <input type="text" id="searchKeterangan" />
-            </div>
-            <button onclick="searchKaryawan()" class="btn-blue">Cari</button>
+            <button onclick="searchUser()" class="btn-blue">Cari</button>
             <div id="hasilCari"></div>
           </div>
-          <h3>Data Karyawan Terdaftar</h3>
+          <h3>Data Semua User</h3>
           <div id="dataTabel"></div>
         `;
-        tampilkanSemuaKaryawan();
+        tampilkanSemuaUser();
       }
 
       if (page === 'riwayatLogin') {
@@ -617,8 +659,22 @@
         `;
       }
 
+      // Kode untuk "History Aktivitas Karyawan"
       if (page === 'historyAktivitas') {
-        content.innerHTML = `<h1>History Aktivitas</h1><p>Fitur belum tersedia.</p>`;
+        content.innerHTML = `
+          <h1>History Aktivitas Karyawan</h1>
+          <div class="floating-box">
+            <h3>Cari Riwayat Berdasarkan Nama</h3>
+            <div class="form-group">
+              <label for="namaAktivitas">Nama Lengkap Karyawan</label>
+              <input type="text" id="namaAktivitas" required />
+            </div>
+            <button onclick="searchAktivitas()" class="btn-blue">Cari Riwayat</button>
+          </div>
+          <div id="hasilAktivitas">
+            <p>Silakan masukkan nama karyawan untuk mencari riwayat aktivitas.</p>
+          </div>
+        `;
       }
     }
 
@@ -647,50 +703,121 @@
         </div>
       `;
       document.getElementById("shiftFormContainer").innerHTML = "";
+
+      // Simpan riwayat aktivitas ke localStorage
+      const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
+      const currentUser = localStorage.getItem("currentUser");
+      const now = new Date();
+      const waktu = now.toLocaleString('id-ID');
+      aktivitas.push({ nama: currentUser, jenis: "Absen Masuk", shift, waktu });
+      localStorage.setItem("aktivitasKaryawan", JSON.stringify(aktivitas));
     }
 
-    function submitPemain(e) {
+    // Fungsi yang diubah untuk menambahkan user baru
+    function submitUser(e) {
       e.preventDefault();
-      const nama = document.getElementById('namaLengkap').value.trim();
-      const email = document.getElementById('emailPemain').value.trim();
-      const keterangan = document.getElementById('keteranganPemain').value.trim();
+      const username = document.getElementById('namaUser').value.trim();
+      const password = document.getElementById('passwordUser').value.trim();
+      const divisi = document.getElementById('divisiUser').value.trim();
+      const email = document.getElementById('emailUser').value.trim();
 
-      if (!nama || !email) {
-        alert("Nama dan Email wajib diisi!");
+      if (!username || !password) {
+        alert("Username dan Password wajib diisi!");
         return;
       }
 
-      const data = JSON.parse(localStorage.getItem("dataKaryawan") || "[]");
-      data.push({ nama, email, keterangan });
-      localStorage.setItem("dataKaryawan", JSON.stringify(data));
+      let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+      if (users.find(u => u.username === username)) {
+        document.getElementById("formMessage").style.color = "red";
+        document.getElementById("formMessage").textContent = "Username sudah terdaftar.";
+        return;
+      }
+      
+      users.push({username, password, divisi, email});
+      localStorage.setItem("userAccounts", JSON.stringify(users));
 
-      document.getElementById('formMessage').textContent = `Karyawan "${nama}" berhasil ditambahkan.`;
-      document.getElementById('formTambahPemain').reset();
-      tampilkanSemuaKaryawan();
+      document.getElementById('formMessage').style.color = "green";
+      document.getElementById('formMessage').textContent = `User "${username}" berhasil ditambahkan.`;
+      document.getElementById('formTambahUser').reset();
+      tampilkanSemuaUser();
     }
 
-    function tampilkanSemuaKaryawan() {
-      const data = JSON.parse(localStorage.getItem("dataKaryawan") || "[]");
-      if (data.length === 0) {
-        document.getElementById("dataTabel").innerHTML = "<p>Tidak ada data karyawan terdaftar.</p>";
+    // Fungsi yang diubah untuk menampilkan semua user dengan tombol edit
+    function tampilkanSemuaUser() {
+      const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+      if (users.length === 0) {
+        document.getElementById("dataTabel").innerHTML = "<p>Tidak ada data user terdaftar.</p>";
         return;
       }
-      let html = "<table><thead><tr><th>Nama</th><th>Email</th><th>Keterangan</th></tr></thead><tbody>";
-      data.forEach(d => {
-        html += `<tr><td>${d.nama}</td><td>${d.email}</td><td>${d.keterangan}</td></tr>`;
+      let html = "<table><thead><tr><th>Username</th><th>Password</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
+      users.forEach((u, index) => {
+        html += `<tr>
+            <td>${u.username}</td>
+            <td>${u.password}</td>
+            <td>${u.divisi || '-'}</td>
+            <td>${u.email || '-'}</td>
+            <td><button class="edit-btn" onclick="openEditModal(${index})">Edit</button></td>
+        </tr>`;
       });
       html += "</tbody></table>";
       document.getElementById("dataTabel").innerHTML = html;
     }
 
-    function searchKaryawan() {
-      const namaCari = document.getElementById("searchNama").value.toLowerCase();
-      const ketCari = document.getElementById("searchKeterangan").value.toLowerCase();
-      const data = JSON.parse(localStorage.getItem("dataKaryawan") || "[]");
+    // Fungsi untuk membuka modal edit
+    function openEditModal(index) {
+        const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+        const user = users[index];
 
-      const hasil = data.filter(d =>
-        d.nama.toLowerCase().includes(namaCari) &&
-        d.keterangan.toLowerCase().includes(ketCari)
+        document.getElementById('editOriginalUsername').value = user.username;
+        document.getElementById('editUsername').value = user.username;
+        document.getElementById('editPassword').value = user.password;
+        document.getElementById('editDivisi').value = user.divisi;
+        document.getElementById('editEmail').value = user.email;
+
+        openModal('modalEditUser');
+    }
+
+    // Fungsi untuk menyimpan perubahan data user
+    function submitEditUser(e) {
+        e.preventDefault();
+        const originalUsername = document.getElementById('editOriginalUsername').value;
+        const newUsername = document.getElementById('editUsername').value.trim();
+        const newPassword = document.getElementById('editPassword').value.trim();
+        const newDivisi = document.getElementById('editDivisi').value.trim();
+        const newEmail = document.getElementById('editEmail').value.trim();
+
+        if (!newUsername || !newPassword) {
+            alert("Username dan Password tidak boleh kosong.");
+            return;
+        }
+
+        let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+        const userIndex = users.findIndex(u => u.username === originalUsername);
+
+        if (userIndex !== -1) {
+            users[userIndex].username = newUsername;
+            users[userIndex].password = newPassword;
+            users[userIndex].divisi = newDivisi;
+            users[userIndex].email = newEmail;
+            localStorage.setItem("userAccounts", JSON.stringify(users));
+            document.getElementById('editMessage').textContent = `Data user "${newUsername}" berhasil diperbarui.`;
+            tampilkanSemuaUser();
+        } else {
+            document.getElementById('editMessage').textContent = "User tidak ditemukan.";
+            document.getElementById('editMessage').style.color = "red";
+        }
+
+        setTimeout(() => closeModal('modalEditUser'), 2000);
+    }
+
+
+    // Fungsi yang diubah untuk mencari user
+    function searchUser() {
+      const usernameCari = document.getElementById("searchUsername").value.toLowerCase();
+      const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+
+      const hasil = users.filter(u =>
+        u.username.toLowerCase().includes(usernameCari)
       );
 
       if (hasil.length === 0) {
@@ -698,12 +825,64 @@
         return;
       }
 
-      let html = "<table><thead><tr><th>Nama</th><th>Email</th><th>Keterangan</th></tr></thead><tbody>";
-      hasil.forEach(d => {
-        html += `<tr><td>${d.nama}</td><td>${d.email}</td><td>${d.keterangan}</td></tr>`;
+      let html = "<table><thead><tr><th>Username</th><th>Password</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
+      hasil.forEach((u, index) => {
+        // Asumsi hasil pencarian tidak mengubah index asli, jadi perlu dicari lagi
+        const originalIndex = users.findIndex(user => user.username === u.username);
+        html += `<tr>
+            <td>${u.username}</td>
+            <td>${u.password}</td>
+            <td>${u.divisi || '-'}</td>
+            <td>${u.email || '-'}</td>
+            <td><button class="edit-btn" onclick="openEditModal(${originalIndex})">Edit</button></td>
+        </tr>`;
       });
       html += "</tbody></table>";
       document.getElementById("hasilCari").innerHTML = html;
+    }
+
+    function searchAktivitas() {
+        const namaCari = document.getElementById("namaAktivitas").value.trim().toLowerCase();
+        const hasilDiv = document.getElementById("hasilAktivitas");
+        
+        if (!namaCari) {
+            hasilDiv.innerHTML = "<p style='color:red;'>Nama karyawan tidak boleh kosong.</p>";
+            return;
+        }
+
+        const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
+        const hasil = aktivitas.filter(a => a.nama.toLowerCase().includes(namaCari));
+
+        if (hasil.length === 0) {
+            hasilDiv.innerHTML = `<p style='color:red;'>Tidak ada riwayat aktivitas ditemukan untuk "${namaCari}".</p>`;
+            return;
+        }
+
+        let html = "<h3>Hasil Pencarian untuk: " + namaCari + "</h3>";
+        html += `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Karyawan</th>
+                        <th>Jenis Aktivitas</th>
+                        <th>Shift</th>
+                        <th>Waktu</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        hasil.forEach(a => {
+            html += `
+                <tr>
+                    <td>${a.nama}</td>
+                    <td>${a.jenis}</td>
+                    <td>${a.shift}</td>
+                    <td>${a.waktu}</td>
+                </tr>
+            `;
+        });
+        html += "</tbody></table>";
+        hasilDiv.innerHTML = html;
     }
 
     function logout() {
@@ -715,4 +894,3 @@
 
 </body>
 </html>
-
