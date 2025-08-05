@@ -1,1264 +1,1216 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login & Menu Utama</title>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      font-family: Arial, sans-serif;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Menu Utama</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            font-family: Arial, sans-serif;
+        }
 
-    body {
-      background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/World_map_blank_without_borders.svg/1920px-World_map_blank_without_borders.svg.png') no-repeat center center fixed;
-      background-size: cover;
-    }
+        body {
+            background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/World_map_blank_without_borders.svg/1920px-World_map_blank_without_borders.svg.png') no-repeat center center fixed;
+            background-size: cover;
+        }
 
-    .login-container {
-      max-width: 400px;
-      margin: 80px auto;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
+        .login-container {
+            max-width: 400px;
+            margin: 80px auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
 
-    .logo {
-      font-size: 26px;
-      font-weight: bold;
-      color: #00aaff;
-      margin-bottom: 20px;
-    }
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #00aaff;
+            margin-bottom: 20px;
+        }
 
-    .form-group {
-      margin-bottom: 15px;
-      text-align: left;
-    }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
 
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
 
-    .login-btn {
-      width: 100%;
-      padding: 12px;
-      background-color: orange;
-      border: none;
-      border-radius: 10px;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: orange;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
 
-    .login-btn:hover {
-      background-color: darkorange;
-    }
+        .login-btn:hover {
+            background-color: darkorange;
+        }
 
-    .btn-blue {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 20px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-      margin-top: 10px;
-    }
+        .btn-blue {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
 
-    .btn-blue:hover {
-      background-color: #2980b9;
-    }
+        .btn-blue:hover {
+            background-color: #2980b9;
+        }
 
-    .link-bawah {
-      margin-top: 15px;
-      color: #888;
-      font-size: 13px;
-      user-select: none;
-    }
+        .link-bawah {
+            margin-top: 15px;
+            color: #888;
+            font-size: 13px;
+            user-select: none;
+        }
 
-    .link-bawah span {
-      color: #0099ff;
-      cursor: pointer;
-      margin: 0 5px;
-      text-decoration: underline;
-    }
+        .link-bawah span {
+            color: #0099ff;
+            cursor: pointer;
+            margin: 0 5px;
+            text-decoration: underline;
+        }
 
-    /* Modal styling */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100vw;
-      height: 100vh;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.5);
-      align-items: center;
-      justify-content: center;
-    }
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
 
-    .modal-content {
-      background-color: #fff;
-      margin: auto;
-      padding: 20px 30px;
-      border-radius: 15px;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      position: relative;
-    }
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 20px 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
 
-    .modal-content h2 {
-      margin-top: 0;
-      margin-bottom: 20px;
-      color: #3498db;
-      text-align: center;
-    }
+        .modal-content h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-align: center;
+        }
 
-    .modal-content label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 8px;
-    }
+        .modal-content label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
 
-    .modal-content input, .modal-content select {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
+        .modal-content input, .modal-content select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
 
-    .modal-content button {
-      background-color: #3498db;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 10px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      width: 100%;
-      font-size: 16px;
-      transition: background-color 0.3s;
-    }
+        .modal-content button {
+            background-color: #3498db;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
 
-    .modal-content button:hover {
-      background-color: #2980b9;
-    }
+        .modal-content button:hover {
+            background-color: #2980b9;
+        }
 
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 28px;
-      font-weight: bold;
-      color: #aaa;
-      cursor: pointer;
-      user-select: none;
-    }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            user-select: none;
+        }
 
-    .close-btn:hover {
-      color: #000;
-    }
+        .close-btn:hover {
+            color: #000;
+        }
 
-    /* Menu styling */
-    .menu-wrapper {
-      display: flex;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-      background-color: #ecf0f1;
-    }
+        /* Menu styling */
+        .menu-wrapper {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: #ecf0f1;
+        }
 
-    .sidebar {
-      width: 250px;
-      background-color: #2c3e50;
-      color: white;
-      padding: 20px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-    }
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .sidebar h2 {
-      font-size: 18px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #777;
-      padding-bottom: 10px;
-      user-select: none;
-    }
+        .sidebar h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #777;
+            padding-bottom: 10px;
+            user-select: none;
+        }
 
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      flex-grow: 1;
-    }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
 
-    .sidebar ul li {
-      margin: 15px 0;
-      cursor: pointer;
-      font-size: 15px;
-      user-select: none;
-      transition: color 0.3s;
-    }
+        .sidebar ul li {
+            margin: 15px 0;
+            cursor: pointer;
+            font-size: 15px;
+            user-select: none;
+            transition: color 0.3s;
+        }
 
-    .sidebar ul li:hover {
-      text-decoration: underline;
-      color: #00aaff;
-    }
+        .sidebar ul li:hover {
+            text-decoration: underline;
+            color: #00aaff;
+        }
 
-    .content {
-      flex-grow: 1;
-      padding: 30px;
-      overflow-y: auto;
-      box-sizing: border-box;
-      height: 100vh;
-      background-color: #ecf0f1;
-    }
+        .content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            height: 100vh;
+            background-color: #ecf0f1;
+        }
 
-    .content h1 {
-      font-size: 22px;
-      margin-bottom: 30px;
-    }
-    
-    .content-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
+        .content h1 {
+            font-size: 22px;
+            margin-bottom: 30px;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 20px;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
 
-    th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
 
-    thead {
-      background-color: #3498db;
-      color: white;
-    }
+        thead {
+            background-color: #3498db;
+            color: white;
+        }
 
-    .floating-box {
-      background: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
+        .floating-box {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
 
-    .button-group button {
-      margin: 10px;
-      padding: 12px 18px;
-      font-size: 14px;
-      border: none;
-      border-radius: 8px;
-      background-color: #3498db;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+        .button-group button {
+            margin: 10px;
+            padding: 12px 18px;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
 
-    .button-group button:hover {
-      background-color: #2980b9;
-    }
+        .button-group button:hover {
+            background-color: #2980b9;
+        }
 
-    .shift-form {
-      margin-top: 20px;
-      background: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
-      max-width: 300px;
-    }
+        .shift-form {
+            margin-top: 20px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+            max-width: 300px;
+        }
 
-    .shift-form label {
-      font-weight: bold;
-    }
+        .shift-form label {
+            font-weight: bold;
+        }
 
-    .shift-form select, .shift-form button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
+        .shift-form select, .shift-form button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
 
-    .shift-form button {
-      background-color: green;
-      color: white;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-    }
+        .shift-form button {
+            background-color: green;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-    .shift-form button:hover {
-      background-color: darkgreen;
-    }
+        .shift-form button:hover {
+            background-color: darkgreen;
+        }
 
-    /* Tambahan styling pesan selamat datang */
-    #welcomeMessage {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #dff0d8;
-      color: #3c763d;
-      border-radius: 10px;
-      font-weight: bold;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-      animation: fadeIn 1s ease forwards;
-    }
+        /* Tambahan styling pesan selamat datang */
+        #welcomeMessage {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #dff0d8;
+            color: #3c763d;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease forwards;
+        }
 
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
 
-    .edit-btn {
-      background-color: #f1c40f;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-right: 5px;
-    }
-    
-    .delete-btn {
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+        .edit-btn {
+            background-color: #f1c40f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-    #timer-container {
-      margin-top: 20px;
-      padding: 20px;
-      border: 2px dashed #3498db;
-      border-radius: 15px;
-      text-align: center;
-      background-color: rgba(255, 255, 255, 0.8);
-    }
-    #timer-display {
-      font-size: 3em;
-      font-weight: bold;
-      color: #2c3e50;
-      margin: 10px 0;
-    }
-    #timer-info {
-      font-size: 1.2em;
-      color: #555;
-      margin-bottom: 15px;
-    }
-    .timer-btn {
-      padding: 12px 25px;
-      font-size: 16px;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    .timer-btn.stop {
-      background-color: #e74c3c;
-      color: white;
-    }
-    .timer-btn.stop:hover {
-      background-color: #c0392b;
-    }
+        #timer-container {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px dashed #3498db;
+            border-radius: 15px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        #timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+        #timer-info {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .timer-btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .timer-btn.stop {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .timer-btn.stop:hover {
+            background-color: #c0392b;
+        }
 
-    .izin-options {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-  </style>
+        .izin-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="login-container" id="loginPage">
-    <div class="logo">SELAMAT <span style="color:#0099ff">DATANG</span></div>
-    <form onsubmit="handleLogin(event)">
-      <div class="form-group">
-        <input type="text" id="username" placeholder="USERNAME" required />
-      </div>
-      <div class="form-group">
-        <input type="password" id="password" placeholder="PASSWORD" required />
-      </div>
-      <button type="submit" class="login-btn">LOGIN</button>
-    </form>
-    <div class="link-bawah">
-      <span onclick="openModal('modalLupa')">Lupa password?</span> | 
-      <span onclick="openModal('modalDaftar')">Daftar akun</span>
-    </div>
-  </div>
-
-  <div class="menu-wrapper" id="menuPage" style="display:none;">
-    <div class="sidebar">
-      <h2>🔹 MENU UTAMA</h2>
-      <ul>
-        <li id="menuDataUser" onclick="showPage('tambahPemain')">Data User</li>
-        <li onclick="showPage('riwayatLogin')">Riwayat Login Karyawan</li>
-        <li onclick="showPage('aktivitasBaru')">Aktivitas Baru Karyawan</li>
-        <li onclick="showPage('historyAktivitas')">History Aktivitas Karyawan</li>
-        <li onclick="logout()" style="margin-top: 20px; font-weight:bold; color:#e74c3c; cursor:pointer;">🔒 Logout</li>
-      </ul>
-    </div>
-    <div class="content" id="contentArea"></div>
-  </div>
-
-  
-  <div id="modalDaftar" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal('modalDaftar')">×</span>
-      <h2>Daftar Akun Baru</h2>
-      <form id="formDaftar" onsubmit="handleDaftar(event)">
-        <label for="daftarUsername">Username:</label>
-        <input type="text" id="daftarUsername" required />
-        <label for="daftarPassword">Password:</label>
-        <input type="password" id="daftarPassword" required />
-        <button type="submit">Daftar</button>
-      </form>
-      <div id="daftarMessage" style="margin-top:10px; color:green;"></div>
-    </div>
-  </div>
-
-  
-  <div id="modalLupa" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal('modalLupa')">×</span>
-      <h2>Lupa Password</h2>
-      <form id="formLupa" onsubmit="handleLupa(event)">
-        <label for="lupaUsername">Masukkan Username:</label>
-        <input type="text" id="lupaUsername" required />
-        <button type="submit">Cari Password</button>
-      </form>
-      <div id="lupaMessage" style="margin-top:10px; color:red; font-weight:bold;"></div>
-    </div>
-  </div>
-
-  <div id="modalEditUser" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal('modalEditUser')">×</span>
-      <h2>Edit Data User</h2>
-      <form id="formEditUser" onsubmit="submitEditUser(event)">
-        <input type="hidden" id="editOriginalUsername" />
-        <div class="form-group">
-            <label for="editRole">Role:</label>
-            <select id="editRole">
-                <option value="User">User</option>
-                <option value="Admin">Admin</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="editShift">Shift:</label>
-            <select id="editShift">
-                <option value="Pagi">Pagi</option>
-                <option value="Siang">Siang</option>
-                <option value="Malam">Malam</option>
-                <option value="">-</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="editUsername">Username:</label>
-            <input type="text" id="editUsername" required />
-        </div>
-        <div class="form-group">
-            <label for="editPassword">Password:</label>
-            <input type="text" id="editPassword" required />
-        </div>
-        <div class="form-group">
-            <label for="editDivisi">Divisi:</label>
-            <input type="text" id="editDivisi" />
-        </div>
-        <div class="form-group">
-            <label for="editEmail">Email:</label>
-            <input type="email" id="editEmail" />
-        </div>
-        <button type="submit" class="btn-blue">Simpan Perubahan</button>
-      </form>
-      <div id="editMessage" style="margin-top:10px; color:green;"></div>
-    </div>
-  </div>
-
-  <div id="modalPilihanIzin" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal('modalPilihanIzin')">×</span>
-        <h2>Pilihan Keterangan Izin</h2>
-        <div class="izin-options">
-            <button class="btn-blue" onclick="startIzinTimer('Toilet')">Toilet</button>
-            <button class="btn-blue" onclick="startIzinTimer('Beli Makan')">Beli Makan</button>
-            <button class="btn-blue" onclick="startIzinTimer('Merokok')">Merokok</button>
+    <div class="login-container" id="loginPage">
+        <div class="logo">SELAMAT <span style="color:#0099ff">DATANG</span></div>
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <input type="text" id="username" placeholder="USERNAME" required />
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" placeholder="PASSWORD" required />
+            </div>
+            <button type="submit" class="login-btn">LOGIN</button>
+        </form>
+        <div class="link-bawah">
+            <span onclick="openModal('modalLupa')">Lupa password?</span> | 
+            <span onclick="openModal('modalDaftar')">Daftar akun</span>
         </div>
     </div>
-  </div>
+
+    <div class="menu-wrapper" id="menuPage" style="display:none;">
+        <div class="sidebar">
+            <h2>🔹 MENU UTAMA</h2>
+            <ul>
+                <li id="menuDataUser" onclick="showPage('tambahPemain')">Data User</li>
+                <li onclick="showPage('riwayatLogin')">Riwayat Login Karyawan</li>
+                <li onclick="showPage('aktivitasBaru')">Aktivitas Baru Karyawan</li>
+                <li onclick="showPage('historyAktivitas')">History Aktivitas Karyawan</li>
+                <li onclick="logout()" style="margin-top: 20px; font-weight:bold; color:#e74c3c; cursor:pointer;">🔒 Logout</li>
+            </ul>
+        </div>
+        <div class="content" id="contentArea"></div>
+    </div>
+
+    
+    <div id="modalDaftar" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modalDaftar')">×</span>
+            <h2>Daftar Akun Baru</h2>
+            <form id="formDaftar" onsubmit="handleDaftar(event)">
+                <label for="daftarUsername">Username:</label>
+                <input type="text" id="daftarUsername" required />
+                <label for="daftarPassword">Password:</label>
+                <input type="password" id="daftarPassword" required />
+                <button type="submit">Daftar</button>
+            </form>
+            <div id="daftarMessage" style="margin-top:10px; color:green;"></div>
+        </div>
+    </div>
+
+    
+    <div id="modalLupa" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modalLupa')">×</span>
+            <h2>Lupa Password</h2>
+            <form id="formLupa" onsubmit="handleLupa(event)">
+                <label for="lupaUsername">Masukkan Username:</label>
+                <input type="text" id="lupaUsername" required />
+                <button type="submit">Cari Password</button>
+            </form>
+            <div id="lupaMessage" style="margin-top:10px; color:red; font-weight:bold;"></div>
+        </div>
+    </div>
+
+    <div id="modalEditUser" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modalEditUser')">×</span>
+            <h2>Edit Data User</h2>
+            <form id="formEditUser" onsubmit="submitEditUser(event)">
+                <input type="hidden" id="editOriginalUsername" />
+                <div class="form-group">
+                    <label for="editRole">Role:</label>
+                    <select id="editRole">
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editShift">Shift:</label>
+                    <select id="editShift">
+                        <option value="Pagi">Pagi</option>
+                        <option value="Siang">Siang</option>
+                        <option value="Malam">Malam</option>
+                        <option value="">-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editUsername">Username:</label>
+                    <input type="text" id="editUsername" required />
+                </div>
+                <div class="form-group">
+                    <label for="editPassword">Password:</label>
+                    <input type="text" id="editPassword" required />
+                </div>
+                <div class="form-group">
+                    <label for="editDivisi">Divisi:</label>
+                    <input type="text" id="editDivisi" />
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email:</label>
+                    <input type="email" id="editEmail" />
+                </div>
+                <button type="submit" class="btn-blue">Simpan Perubahan</button>
+            </form>
+            <div id="editMessage" style="margin-top:10px; color:green;"></div>
+        </div>
+    </div>
+
+    <div id="modalPilihanIzin" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('modalPilihanIzin')">×</span>
+            <h2>Pilihan Keterangan Izin</h2>
+            <div class="izin-options">
+                <button class="btn-blue" onclick="startIzinTimer('Toilet')">Toilet</button>
+                <button class="btn-blue" onclick="startIzinTimer('Beli Makan')">Beli Makan</button>
+                <button class="btn-blue" onclick="startIzinTimer('Merokok')">Merokok</button>
+            </div>
+        </div>
+    </div>
 
 
-  <script>
-    // Global variable for the timer interval
-    let timerInterval = null;
+    <script>
+        // Global variable for the timer interval
+        let timerInterval = null;
 
-    // --- Modal controls ---
-    function openModal(id) {
-      document.getElementById(id).style.display = "flex";
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).style.display = "none";
-      // Reset messages and forms on close
-      if(id === "modalDaftar") {
-        document.getElementById("formDaftar").reset();
-        document.getElementById("daftarMessage").textContent = "";
-      }
-      if(id === "modalLupa") {
-        document.getElementById("formLupa").reset();
-        document.getElementById("lupaMessage").textContent = "";
-      }
-      if (id === "modalEditUser") {
-        document.getElementById("formEditUser").reset();
-        document.getElementById("editMessage").textContent = "";
-      }
-      if (id === "modalPilihanIzin") {
-        // No form to reset here
-      }
-    }
-
-    // Tutup modal jika klik di luar konten modal
-    window.onclick = function(event) {
-      const modalDaftar = document.getElementById("modalDaftar");
-      const modalLupa = document.getElementById("modalLupa");
-      const modalEdit = document.getElementById("modalEditUser");
-      const modalIzin = document.getElementById("modalPilihanIzin");
-      if (event.target === modalDaftar) {
-        closeModal('modalDaftar');
-      }
-      if (event.target === modalLupa) {
-        closeModal('modalLupa');
-      }
-      if (event.target === modalEdit) {
-        closeModal('modalEditUser');
-      }
-      if (event.target === modalIzin) {
-        closeModal('modalPilihanIzin');
-      }
-    };
-
-    // --- Login & Register ---
-    window.onload = function () {
-      const isLoggedIn = localStorage.getItem("isLoggedIn");
-      if (isLoggedIn === "true") {
-        document.getElementById("loginPage").style.display = "none";
-        document.getElementById("menuPage").style.display = "flex";
-        checkUserRoleAndDisplayMenu();
-        showPage("aktivitasBaru");
-      }
-    };
-
-    function checkUserRoleAndDisplayMenu() {
-        const currentUser = localStorage.getItem("currentUser");
-        const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-        const user = users.find(u => u.username === currentUser);
-        
-        // Cek jika user adalah admin, tampilkan menu "Data User"
-        if (user && user.role === "Admin") {
-            document.getElementById("menuDataUser").style.display = "list-item";
-        } else {
-            document.getElementById("menuDataUser").style.display = "none";
+        // --- Modal controls ---
+        function openModal(id) {
+            document.getElementById(id).style.display = "flex";
         }
-    }
 
-    function handleLogin(e) {
-      e.preventDefault();
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-
-      let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-      const adminUser = {username: "admin", password: "12345", role: "Admin", divisi: "Admin", email: "admin@example.com", shift: ""};
-      
-      // Jika belum ada user admin, tambahkan ke daftar
-      if (!users.find(u => u.username === "admin")) {
-        users.unshift(adminUser);
-        localStorage.setItem("userAccounts", JSON.stringify(users));
-      }
-
-      let userFound = users.find(u => u.username === username && u.password === password);
-
-      if (userFound) {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("currentUser", username);
-
-        document.getElementById("loginPage").style.display = "none";
-        document.getElementById("menuPage").style.display = "flex";
-
-        checkUserRoleAndDisplayMenu();
-
-        // Simpan log login
-        const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
-        const now = new Date();
-        const waktu = now.toLocaleString('id-ID');
-        const agent = /Mobi/i.test(navigator.userAgent) ? "Mobile Browser" : "Desktop Browser";
-        const ip = "192.168.1." + Math.floor(Math.random() * 100 + 1);
-        logs.push({ nama: username, waktu, agent, ip });
-        localStorage.setItem("loginLogs", JSON.stringify(logs));
-
-        showPage('aktivitasBaru');
-      } else {
-        alert("Login gagal! Username atau password salah.");
-      }
-    }
-
-    function handleDaftar(e) {
-      e.preventDefault();
-      const username = document.getElementById("daftarUsername").value.trim();
-      const password = document.getElementById("daftarPassword").value;
-
-      if (!username || !password) {
-        alert("Username dan password wajib diisi!");
-        return;
-      }
-
-      let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-      if (users.find(u => u.username === username)) {
-        document.getElementById("daftarMessage").style.color = "red";
-        document.getElementById("daftarMessage").textContent = "Username sudah terdaftar.";
-        return;
-      }
-
-      // Default role untuk pendaftaran baru adalah "User"
-      users.push({username, password, role: "User", divisi: "", email: "", shift: ""});
-      localStorage.setItem("userAccounts", JSON.stringify(users));
-
-      document.getElementById("daftarMessage").style.color = "green";
-      document.getElementById("daftarMessage").textContent = "Akun berhasil didaftarkan! Silakan login.";
-      document.getElementById("formDaftar").reset();
-
-      // Auto-close modal setelah 2 detik
-      setTimeout(() => closeModal('modalDaftar'), 2000);
-    }
-
-    function handleLupa(e) {
-      e.preventDefault();
-      const username = document.getElementById("lupaUsername").value.trim();
-
-      const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-      const user = users.find(u => u.username === username);
-      if (user) {
-        document.getElementById("lupaMessage").style.color = "green";
-        document.getElementById("lupaMessage").textContent = `Password untuk username "${username}" adalah: ${user.password}`;
-      } else {
-        document.getElementById("lupaMessage").style.color = "red";
-        document.getElementById("lupaMessage").textContent = "Username tidak ditemukan.";
-      }
-    }
-
-    // --- Menu utama dan konten lainnya tetap sama ---
-    function showPage(page) {
-      const content = document.getElementById('contentArea');
-      const currentUser = localStorage.getItem("currentUser");
-      const users = JSON.SE(localStorage.getItem("userAccounts") || "[]");
-      const user = users.find(u => u.username === currentUser);
-
-      if (page === 'aktivitasBaru') {
-        content.innerHTML = `
-          <h1>Aktivitas Terbaru</h1>
-          <div class="button-group">
-            <button onclick="showShiftForm()">Absen Masuk</button>
-            <button onclick="openModal('modalPilihanIzin')">Izin</button>
-            <button>Absen Pulang</button>
-          </div>
-          <div id="shiftFormContainer"></div>
-          <div id="welcomeMessageContainer"></div>
-          <div id="izinTimerContainer"></div>
-        `;
-        // Check for running timer on page load
-        checkRunningTimer();
-      }
-
-      if (page === 'tambahPemain') {
-          // Periksa role user yang sedang login, hanya admin yang bisa akses
-          if (!user || user.role !== "Admin") {
-              content.innerHTML = `<h1>Akses Ditolak</h1><p>Maaf, Anda tidak memiliki izin untuk mengakses halaman ini.</p>`;
-              return;
-          }
-
-        content.innerHTML = `
-          <h1>Tambah User Baru</h1>
-          <form id="formTambahUser" onsubmit="submitUser(event)">
-            <div class="form-group">
-                <label for="roleUser">Role:</label>
-                <select id="roleUser">
-                    <option value="User">User</option>
-                    <option value="Admin">Admin</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="shiftUser">Shift:</label>
-                <select id="shiftUser">
-                    <option value="Pagi">Pagi</option>
-                    <option value="Siang">Siang</option>
-                    <option value="Malam">Malam</option>
-                    <option value="">-</option>
-                </select>
-            </div>
-            <div class="form-group">
-              <label for="namaUser">Username</label>
-              <input type="text" id="namaUser" required />
-            </div>
-            <div class="form-group">
-              <label for="passwordUser">Password</label>
-              <input type="password" id="passwordUser" required />
-            </div>
-            <div class="form-group">
-                <label for="divisiUser">Divisi</label>
-                <input type="text" id="divisiUser" />
-            </div>
-            <div class="form-group">
-                <label for="emailUser">Email</label>
-                <input type="email" id="emailUser" />
-            </div>
-            <button type="submit" class="btn-blue">Tambah User Baru</button>
-          </form>
-          <div id="formMessage" style="margin-top:10px; color:green;"></div>
-          <div class="floating-box">
-            <h3>Pencarian Data User</h3>
-            <div class="form-group">
-              <label>Username</label>
-              <input type="text" id="searchUsername" />
-            </div>
-            <button onclick="searchUser()" class="btn-blue">Cari</button>
-            <div id="hasilCari"></div>
-          </div>
-          <h3>Data Semua User</h3>
-          <div id="dataTabel"></div>
-        `;
-        tampilkanSemuaUser();
-      }
-
-      if (page === 'riwayatLogin') {
-        const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
-        let rows = logs.map((log, index) => `
-          <tr>
-            <td><input type="checkbox" name="logCheckbox" value="${index}"></td>
-            <td>${log.nama}</td>
-            <td>${log.waktu}</td>
-            <td>${log.agent}</td>
-            <td>${log.ip}</td>
-          </tr>
-        `).join('');
-
-        content.innerHTML = `
-          <div class="content-header">
-            <h1>Riwayat Login Karyawan</h1>
-            <button class="delete-btn" onclick="deleteSelectedLogs()">Hapus yang Dipilih</button>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th><input type="checkbox" id="checkAllLogs"></th>
-                <th>Nama Karyawan</th>
-                <th>Tanggal & Waktu</th>
-                <th>Aplikasi Web Login</th>
-                <th>IP Address</th>
-              </tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
-        `;
-        // Menambahkan fungsionalitas "pilih semua"
-        const checkAll = document.getElementById('checkAllLogs');
-        if(checkAll) {
-          checkAll.addEventListener('change', (e) => {
-            const checkboxes = document.getElementsByName('logCheckbox');
-            checkboxes.forEach(cb => cb.checked = e.target.checked);
-          });
+        function closeModal(id) {
+            document.getElementById(id).style.display = "none";
+            // Reset messages and forms on close
+            if(id === "modalDaftar") {
+                document.getElementById("formDaftar").reset();
+                document.getElementById("daftarMessage").textContent = "";
+            }
+            if(id === "modalLupa") {
+                document.getElementById("formLupa").reset();
+                document.getElementById("lupaMessage").textContent = "";
+            }
+            if (id === "modalEditUser") {
+                document.getElementById("formEditUser").reset();
+                document.getElementById("editMessage").textContent = "";
+            }
+            if (id === "modalPilihanIzin") {
+                // No form to reset here
+            }
         }
-      }
 
-      // Kode untuk "History Aktivitas Karyawan"
-      if (page === 'historyAktivitas') {
-        content.innerHTML = `
-          <h1>History Aktivitas Karyawan</h1>
-          <div class="floating-box">
-            <h3>Cari Riwayat Berdasarkan Nama</h3>
-            <div class="form-group">
-              <label for="namaAktivitas">Nama Lengkap Karyawan</label>
-              <input type="text" id="namaAktivitas" required />
-            </div>
-            <button onclick="searchAktivitas()" class="btn-blue">Cari Riwayat</button>
-          </div>
-          <div id="hasilAktivitas">
-            <p>Silakan masukkan nama karyawan untuk mencari riwayat aktivitas.</p>
-          </div>
-        `;
-      }
-    }
+        // Tutup modal jika klik di luar konten modal
+        window.onclick = function(event) {
+            const modalDaftar = document.getElementById("modalDaftar");
+            const modalLupa = document.getElementById("modalLupa");
+            const modalEdit = document.getElementById("modalEditUser");
+            const modalIzin = document.getElementById("modalPilihanIzin");
+            if (event.target === modalDaftar) {
+                closeModal('modalDaftar');
+            }
+            if (event.target === modalLupa) {
+                closeModal('modalLupa');
+            }
+            if (event.target === modalEdit) {
+                closeModal('modalEditUser');
+            }
+            if (event.target === modalIzin) {
+                closeModal('modalPilihanIzin');
+            }
+        };
 
-    function showShiftForm() {
-      document.getElementById("shiftFormContainer").innerHTML = `
-        <div class="shift-form">
-          <label for="shiftSelect">Pilih Shift:</label>
-          <select id="shiftSelect">
-            <option value="Pagi">Shift Pagi</option>
-            <option value="Siang">Shift Siang</option>
-            <option value="Malam">Shift Malam</option>
-          </select>
-          <button onclick="submitShift()">Submit</button>
-        </div>
-      `;
+        // --- Login & Register ---
+        window.onload = function () {
+            const isLoggedIn = localStorage.getItem("isLoggedIn");
+            if (isLoggedIn === "true") {
+                document.getElementById("loginPage").style.display = "none";
+                document.getElementById("menuPage").style.display = "flex";
+                checkUserRoleAndDisplayMenu();
+                showPage("aktivitasBaru");
+            }
+        };
 
-      document.getElementById("welcomeMessageContainer").innerHTML = "";
-    }
+        function checkUserRoleAndDisplayMenu() {
+            const currentUser = localStorage.getItem("currentUser");
+            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const user = users.find(u => u.username === currentUser);
+            
+            // Cek jika user adalah admin, tampilkan menu "Data User"
+            if (user && user.role === "Admin") {
+                document.getElementById("menuDataUser").style.display = "list-item";
+            } else {
+                document.getElementById("menuDataUser").style.display = "none";
+            }
+        }
 
-    function submitShift() {
-      const shift = document.getElementById("shiftSelect").value;
-      const welcomeContainer = document.getElementById("welcomeMessageContainer");
-      welcomeContainer.innerHTML = `
-        <div id="welcomeMessage">
-          Selamat datang! Anda telah absen masuk untuk shift <span style="color:#0099ff; font-weight:bold;">${shift}</span>.
-        </div>
-      `;
-      document.getElementById("shiftFormContainer").innerHTML = "";
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
 
-      // Simpan riwayat aktivitas ke localStorage
-      const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
-      const currentUser = localStorage.getItem("currentUser");
-      const now = new Date();
-      const waktu = now.toLocaleString('id-ID');
-      aktivitas.push({ nama: currentUser, jenis: "Absen Masuk", shift, waktu });
-      localStorage.setItem("aktivitasKaryawan", JSON.stringify(aktivitas));
-    }
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const adminUser = {username: "admin", password: "12345", role: "Admin", divisi: "Admin", email: "admin@example.com", shift: ""};
+            
+            // Jika belum ada user admin, tambahkan ke daftar
+            if (!users.find(u => u.username === "admin")) {
+                users.unshift(adminUser);
+                localStorage.setItem("userAccounts", JSON.stringify(users));
+            }
 
-    // Fungsi untuk memulai timer izin
-    function startIzinTimer(alasan) {
-        closeModal('modalPilihanIzin');
-        const startTime = Date.now();
-        localStorage.setItem('izinStartTime', startTime);
-        localStorage.setItem('izinAlasan', alasan);
+            let userFound = users.find(u => u.username === username && u.password === password);
 
-        const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
-        const currentUser = localStorage.getItem("currentUser");
-        const now = new Date();
-        const waktu = now.toLocaleString('id-ID');
-        aktivitas.push({ nama: currentUser, jenis: "Mulai Izin", keterangan: alasan, waktu });
-        localStorage.setItem("aktivitasKaryawan", JSON.stringify(aktivitas));
+            if (userFound) {
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("currentUser", username);
 
-        updateTimerDisplay();
-    }
+                document.getElementById("loginPage").style.display = "none";
+                document.getElementById("menuPage").style.display = "flex";
 
-    // Fungsi untuk menghentikan timer izin
-    function stopIzinTimer() {
-        const endTime = Date.now();
-        const startTime = localStorage.getItem('izinStartTime');
-        const alasan = localStorage.getItem('izinAlasan');
-        
-        if (startTime) {
-            const durationMs = endTime - parseInt(startTime, 10);
-            const durationMinutes = Math.floor(durationMs / 60000);
-            const durationSeconds = Math.floor((durationMs % 60000) / 1000);
-            alert(`Izin "${alasan}" selesai. Durasi: ${durationMinutes} menit, ${durationSeconds} detik.`);
+                checkUserRoleAndDisplayMenu();
+
+                // Simpan log login
+                const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
+                const now = new Date();
+                const waktu = now.toLocaleString('id-ID');
+                const agent = /Mobi/i.test(navigator.userAgent) ? "Mobile Browser" : "Desktop Browser";
+                const ip = "192.168.1." + Math.floor(Math.random() * 100 + 1);
+                logs.push({ nama: username, waktu, agent, ip });
+                localStorage.setItem("loginLogs", JSON.stringify(logs));
+
+                showPage('aktivitasBaru');
+            } else {
+                alert("Login gagal! Username atau password salah.");
+            }
+        }
+
+        function handleDaftar(e) {
+            e.preventDefault();
+            const username = document.getElementById("daftarUsername").value.trim();
+            const password = document.getElementById("daftarPassword").value;
+
+            if (!username || !password) {
+                alert("Username dan password wajib diisi!");
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            if (users.find(u => u.username === username)) {
+                document.getElementById("daftarMessage").style.color = "red";
+                document.getElementById("daftarMessage").textContent = "Username sudah terdaftar.";
+                return;
+            }
+
+            // Default role untuk pendaftaran baru adalah "User"
+            users.push({username, password, role: "User", divisi: "", email: "", shift: ""});
+            localStorage.setItem("userAccounts", JSON.stringify(users));
+
+            document.getElementById("daftarMessage").style.color = "green";
+            document.getElementById("daftarMessage").textContent = "Akun berhasil didaftarkan! Silakan login.";
+            document.getElementById("formDaftar").reset();
+
+            // Auto-close modal setelah 2 detik
+            setTimeout(() => closeModal('modalDaftar'), 2000);
+        }
+
+        function handleLupa(e) {
+            e.preventDefault();
+            const username = document.getElementById("lupaUsername").value.trim();
+
+            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const user = users.find(u => u.username === username);
+            if (user) {
+                document.getElementById("lupaMessage").style.color = "green";
+                document.getElementById("lupaMessage").textContent = `Password untuk username "${username}" adalah: ${user.password}`;
+            } else {
+                document.getElementById("lupaMessage").style.color = "red";
+                document.getElementById("lupaMessage").textContent = "Username tidak ditemukan.";
+            }
+        }
+
+        // --- Menu utama dan konten lainnya tetap sama ---
+        function showPage(page) {
+            const content = document.getElementById('contentArea');
+            const currentUser = localStorage.getItem("currentUser");
+            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const user = users.find(u => u.username === currentUser);
+
+            if (page === 'aktivitasBaru') {
+                content.innerHTML = `
+                    <h1>Aktivitas Terbaru</h1>
+                    <div class="button-group">
+                        <button onclick="showShiftForm()">Absen Masuk</button>
+                        <button onclick="openModal('modalPilihanIzin')">Izin</button>
+                        <button>Absen Pulang</button>
+                    </div>
+                    <div id="shiftFormContainer"></div>
+                    <div id="welcomeMessageContainer"></div>
+                    <div id="izinTimerContainer"></div>
+                `;
+                // Check for running timer on page load
+                checkRunningTimer();
+            }
+
+            if (page === 'tambahPemain') {
+                // Periksa role user yang sedang login, hanya admin yang bisa akses
+                if (!user || user.role !== "Admin") {
+                    content.innerHTML = `<h1>Akses Ditolak</h1><p>Maaf, Anda tidak memiliki izin untuk mengakses halaman ini.</p>`;
+                    return;
+                }
+
+                content.innerHTML = `
+                    <h1>Tambah User Baru</h1>
+                    <form id="formTambahUser" onsubmit="submitUser(event)">
+                        <div class="form-group">
+                            <label for="roleUser">Role:</label>
+                            <select id="roleUser">
+                                <option value="User">User</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="shiftUser">Shift:</label>
+                            <select id="shiftUser">
+                                <option value="Pagi">Pagi</option>
+                                <option value="Siang">Siang</option>
+                                <option value="Malam">Malam</option>
+                                <option value="">-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="namaUser">Username</label>
+                            <input type="text" id="namaUser" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="passwordUser">Password</label>
+                            <input type="password" id="passwordUser" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="divisiUser">Divisi</label>
+                            <input type="text" id="divisiUser" />
+                        </div>
+                        <div class="form-group">
+                            <label for="emailUser">Email</label>
+                            <input type="email" id="emailUser" />
+                        </div>
+                        <button type="submit" class="btn-blue">Tambah User Baru</button>
+                    </form>
+                    <div id="formMessage" style="margin-top:10px; color:green;"></div>
+                    <div class="floating-box">
+                        <h3>Pencarian Data User</h3>
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="searchUsername" />
+                        </div>
+                        <button onclick="searchUser()" class="btn-blue">Cari</button>
+                        <div id="hasilCari"></div>
+                    </div>
+                    <h3>Data Semua User</h3>
+                    <div id="dataTabel"></div>
+                `;
+                tampilkanSemuaUser();
+            }
+
+            if (page === 'riwayatLogin') {
+                const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
+                let rows = logs.map((log, index) => `
+                    <tr>
+                        <td><input type="checkbox" name="logCheckbox" value="${index}"></td>
+                        <td>${log.nama}</td>
+                        <td>${log.waktu}</td>
+                        <td>${log.agent}</td>
+                        <td>${log.ip}</td>
+                    </tr>
+                `).join('');
+
+                content.innerHTML = `
+                    <div class="content-header">
+                        <h1>Riwayat Login Karyawan</h1>
+                        <button class="delete-btn" onclick="deleteSelectedLogs()">Hapus yang Dipilih</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="checkAllLogs"></th>
+                                <th>Nama Karyawan</th>
+                                <th>Tanggal & Waktu</th>
+                                <th>Aplikasi Web Login</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                `;
+                // Menambahkan fungsionalitas "pilih semua"
+                const checkAll = document.getElementById('checkAllLogs');
+                if(checkAll) {
+                    checkAll.addEventListener('change', (e) => {
+                        const checkboxes = document.getElementsByName('logCheckbox');
+                        checkboxes.forEach(cb => cb.checked = e.target.checked);
+                    });
+                }
+            }
+            
+            // Kode untuk "History Aktivitas Karyawan"
+            if (page === 'historyAktivitas') {
+                content.innerHTML = `
+                    <h1>History Aktivitas Karyawan</h1>
+                    <div class="floating-box">
+                        <h3>Cari Riwayat Berdasarkan Nama</h3>
+                        <div class="form-group">
+                            <label for="namaAktivitas">Nama Karyawan</label>
+                            <input type="text" id="namaAktivitas" required />
+                        </div>
+                        <button onclick="searchAktivitas()" class="btn-blue">Cari Riwayat</button>
+                    </div>
+                    <div id="hasilAktivitas">
+                        <p>Silakan masukkan nama karyawan untuk mencari riwayat aktivitas.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showShiftForm() {
+            document.getElementById("shiftFormContainer").innerHTML = `
+                <div class="shift-form">
+                    <label for="shiftSelect">Pilih Shift:</label>
+                    <select id="shiftSelect">
+                        <option value="Pagi">Shift Pagi</option>
+                        <option value="Siang">Shift Siang</option>
+                        <option value="Malam">Shift Malam</option>
+                    </select>
+                    <button onclick="submitShift()">Submit</button>
+                </div>
+            `;
+
+            document.getElementById("welcomeMessageContainer").innerHTML = "";
+        }
+
+        function submitShift() {
+            const shift = document.getElementById("shiftSelect").value;
+            const welcomeContainer = document.getElementById("welcomeMessageContainer");
+            welcomeContainer.innerHTML = `
+                <div id="welcomeMessage">
+                    Selamat datang! Anda telah absen masuk untuk shift <span style="color:#0099ff; font-weight:bold;">${shift}</span>.
+                </div>
+            `;
+            document.getElementById("shiftFormContainer").innerHTML = "";
+
+            // Simpan riwayat aktivitas ke localStorage
+            const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
+            const currentUser = localStorage.getItem("currentUser");
+            const now = new Date();
+            const waktu = now.toLocaleString('id-ID');
+            aktivitas.push({ nama: currentUser, jenis: "Absen Masuk", shift, waktu: now.toISOString() }); // Simpan waktu dalam format ISO string
+            localStorage.setItem("aktivitasKaryawan", JSON.stringify(aktivitas));
+        }
+
+        // Fungsi untuk memulai timer izin
+        function startIzinTimer(alasan) {
+            closeModal('modalPilihanIzin');
+            const startTime = Date.now();
+            localStorage.setItem('izinStartTime', startTime);
+            localStorage.setItem('izinAlasan', alasan);
 
             const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
             const currentUser = localStorage.getItem("currentUser");
             const now = new Date();
             const waktu = now.toLocaleString('id-ID');
-            aktivitas.push({ nama: currentUser, jenis: "Selesai Izin", keterangan: alasan, waktu, durasi: `${durationMinutes}m ${durationSeconds}s` });
+            aktivitas.push({ nama: currentUser, jenis: "Mulai Izin", keterangan: alasan, waktu: now.toISOString() });
             localStorage.setItem("aktivitasKaryawan", JSON.stringify(aktivitas));
-        }
 
-        // Hentikan interval dan hapus data dari localStorage
-        clearInterval(timerInterval);
-        localStorage.removeItem('izinStartTime');
-        localStorage.removeItem('izinAlasan');
-        document.getElementById('izinTimerContainer').innerHTML = '';
-    }
-
-    // Fungsi untuk memperbarui tampilan timer
-    function updateTimerDisplay() {
-        const container = document.getElementById('izinTimerContainer');
-        const startTime = localStorage.getItem('izinStartTime');
-        const alasan = localStorage.getItem('izinAlasan');
-
-        if (!startTime || !container) {
-            return;
-        }
-
-        if (timerInterval) {
-            clearInterval(timerInterval);
-        }
-
-        container.innerHTML = `
-            <div id="timer-container">
-                <p id="timer-info">Anda sedang izin untuk: <br><b>${alasan}</b></p>
-                <div id="timer-display">00:00:00</div>
-                <button class="timer-btn stop" onclick="stopIzinTimer()">Selesai</button>
-            </div>
-        `;
-
-        const timerDisplay = document.getElementById('timer-display');
-
-        timerInterval = setInterval(() => {
-            const elapsed = Date.now() - parseInt(startTime, 10);
-            const seconds = Math.floor((elapsed / 1000) % 60);
-            const minutes = Math.floor((elapsed / (1000 * 60)) % 60);
-            const hours = Math.floor((elapsed / (1000 * 60 * 60)) % 24);
-
-            const format = (num) => String(num).padStart(2, '0');
-            timerDisplay.textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
-        }, 1000);
-    }
-
-    // Fungsi untuk memeriksa apakah ada timer yang sedang berjalan saat halaman dimuat
-    function checkRunningTimer() {
-        const startTime = localStorage.getItem('izinStartTime');
-        if (startTime) {
             updateTimerDisplay();
         }
-    }
 
+        // Fungsi untuk menghentikan timer izin
+        function stopIzinTimer() {
+            const endTime = Date.now();
+            const startTime = localStorage.getItem('izinStartTime');
+            const alasan = localStorage.getItem('izinAlasan');
+            
+            if (startTime) {
+                const durationMs = endTime - parseInt(startTime, 10);
+                const durationMinutes = Math.floor(durationMs / 60000);
+                const durationSeconds = Math.floor((durationMs % 60000) / 1000);
+                alert(`Izin "${alasan}" selesai. Durasi: ${durationMinutes} menit, ${durationSeconds} detik.`);
 
-    // Fungsi yang diubah untuk menambahkan user baru
-    function submitUser(e) {
-      e.preventDefault();
-      const role = document.getElementById('roleUser').value;
-      const shift = document.getElementById('shiftUser').value;
-      const username = document.getElementById('namaUser').value.trim();
-      const password = document.getElementById('passwordUser').value.trim();
-      const divisi = document.getElementById('divisiUser').value.trim();
-      const email = document.getElementById('emailUser').value.trim();
+                const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
+                const currentUser = localStorage.getItem("currentUser");
+                const now = new Date();
+                const waktu = now.toLocaleString('id-ID');
+                aktivitas.push({ nama: currentUser, jenis: "Selesai Izin", keterangan: alasan, waktu: now.toISOString(), durasi: `${durationMinutes}m ${durationSeconds}s` });
+                localStorage.setItem("aktivitasKaryawan", JSON.stringify(aktivitas));
+            }
 
-      if (!username || !password) {
-        alert("Username dan Password wajib diisi!");
-        return;
-      }
-
-      let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-      if (users.find(u => u.username === username)) {
-        document.getElementById("formMessage").style.color = "red";
-        document.getElementById("formMessage").textContent = "Username sudah terdaftar.";
-        return;
-      }
-      
-      users.push({username, password, role, divisi, email, shift});
-      localStorage.setItem("userAccounts", JSON.stringify(users));
-
-      document.getElementById('formMessage').style.color = "green";
-      document.getElementById('formMessage').textContent = `User "${username}" berhasil ditambahkan.`;
-      document.getElementById('formTambahUser').reset();
-      tampilkanSemuaUser();
-    }
-
-    // Fungsi yang diubah untuk menampilkan semua user dengan tombol edit & hapus
-    function tampilkanSemuaUser() {
-      const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-      if (users.length === 0) {
-        document.getElementById("dataTabel").innerHTML = "<p>Tidak ada data user terdaftar.</p>";
-        return;
-      }
-      let html = "<table><thead><tr><th>Role</th><th>Shift</th><th>Username</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
-      users.forEach((u, index) => {
-        html += `<tr>
-            <td>${u.role || 'User'}</td>
-            <td>${u.shift || '-'}</td>
-            <td>${u.username}</td>
-            <td>${u.divisi || '-'}</td>
-            <td>${u.email || '-'}</td>
-            <td>
-                <button class="edit-btn" onclick="openEditModal(${index})">Edit</button>
-                <button class="delete-btn" onclick="deleteUser(${index})">Hapus</button>
-            </td>
-        </tr>`;
-      });
-      html += "</tbody></table>";
-      document.getElementById("dataTabel").innerHTML = html;
-    }
-
-    // Fungsi untuk membuka modal edit
-    function openEditModal(index) {
-        const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-        const user = users[index];
-
-        document.getElementById('editOriginalUsername').value = user.username;
-        document.getElementById('editRole').value = user.role;
-        document.getElementById('editShift').value = user.shift;
-        document.getElementById('editUsername').value = user.username;
-        document.getElementById('editPassword').value = user.password;
-        document.getElementById('editDivisi').value = user.divisi;
-        document.getElementById('editEmail').value = user.email;
-
-        openModal('modalEditUser');
-    }
-
-    // Fungsi untuk menyimpan perubahan data user
-    function submitEditUser(e) {
-        e.preventDefault();
-        const originalUsername = document.getElementById('editOriginalUsername').value;
-        const newRole = document.getElementById('editRole').value;
-        const newShift = document.getElementById('editShift').value;
-        const newUsername = document.getElementById('editUsername').value.trim();
-        const newPassword = document.getElementById('editPassword').value.trim();
-        const newDivisi = document.getElementById('editDivisi').value.trim();
-        const newEmail = document.getElementById('editEmail').value.trim();
-
-        if (!newUsername || !newPassword) {
-            alert("Username dan Password tidak boleh kosong.");
-            return;
+            // Hentikan interval dan hapus data dari localStorage
+            clearInterval(timerInterval);
+            localStorage.removeItem('izinStartTime');
+            localStorage.removeItem('izinAlasan');
+            document.getElementById('izinTimerContainer').innerHTML = '';
         }
 
-        let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-        const userIndex = users.findIndex(u => u.username === originalUsername);
+        // Fungsi untuk memperbarui tampilan timer
+        function updateTimerDisplay() {
+            const container = document.getElementById('izinTimerContainer');
+            const startTime = localStorage.getItem('izinStartTime');
+            const alasan = localStorage.getItem('izinAlasan');
 
-        if (userIndex !== -1) {
-            users[userIndex].role = newRole;
-            users[userIndex].shift = newShift;
-            users[userIndex].username = newUsername;
-            users[userIndex].password = newPassword;
-            users[userIndex].divisi = newDivisi;
-            users[userIndex].email = newEmail;
-            localStorage.setItem("userAccounts", JSON.stringify(users));
-            document.getElementById('editMessage').textContent = `Data user "${newUsername}" berhasil diperbarui.`;
-            tampilkanSemuaUser();
-        } else {
-            document.getElementById('editMessage').textContent = "User tidak ditemukan.";
-            document.getElementById('editMessage').style.color = "red";
-        }
-
-        setTimeout(() => closeModal('modalEditUser'), 2000);
-    }
-    
-    // Fungsi untuk menghapus user
-    function deleteUser(index) {
-        if (confirm("Apakah Anda yakin ingin menghapus user ini?")) {
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            // Cek apakah user yang akan dihapus adalah admin utama
-            if (users[index].username === "admin") {
-                alert("Anda tidak bisa menghapus akun admin utama.");
+            if (!startTime || !container) {
                 return;
             }
-            users.splice(index, 1);
-            localStorage.setItem("userAccounts", JSON.stringify(users));
-            tampilkanSemuaUser();
-        }
-    }
 
-
-    // Fungsi yang diubah untuk mencari user
-    function searchUser() {
-      const usernameCari = document.getElementById("searchUsername").value.toLowerCase();
-      const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-
-      const hasil = users.filter(u =>
-        u.username.toLowerCase().includes(usernameCari)
-      );
-
-      if (hasil.length === 0) {
-        document.getElementById("hasilCari").innerHTML = "<p style='color:red;'>Data tidak ditemukan.</p>";
-        return;
-      }
-
-      let html = "<table><thead><tr><th>Role</th><th>Shift</th><th>Username</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
-      hasil.forEach((u, index) => {
-        // Asumsi hasil pencarian tidak mengubah index asli, jadi perlu dicari lagi
-        const originalIndex = users.findIndex(user => user.username === u.username);
-        html += `<tr>
-            <td>${u.role || 'User'}</td>
-            <td>${u.shift || '-'}</td>
-            <td>${u.username}</td>
-            <td>${u.divisi || '-'}</td>
-            <td>${u.email || '-'}</td>
-            <td>
-                <button class="edit-btn" onclick="openEditModal(${originalIndex})">Edit</button>
-                <button class="delete-btn" onclick="deleteUser(${originalIndex})">Hapus</button>
-            </td>
-        </tr>`;
-      });
-      html += "</tbody></table>";
-      document.getElementById("hasilCari").innerHTML = html;
-    }
-
-    // Fungsi untuk menghapus log yang dipilih
-    function deleteSelectedLogs() {
-        if (!confirm("Apakah Anda yakin ingin menghapus riwayat login yang dipilih?")) {
-            return;
-        }
-
-        let logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
-        const checkboxes = document.getElementsByName('logCheckbox');
-        const indicesToDelete = [];
-
-        // Kumpulkan index dari checkbox yang dicentang
-        checkboxes.forEach((cb, index) => {
-            if (cb.checked) {
-                indicesToDelete.push(index);
-            }
-        });
-
-        // Hapus log dari yang paling akhir untuk menghindari perubahan index
-        for (let i = indicesToDelete.length - 1; i >= 0; i--) {
-            logs.splice(indicesToDelete[i], 1);
-        }
-
-        localStorage.setItem("loginLogs", JSON.stringify(logs));
-        
-        // Muat ulang halaman riwayat login untuk menampilkan data terbaru
-        showPage('riwayatLogin');
-    }
-
-    // Fungsi yang telah diubah untuk menampilkan riwayat aktivitas
-    function searchAktivitas() {
-        const namaCari = document.getElementById("namaAktivitas").value.trim().toLowerCase();
-        const hasilDiv = document.getElementById("hasilAktivitas");
-        
-        if (!namaCari) {
-            hasilDiv.innerHTML = "<p style='color:red;'>Nama karyawan tidak boleh kosong.</p>";
-            return;
-        }
-
-        const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
-        const hasil = aktivitas.filter(a => a.nama.toLowerCase().includes(namaCari));
-
-        if (hasil.length === 0) {
-            hasilDiv.innerHTML = `<p style='color:red;'>Tidak ada riwayat aktivitas ditemukan untuk "${namaCari}".</p>`;
-            return;
-        }
-        
-        // Batas waktu izin dalam menit
-        const BATAS_IZIN_MENIT = 5; 
-
-        const consolidatedActivities = [];
-        const processedIndices = new Set();
-
-        for (let i = 0; i < hasil.length; i++) {
-            if (processedIndices.has(i)) {
-                continue;
+            if (timerInterval) {
+                clearInterval(timerInterval);
             }
 
-            const current = hasil[i];
-            let consolidatedEntry = {
-                nama: current.nama,
-                jenis: current.jenis,
-                keterangan: current.keterangan || '-',
-                waktu_mulai: current.waktu,
-                waktu_selesai: '-',
-                durasi: '-'
-            };
+            container.innerHTML = `
+                <div id="timer-container">
+                    <p id="timer-info">Anda sedang izin untuk: <br><b>${alasan}</b></p>
+                    <div id="timer-display">00:00:00</div>
+                    <button class="timer-btn stop" onclick="stopIzinTimer()">Selesai</button>
+                </div>
+            `;
 
-            if (current.jenis === "Mulai Izin") {
-                consolidatedEntry.jenis = "Izin";
-                
-                // Cari entri "Selesai Izin" yang sesuai
-                let selesaiIndex = -1;
-                for (let j = i + 1; j < hasil.length; j++) {
-                    const next = hasil[j];
-                    if (next.jenis === "Selesai Izin" && next.nama === current.nama && next.keterangan === current.keterangan) {
-                        selesaiIndex = j;
-                        break;
-                    }
-                }
+            const timerDisplay = document.getElementById('timer-display');
 
-                if (selesaiIndex !== -1) {
-                    const selesaiEntry = hasil[selesaiIndex];
-                    consolidatedEntry.waktu_selesai = selesaiEntry.waktu;
-                    consolidatedEntry.durasi = selesaiEntry.durasi;
-                    
-                    // Parsing durasi untuk mengecek apakah melebihi batas
-                    if (selesaiEntry.durasi) {
-                        const durasiMatch = selesaiEntry.durasi.match(/(\d+)m\s*(\d+)s/);
-                        if (durasiMatch) {
-                            const minutes = parseInt(durasiMatch[1]);
-                            const totalMinutes = minutes; // Only checking minutes for simplicity
-                            if (totalMinutes > BATAS_IZIN_MENIT) {
-                                consolidatedEntry.keterangan += " (Melebihi batas)";
-                            }
-                        }
-                    }
-                    processedIndices.add(selesaiIndex);
-                } else {
-                    consolidatedEntry.jenis = "Izin";
-                }
-            } else {
-                // Untuk aktivitas lain seperti "Absen Masuk", tidak ada durasi
-                consolidatedEntry.jenis = current.jenis;
+            timerInterval = setInterval(() => {
+                const elapsed = Date.now() - parseInt(startTime, 10);
+                const seconds = Math.floor((elapsed / 1000) % 60);
+                const minutes = Math.floor((elapsed / (1000 * 60)) % 60);
+                const hours = Math.floor((elapsed / (1000 * 60 * 60)) % 24);
+
+                const format = (num) => String(num).padStart(2, '0');
+                timerDisplay.textContent = `${format(hours)}:${format(minutes)}:${format(seconds)}`;
+            }, 1000);
+        }
+
+        // Fungsi untuk memeriksa apakah ada timer yang sedang berjalan saat halaman dimuat
+        function checkRunningTimer() {
+            const startTime = localStorage.getItem('izinStartTime');
+            if (startTime) {
+                updateTimerDisplay();
+            }
+        }
+
+
+        // Fungsi yang diubah untuk menambahkan user baru
+        function submitUser(e) {
+            e.preventDefault();
+            const role = document.getElementById('roleUser').value;
+            const shift = document.getElementById('shiftUser').value;
+            const username = document.getElementById('namaUser').value.trim();
+            const password = document.getElementById('passwordUser').value.trim();
+            const divisi = document.getElementById('divisiUser').value.trim();
+            const email = document.getElementById('emailUser').value.trim();
+
+            if (!username || !password) {
+                alert("Username dan Password wajib diisi!");
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            if (users.find(u => u.username === username)) {
+                document.getElementById("formMessage").style.color = "red";
+                document.getElementById("formMessage").textContent = "Username sudah terdaftar.";
+                return;
             }
             
-            consolidatedActivities.push(consolidatedEntry);
-            processedIndices.add(i);
+            users.push({username, password, role, divisi, email, shift});
+            localStorage.setItem("userAccounts", JSON.stringify(users));
+
+            document.getElementById('formMessage').style.color = "green";
+            document.getElementById('formMessage').textContent = `User "${username}" berhasil ditambahkan.`;
+            document.getElementById('formTambahUser').reset();
+            tampilkanSemuaUser();
         }
 
-        let html = "<h3>Hasil Pencarian untuk: " + namaCari + "</h3>";
-        html += `
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nama Karyawan</th>
-                        <th>Jenis Aktivitas</th>
-                        <th>Keterangan</th>
-                        <th>Waktu Mulai</th>
-                        <th>Waktu Selesai</th>
-                        <th>Durasi</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-        consolidatedActivities.forEach(a => {
-            html += `
-                <tr>
-                    <td>${a.nama}</td>
-                    <td>${a.jenis}</td>
-                    <td>${a.keterangan || '-'}</td>
-                    <td>${a.waktu_mulai || '-'}</td>
-                    <td>${a.waktu_selesai || '-'}</td>
-                    <td>${a.durasi || '-'}</td>
-                </tr>
+        // Fungsi yang diubah untuk menampilkan semua user dengan tombol edit & hapus
+        function tampilkanSemuaUser() {
+            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            if (users.length === 0) {
+                document.getElementById("dataTabel").innerHTML = "<p>Tidak ada data user terdaftar.</p>";
+                return;
+            }
+            let html = "<table><thead><tr><th>Role</th><th>Shift</th><th>Username</th><th>Divisi</th><th>Email</th><th>Aksi</th></tr></thead><tbody>";
+            users.forEach((u, index) => {
+                html += `<tr>
+                    <td>${u.role || 'User'}</td>
+                    <td>${u.shift || '-'}</td>
+                    <td>${u.username}</td>
+                    <td>${u.divisi || '-'}</td>
+                    <td>${u.email || '-'}</td>
+                    <td>
+                        <button class="edit-btn" onclick="editUser('${u.username}')">Edit</button>
+                        <button class="delete-btn" onclick="deleteUser('${u.username}')">Hapus</button>
+                    </td>
+                </tr>`;
+            });
+            html += `</tbody></table>`;
+            document.getElementById("dataTabel").innerHTML = html;
+        }
+
+        // Fungsi untuk mencari user
+        function searchUser() {
+            const searchUsername = document.getElementById('searchUsername').value.trim();
+            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const user = users.find(u => u.username.toLowerCase() === searchUsername.toLowerCase());
+            const hasilCariDiv = document.getElementById('hasilCari');
+
+            if (user) {
+                hasilCariDiv.innerHTML = `
+                    <h4>Hasil Pencarian:</h4>
+                    <p><b>Username:</b> ${user.username}</p>
+                    <p><b>Role:</b> ${user.role}</p>
+                    <p><b>Shift:</b> ${user.shift || '-'}</p>
+                    <p><b>Divisi:</b> ${user.divisi || '-'}</p>
+                    <p><b>Email:</b> ${user.email || '-'}</p>
+                `;
+            } else {
+                hasilCariDiv.innerHTML = `<p>User dengan username "${searchUsername}" tidak ditemukan.</p>`;
+            }
+        }
+
+        // Fungsi untuk edit user
+        function editUser(username) {
+            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const userToEdit = users.find(u => u.username === username);
+
+            if (userToEdit) {
+                document.getElementById('editOriginalUsername').value = userToEdit.username;
+                document.getElementById('editRole').value = userToEdit.role;
+                document.getElementById('editShift').value = userToEdit.shift;
+                document.getElementById('editUsername').value = userToEdit.username;
+                document.getElementById('editPassword').value = userToEdit.password;
+                document.getElementById('editDivisi').value = userToEdit.divisi;
+                document.getElementById('editEmail').value = userToEdit.email;
+                openModal('modalEditUser');
+            }
+        }
+
+        // Fungsi untuk submit perubahan user
+        function submitEditUser(e) {
+            e.preventDefault();
+            const originalUsername = document.getElementById('editOriginalUsername').value;
+            const newRole = document.getElementById('editRole').value;
+            const newShift = document.getElementById('editShift').value;
+            const newUsername = document.getElementById('editUsername').value.trim();
+            const newPassword = document.getElementById('editPassword').value.trim();
+            const newDivisi = document.getElementById('editDivisi').value.trim();
+            const newEmail = document.getElementById('editEmail').value.trim();
+
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const userIndex = users.findIndex(u => u.username === originalUsername);
+
+            if (userIndex !== -1) {
+                users[userIndex] = {
+                    username: newUsername,
+                    password: newPassword,
+                    role: newRole,
+                    shift: newShift,
+                    divisi: newDivisi,
+                    email: newEmail
+                };
+                localStorage.setItem("userAccounts", JSON.stringify(users));
+                closeModal('modalEditUser');
+                tampilkanSemuaUser();
+                document.getElementById('formMessage').textContent = `User "${originalUsername}" berhasil diupdate.`;
+            } else {
+                document.getElementById('editMessage').textContent = "User tidak ditemukan.";
+                document.getElementById('editMessage').style.color = "red";
+            }
+        }
+
+        // Fungsi untuk hapus user
+        function deleteUser(username) {
+            if (confirm(`Apakah Anda yakin ingin menghapus user "${username}"?`)) {
+                let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+                users = users.filter(u => u.username !== username);
+                localStorage.setItem("userAccounts", JSON.stringify(users));
+                tampilkanSemuaUser();
+                document.getElementById('formMessage').textContent = `User "${username}" berhasil dihapus.`;
+                document.getElementById('formMessage').style.color = "green";
+            }
+        }
+
+        // Fungsi untuk menghapus log yang dipilih
+        function deleteSelectedLogs() {
+            const checkboxes = document.getElementsByName('logCheckbox');
+            const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
+            const indicesToDelete = [];
+            checkboxes.forEach((cb, index) => {
+                if (cb.checked) {
+                    indicesToDelete.push(index);
+                }
+            });
+
+            if (indicesToDelete.length > 0 && confirm(`Apakah Anda yakin ingin menghapus ${indicesToDelete.length} riwayat login?`)) {
+                // Hapus log dari yang paling akhir agar index tidak berubah
+                for (let i = indicesToDelete.length - 1; i >= 0; i--) {
+                    logs.splice(indicesToDelete[i], 1);
+                }
+                localStorage.setItem("loginLogs", JSON.stringify(logs));
+                showPage('riwayatLogin'); // Muat ulang halaman riwayat login
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("currentUser");
+            window.location.reload();
+        }
+
+        // Fungsi utama untuk pencarian aktivitas karyawan (sudah diperbaiki)
+        function searchAktivitas() {
+            const namaCari = document.getElementById('namaAktivitas').value.trim();
+            const aktivitas = JSON.parse(localStorage.getItem("aktivitasKaryawan") || "[]");
+            const hasil = aktivitas.filter(a => a.nama.toLowerCase() === namaCari.toLowerCase());
+            const hasilAktivitasDiv = document.getElementById('hasilAktivitas');
+
+            if (hasil.length === 0) {
+                hasilAktivitasDiv.innerHTML = `<p>Tidak ada riwayat aktivitas untuk karyawan "${namaCari}".</p>`;
+                return;
+            }
+
+            const batasTelatPagi = 9; // Jam 9 pagi
+            const batasIzinMenit = 15; // 15 menit
+
+            let html = `
+                <div class="content-header">
+                    <h3>Riwayat Aktivitas untuk ${namaCari}</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Karyawan</th>
+                            <th>Aktivitas</th>
+                            <th>Jam Mulai</th>
+                            <th>Jam Selesai</th>
+                            <th>Durasi / Keterangan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
             `;
-        });
-        html += "</tbody></table>";
-        hasilDiv.innerHTML = html;
-    }
 
-    function logout() {
-      localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("currentUser");
-      location.reload();
-    }
-  </script>
+            hasil.forEach(item => {
+                let jamMulai = item.waktu ? new Date(item.waktu).toLocaleString('id-ID') : '-';
+                let jamSelesai = '-';
+                let durasiKeterangan = item.keterangan || item.shift || '-';
+                let aksi = '-';
 
+                // Logika untuk Absen Masuk
+                if (item.jenis === 'Absen Masuk') {
+                    const waktuMasuk = new Date(item.waktu);
+                    if (waktuMasuk.getHours() >= batasTelatPagi) {
+                        aksi = `<span style="color:red; font-weight:bold;">TERLAMBAT</span>`;
+                    }
+                } 
+                // Logika untuk Izin
+                else if (item.jenis === 'Selesai Izin') {
+                    const mulaiIzinItem = aktivitas.find(a => 
+                        a.nama === item.nama && 
+                        a.jenis === 'Mulai Izin' && 
+                        a.keterangan === item.keterangan &&
+                        a.waktu && 
+                        new Date(a.waktu).toDateString() === new Date(item.waktu).toDateString()
+                    );
+                    
+                    if (mulaiIzinItem) {
+                        jamMulai = new Date(mulaiIzinItem.waktu).toLocaleString('id-ID');
+                    }
+                    jamSelesai = new Date(item.waktu).toLocaleString('id-ID');
+                    durasiKeterangan = item.durasi;
+
+                    const parts = item.durasi.match(/(\d+)m (\d+)s/);
+                    if (parts) {
+                        const totalMenit = parseInt(parts[1], 10);
+                        if (totalMenit > batasIzinMenit) {
+                            aksi = `<span style="color:red; font-weight:bold;">MELEBIHI BATAS WAKTU</span>`;
+                        }
+                    }
+                } else if (item.jenis === 'Mulai Izin') {
+                    durasiKeterangan = item.keterangan;
+                }
+
+                html += `
+                    <tr>
+                        <td>${item.nama}</td>
+                        <td>${item.jenis}</td>
+                        <td>${jamMulai}</td>
+                        <td>${jamSelesai}</td>
+                        <td>${durasiKeterangan}</td>
+                        <td>${aksi}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+            hasilAktivitasDiv.innerHTML = html;
+        }
+    </script>
 </body>
 </html>
