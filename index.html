@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistem Manajemen Karyawan</title>
+  <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png"
+      type="image/png">
+  <script type="module" crossorigin src="/assets/index-CkzFYpAc.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B9t-Fp2F.css">
+</head>
+<body>
+
+  <div class="login-container" id="loginPage">
+    <div class="logo">SELAMAT <span style="color:#0099ff">DATANG</span></div>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <input type="text" id="username" placeholder="USERNAME" required />
+      </div>
+      <div class="form-group">
+        <input type="password" id="password" placeholder="PASSWORD" required />
+      </div>
+      <button type="submit" class="login-btn">LOGIN</button>
+    </form>
+    <div class="link-bawah">
+      <span onclick="openModal('modalLupa')">Lupa password?</span> | 
+      <span onclick="openModal('modalDaftar')">Daftar akun</span>
+    </div>
+  </div>
+
+  <div class="menu-wrapper" id="menuPage" style="display:none;">
+    <div class="sidebar">
+      <h2>🔹 MENU UTAMA</h2>
+      <ul>
+        <li onclick="showPage('tambahPemain')">Tambah Karyawan</li>
+        <li onclick="showPage('riwayatLogin')">Riwayat Login Karyawan</li>
+        <li onclick="showPage('aktivitasBaru')">Aktivitas Baru Karyawan</li>
+        <li onclick="showPage('historyAktivitas')">History Aktivitas Karyawan</li>
+        <li onclick="logout()" style="margin-top: 20px; font-weight:bold; color:#e74c3c; cursor:pointer;">🔒 Logout</li>
+      </ul>
+    </div>
+    <div class="content" id="contentArea"></div>
+  </div>
+
+  <!-- Modal Daftar Akun -->
+  <div id="modalDaftar" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('modalDaftar')">&times;</span>
+      <h2>Daftar Akun Baru</h2>
+      <form id="formDaftar" onsubmit="handleDaftar(event)">
+        <label for="daftarUsername">Username:</label>
+        <input type="text" id="daftarUsername" required />
+        <label for="daftarPassword">Password:</label>
+        <input type="password" id="daftarPassword" required />
+        <button type="submit">Daftar</button>
+      </form>
+      <div id="daftarMessage" style="margin-top:10px; color:green;"></div>
+    </div>
+  </div>
+
+  <!-- Modal Lupa Password -->
+  <div id="modalLupa" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('modalLupa')">&times;</span>
+      <h2>Lupa Password</h2>
+      <form id="formLupa" onsubmit="handleLupa(event)">
+        <label for="lupaUsername">Masukkan Username:</label>
+        <input type="text" id="lupaUsername" required />
+        <button type="submit">Cari Password</button>
+      </form>
+      <div id="lupaMessage" style="margin-top:10px; color:red; font-weight:bold;"></div>
+    </div>
+  </div>
+
+</body>
+</html>
