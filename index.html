@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         :root {
             --primary-color: #0d1a2b; /* Dark Navy */
@@ -93,6 +93,13 @@
             box-shadow: 0 0 8px rgba(201, 167, 109, 0.3);
             outline: none;
         }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
 
         .login-btn {
             width: 100%;
@@ -169,6 +176,25 @@
             transition: transform 0.4s ease;
             text-align: center;
         }
+        
+        .modal-content form button {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            color: var(--text-light-color);
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out, transform 0.2s;
+            margin-top: 15px;
+        }
+        
+        .modal-content form button:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
 
         .modal.open .modal-content {
             transform: scale(1);
@@ -181,23 +207,6 @@
             font-family: 'Playfair Display', serif;
             font-size: 28px;
             letter-spacing: 1px;
-        }
-
-        .modal-content button {
-            background-color: var(--accent-color);
-            border: none;
-            padding: 16px 25px;
-            border-radius: 10px;
-            color: var(--text-light-color);
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        .modal-content button:hover {
-            background-color: #b8935c;
         }
 
         .close-btn {
@@ -542,13 +551,6 @@
             color: var(--accent-color);
         }
 
-        .aktivitas-card h3 {
-            margin: 0;
-            font-size: 1.4em;
-            font-weight: 600;
-            color: var(--text-dark-color);
-        }
-
         .aktivitas-card.izin .icon { color: var(--accent-color); }
         .aktivitas-card.pulang .icon { color: var(--danger-color); }
 
@@ -629,6 +631,40 @@
             flex-direction: column;
             align-items: center;
         }
+        
+        /* CAPTCHA Styles */
+        .captcha-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #captchaText {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: bold;
+            color: #f4f4f4;
+            background-color: #555;
+            padding: 5px 10px;
+            border-radius: 5px;
+            letter-spacing: 2px;
+            user-select: none;
+            cursor: pointer;
+        }
+        #refreshCaptcha {
+            background-color: #ccc;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        #refreshCaptcha:hover {
+            background-color: #bbb;
+        }
+
+        .captcha-input {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -637,10 +673,12 @@
         <div class="logo">Manajemen <span>Karyawan</span></div>
         <form onsubmit="handleLogin(event)">
             <div class="form-group">
-                <input type="text" id="username" placeholder="Username" required />
+                <label for="username">Nama Lengkap</label>
+                <input type="text" id="username" placeholder="Masukkan nama lengkap Anda" required />
             </div>
             <div class="form-group">
-                <input type="password" id="password" placeholder="Password" required />
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Masukkan password Anda" required />
             </div>
             <button type="submit" class="login-btn">Login</button>
         </form>
@@ -654,11 +692,11 @@
         <div class="sidebar">
             <h2>MENU UTAMA</h2>
             <ul>
-                <li id="menuDataUser" onclick="showPage('tambahPemain')"><i class="fa-solid fa-users"></i> Data User</li>
-                <li onclick="showPage('riwayatLogin')"><i class="fa-solid fa-history"></i> Riwayat Login</li>
-                <li onclick="showPage('aktivitasBaru')"><i class="fa-solid fa-bell"></i> Aktivitas Baru</li>
-                <li onclick="showPage('historyAktivitas')"><i class="fa-solid fa-list-alt"></i> History Aktivitas</li>
-                <li onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Logout</li>
+                <li id="menuDataUser" onclick="showPage('tambahPemain')">Data User</li>
+                <li onclick="showPage('riwayatLogin')">Riwayat Login</li>
+                <li onclick="showPage('aktivitasBaru')">Aktivitas Baru</li>
+                <li onclick="showPage('historyAktivitas')">History Aktivitas</li>
+                <li onclick="logout()">Logout</li>
             </ul>
         </div>
         <div class="content" id="contentArea"></div>
@@ -675,9 +713,22 @@
                     <input type="text" id="daftarUsername" required />
                 </div>
                 <div class="form-group">
-                    <label for="daftarPassword">Password:</label>
-                    <input type="password" id="daftarPassword" required />
+                    <label for="daftarDivisi">Divisi:</label>
+                    <input type="text" id="daftarDivisi" required />
                 </div>
+                <div class="form-group">
+                    <label for="daftarEmail">Email:</label>
+                    <input type="email" id="daftarEmail" required />
+                </div>
+                <div class="form-group">
+                    <label>Verifikasi CAPTCHA:</label>
+                    <div class="captcha-group">
+                        <span id="captchaText" onclick="generateCaptcha()"></span>
+                        <button type="button" id="refreshCaptcha" onclick="generateCaptcha()"><i class="fa-solid fa-sync-alt"></i></button>
+                    </div>
+                    <input type="text" id="captchaInput" class="captcha-input" placeholder="Masukkan kode di atas" required />
+                </div>
+
                 <button type="submit">Daftar</button>
             </form>
             <div id="daftarMessage" style="margin-top:15px; text-align: center;"></div>
@@ -689,14 +740,7 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('modalLupa')">&times;</span>
             <h2>Lupa Password</h2>
-            <form id="formLupa" onsubmit="handleLupa(event)">
-                <div class="form-group">
-                    <label for="lupaUsername">Masukkan Username:</label>
-                    <input type="text" id="lupaUsername" required />
-                </div>
-                <button type="submit">Cari Password</button>
-            </form>
-            <div id="lupaMessage" style="margin-top:15px; text-align: center; font-weight: 600;"></div>
+            <p>Silakan hubungi administrator Anda untuk mendapatkan bantuan reset password.</p>
         </div>
     </div>
 
@@ -783,6 +827,10 @@
     <script>
         // Global variable for the timer interval
         let timerInterval = null;
+        let captchaCode = '';
+        let currentIzinType = null;
+        let izinTimerSeconds = 0;
+        let timerWarningShown = false;
 
         // --- Modal controls ---
         function openModal(id) {
@@ -790,6 +838,10 @@
             setTimeout(() => {
                 document.getElementById(id).classList.add('open');
             }, 10);
+
+            if (id === 'modalDaftar') {
+                generateCaptcha();
+            }
         }
 
         function closeModal(id) {
@@ -803,14 +855,6 @@
             if(id === "modalDaftar") {
                 document.getElementById("formDaftar").reset();
                 document.getElementById("daftarMessage").textContent = "";
-            }
-            if(id === "modalLupa") {
-                document.getElementById("formLupa").reset();
-                document.getElementById("lupaMessage").textContent = "";
-            }
-            if (id === "modalEditUser") {
-                document.getElementById("formEditUser").reset();
-                document.getElementById("editMessage").textContent = "";
             }
         }
 
@@ -858,11 +902,15 @@
             const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
             const user = users.find(u => u.username === currentUser);
             
-            if (user && user.role === "Admin") {
-                document.getElementById("menuDataUser").style.display = "list-item";
-            } else {
-                document.getElementById("menuDataUser").style.display = "none";
+            const menuDataUser = document.getElementById("menuDataUser");
+            if (menuDataUser) {
+                 if (user && user.role === "Admin") {
+                    menuDataUser.style.display = "list-item";
+                } else {
+                    menuDataUser.style.display = "none";
+                }
             }
+           
         }
 
         function handleLogin(e) {
@@ -871,7 +919,7 @@
             const password = document.getElementById('password').value;
 
             let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const adminUser = {username: "admin", password: "12345", role: "Admin", divisi: "Admin", email: "admin@example.com", shift: ""};
+            const adminUser = {username: "admin", password: "12345", role: "Admin", nama: "Admin", divisi: "Admin", email: "admin@example.com", shift: ""};
             
             if (!users.find(u => u.username === "admin")) {
                 users.unshift(adminUser);
@@ -882,7 +930,8 @@
 
             if (userFound) {
                 localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("currentUser", username);
+                localStorage.setItem("currentUser", userFound.username);
+                localStorage.setItem("currentUserName", userFound.nama);
 
                 document.getElementById("loginPage").style.display = "none";
                 document.getElementById("menuPage").style.display = "flex";
@@ -894,7 +943,7 @@
                 const waktu = now.toLocaleString('id-ID');
                 const agent = /Mobi/i.test(navigator.userAgent) ? "Mobile Browser" : "Desktop Browser";
                 const ip = "192.168.1." + Math.floor(Math.random() * 100 + 1);
-                logs.push({ nama: username, waktu, agent, ip });
+                logs.push({ nama: userFound.nama, waktu, agent, ip });
                 localStorage.setItem("loginLogs", JSON.stringify(logs));
 
                 showPage('aktivitasBaru');
@@ -902,157 +951,141 @@
                 alert("Login gagal! Username atau password salah.");
             }
         }
+        
+        function generateCaptcha() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let captcha = '';
+            for (let i = 0; i < 6; i++) {
+                captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            captchaCode = captcha;
+            document.getElementById('captchaText').textContent = captchaCode;
+        }
 
         function handleDaftar(e) {
             e.preventDefault();
-            const username = document.getElementById("daftarUsername").value.trim();
-            const password = document.getElementById("daftarPassword").value;
+            const username = document.getElementById('daftarUsername').value.trim();
+            const divisi = document.getElementById('daftarDivisi').value.trim();
+            const email = document.getElementById('daftarEmail').value.trim();
+            const captchaInput = document.getElementById('captchaInput').value;
+            const daftarMessage = document.getElementById('daftarMessage');
 
-            if (!username || !password) {
-                document.getElementById("daftarMessage").style.color = "red";
-                document.getElementById("daftarMessage").textContent = "Username dan password wajib diisi!";
+            if (captchaInput !== captchaCode) {
+                daftarMessage.textContent = 'Kode CAPTCHA salah!';
+                daftarMessage.style.color = 'var(--danger-color)';
+                generateCaptcha();
                 return;
             }
 
             let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            if (users.find(u => u.username === username)) {
-                document.getElementById("daftarMessage").style.color = "red";
-                document.getElementById("daftarMessage").textContent = "Username sudah terdaftar.";
+            const existingUser = users.find(u => u.username === username);
+            const existingEmail = users.find(u => u.email === email);
+
+            if (existingUser) {
+                daftarMessage.textContent = 'Username sudah terdaftar.';
+                daftarMessage.style.color = 'var(--danger-color)';
+                return;
+            }
+            
+            if (existingEmail) {
+                daftarMessage.textContent = 'Email sudah terdaftar.';
+                daftarMessage.style.color = 'var(--danger-color)';
                 return;
             }
 
-            users.push({username, password, role: "User", divisi: "", email: "", shift: ""});
+            // Generate a default password. User can change it later.
+            const defaultPassword = "password123";
+
+            const newUser = {
+                nama: username, // Menggunakan username sebagai nama lengkap
+                username: username,
+                divisi: divisi,
+                email: email,
+                password: defaultPassword, // Default password
+                role: 'User',
+                shift: ''
+            };
+            
+            users.push(newUser);
             localStorage.setItem("userAccounts", JSON.stringify(users));
 
-            document.getElementById("daftarMessage").style.color = "green";
-            document.getElementById("daftarMessage").textContent = "Akun berhasil didaftarkan! Silakan login.";
-            document.getElementById("formDaftar").reset();
-
-            setTimeout(() => closeModal('modalDaftar'), 2000);
-        }
-
-        function handleLupa(e) {
-            e.preventDefault();
-            const username = document.getElementById("lupaUsername").value.trim();
-
-            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const user = users.find(u => u.username === username);
-            if (user) {
-                document.getElementById("lupaMessage").style.color = "green";
-                document.getElementById("lupaMessage").textContent = `Password untuk username "${username}" adalah: ${user.password}`;
-            } else {
-                document.getElementById("lupaMessage").style.color = "red";
-                document.getElementById("lupaMessage").textContent = "Username tidak ditemukan.";
-            }
-        }
-
-        function showPage(page) {
-            const content = document.getElementById('contentArea');
-            const currentUser = localStorage.getItem("currentUser");
-            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const user = users.find(u => u.username === currentUser);
-
-            const allMenuItems = document.querySelectorAll('.sidebar ul li');
-            allMenuItems.forEach(item => item.classList.remove('active'));
-            const activeMenuItem = document.querySelector(`[onclick="showPage('${page}')"]`);
-            if (activeMenuItem) {
-                activeMenuItem.classList.add('active');
-            }
-
-            content.style.opacity = 0;
-            setTimeout(() => {
-                if (page === 'aktivitasBaru') {
-                    content.innerHTML = `
-                        <h1>Aktivitas Terbaru</h1>
-                        <div id="welcomeMessageContainer"></div>
-                        <div class="aktivitas-container">
-                            <div class="aktivitas-card" onclick="openModal('modalAbsenMasuk')">
-                                <span class="icon"><i class="fa-solid fa-sign-in-alt"></i></span>
-                                <h3>Absen Masuk</h3>
-                            </div>
-                            <div class="aktivitas-card izin" onclick="openModal('modalPilihanIzin')">
-                                <span class="icon"><i class="fa-solid fa-hourglass-half"></i></span>
-                                <h3>Izin</h3>
-                            </div>
-                            <div class="aktivitas-card pulang" onclick="openModal('modalAbsenPulang')">
-                                <span class="icon"><i class="fa-solid fa-sign-out-alt"></i></span>
-                                <h3>Absen Pulang</h3>
-                            </div>
-                        </div>
-                        <div id="izinTimerContainer"></div>
-                    `;
-                    const welcomeMsgContainer = document.getElementById("welcomeMessageContainer");
-                    if (welcomeMsgContainer) {
-                        const welcomeMessage = document.createElement('div');
-                        welcomeMessage.id = 'welcomeMessage';
-                        welcomeMessage.innerHTML = `Halo, **${currentUser}**! Selamat datang di sistem manajemen karyawan.`;
-                        welcomeMsgContainer.appendChild(welcomeMessage);
-                    }
-                    checkRunningTimer();
-                } else if (page === 'tambahPemain') {
-                    if (!user || user.role !== "Admin") {
-                        content.innerHTML = '<h1>Akses Ditolak</h1><p>Anda tidak memiliki izin untuk melihat halaman ini.</p>';
-                        return;
-                    }
-                    content.innerHTML = `
-                        <div class="content-header">
-                            <h1>Data User</h1>
-                            <button class="btn-blue" onclick="refreshUserTable()">Refresh</button>
-                        </div>
-                        <table id="userTable"></table>
-                    `;
-                    renderDataUser();
-                } else if (page === 'riwayatLogin') {
-                    content.innerHTML = `
-                        <h1>Riwayat Login Karyawan</h1>
-                        <table id="riwayatLoginTable"></table>
-                    `;
-                    renderRiwayatLogin();
-                } else if (page === 'historyAktivitas') {
-                    content.innerHTML = `
-                        <h1>History Aktivitas Karyawan</h1>
-                        <table id="historyAktivitasTable"></table>
-                    `;
-                    renderHistoryAktivitas();
-                }
-                content.style.opacity = 1;
-            }, 500); // Wait for transition
-        }
-        
-        function logout() {
-            localStorage.removeItem("isLoggedIn");
-            localStorage.removeItem("currentUser");
-            window.location.reload();
-        }
-
-        // --- Data management functions ---
-        function renderDataUser() {
-            const table = document.getElementById("userTable");
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            daftarMessage.innerHTML = `Pendaftaran berhasil! Akun Anda telah dibuat dengan username **${username}** dan password sementara **${defaultPassword}**. Silakan login dan ubah password Anda.`;
+            daftarMessage.style.color = 'var(--success-color)';
             
-            let html = `
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Password</th>
-                        <th>Role</th>
-                        <th>Shift</th>
-                        <th>Divisi</th>
-                        <th>Email</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
+            document.getElementById("formDaftar").reset();
+            generateCaptcha();
+        }
+
+        function logout() {
+            localStorage.setItem("isLoggedIn", "false");
+            localStorage.removeItem("currentUser");
+            localStorage.removeItem("currentUserName");
+            location.reload();
+        }
+
+        // --- Navigation ---
+        function showPage(pageName) {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = '';
+            
+            switch (pageName) {
+                case 'tambahPemain':
+                    if (localStorage.getItem("currentUser") === "admin") {
+                        generateUserTable();
+                    } else {
+                        contentArea.innerHTML = `
+                            <div class="floating-box" style="text-align:center;">
+                                <h1>Akses Ditolak</h1>
+                                <p>Anda tidak memiliki izin untuk melihat halaman ini.</p>
+                            </div>
+                        `;
+                    }
+                    break;
+                case 'riwayatLogin':
+                    generateLoginHistory();
+                    break;
+                case 'aktivitasBaru':
+                    generateAktivitasPage();
+                    break;
+                case 'historyAktivitas':
+                    generateHistoryAktivitas();
+                    break;
+            }
+        }
+
+        // --- Dynamic Content Generation ---
+        function generateUserTable() {
+            const contentArea = document.getElementById('contentArea');
+            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+
+            let tableHTML = `
+                <div class="content-header">
+                    <h1>Data User</h1>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Nama Lengkap</th>
+                            <th>Divisi</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Shift</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
             `;
+
             users.forEach(user => {
-                html += `
+                tableHTML += `
                     <tr>
                         <td>${user.username}</td>
-                        <td>${user.password}</td>
-                        <td>${user.role}</td>
-                        <td>${user.shift}</td>
+                        <td>${user.nama}</td>
                         <td>${user.divisi}</td>
                         <td>${user.email}</td>
+                        <td>${user.role}</td>
+                        <td>${user.shift}</td>
                         <td>
                             <button class="edit-btn" onclick="editUser('${user.username}')">Edit</button>
                             <button class="delete-btn" onclick="deleteUser('${user.username}')">Hapus</button>
@@ -1060,81 +1093,36 @@
                     </tr>
                 `;
             });
-            html += `</tbody>`;
-            table.innerHTML = html;
-        }
 
-        function editUser(username) {
-            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const user = users.find(u => u.username === username);
-            if (!user) return;
-            
-            document.getElementById("editOriginalUsername").value = user.username;
-            document.getElementById("editRole").value = user.role;
-            document.getElementById("editShift").value = user.shift;
-            document.getElementById("editUsername").value = user.username;
-            document.getElementById("editPassword").value = user.password;
-            document.getElementById("editDivisi").value = user.divisi;
-            document.getElementById("editEmail").value = user.email;
-            openModal('modalEditUser');
-        }
-
-        function submitEditUser(e) {
-            e.preventDefault();
-            const originalUsername = document.getElementById("editOriginalUsername").value;
-            const newRole = document.getElementById("editRole").value;
-            const newShift = document.getElementById("editShift").value;
-            const newUsername = document.getElementById("editUsername").value;
-            const newPassword = document.getElementById("editPassword").value;
-            const newDivisi = document.getElementById("editDivisi").value;
-            const newEmail = document.getElementById("editEmail").value;
-            
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            let userIndex = users.findIndex(u => u.username === originalUsername);
-            
-            if (userIndex !== -1) {
-                users[userIndex].role = newRole;
-                users[userIndex].shift = newShift;
-                users[userIndex].username = newUsername;
-                users[userIndex].password = newPassword;
-                users[userIndex].divisi = newDivisi;
-                users[userIndex].email = newEmail;
-                localStorage.setItem("userAccounts", JSON.stringify(users));
-                document.getElementById("editMessage").style.color = "green";
-                document.getElementById("editMessage").textContent = "Data user berhasil diperbarui!";
-                renderDataUser();
-                setTimeout(() => closeModal('modalEditUser'), 1500);
-            } else {
-                document.getElementById("editMessage").style.color = "red";
-                document.getElementById("editMessage").textContent = "Gagal memperbarui data user.";
-            }
-        }
-
-        function deleteUser(username) {
-            if (!confirm(`Yakin ingin menghapus user "${username}"?`)) return;
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            users = users.filter(u => u.username !== username);
-            localStorage.setItem("userAccounts", JSON.stringify(users));
-            renderDataUser();
-        }
-
-        function renderRiwayatLogin() {
-            const table = document.getElementById("riwayatLoginTable");
-            const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
-            
-            let html = `
-                <thead>
-                    <tr>
-                        <th>Nama Karyawan</th>
-                        <th>Waktu Login</th>
-                        <th>Perangkat</th>
-                        <th>Alamat IP</th>
-                    </tr>
-                </thead>
-                <tbody>
+            tableHTML += `
+                    </tbody>
+                </table>
             `;
+            contentArea.innerHTML = tableHTML;
+        }
+
+        function generateLoginHistory() {
+            const contentArea = document.getElementById('contentArea');
+            const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
+
+            let tableHTML = `
+                <div class="content-header">
+                    <h1>Riwayat Login</h1>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Waktu Login</th>
+                            <th>Perangkat</th>
+                            <th>IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
             logs.reverse().forEach(log => {
-                html += `
+                tableHTML += `
                     <tr>
                         <td>${log.nama}</td>
                         <td>${log.waktu}</td>
@@ -1143,175 +1131,366 @@
                     </tr>
                 `;
             });
-            html += `</tbody>`;
-            table.innerHTML = html;
+
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+            contentArea.innerHTML = tableHTML;
         }
 
-        function refreshUserTable() {
-            renderDataUser();
-        }
-
-        function submitShift(shift) {
+        function generateAktivitasPage() {
+            const contentArea = document.getElementById('contentArea');
             const currentUser = localStorage.getItem("currentUser");
-            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const userIndex = users.findIndex(u => u.username === currentUser);
+            const currentUserName = localStorage.getItem("currentUserName");
+            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
+            const today = new Date().toDateString();
+            const hasAbsenMasuk = userActivities[currentUser] && userActivities[currentUser][today] && userActivities[currentUser][today].absenMasuk;
 
-            if (userIndex !== -1) {
-                users[userIndex].shift = shift;
-                localStorage.setItem("userAccounts", JSON.stringify(users));
+            contentArea.innerHTML = `
+                <div class="content-header">
+                    <h1>Selamat Datang, ${currentUserName}!</h1>
+                </div>
+                <div id="welcomeMessage">
+                    Absen Masuk untuk hari ini adalah <strong>WAJIB</strong>. Silakan pilih shift Anda.
+                </div>
+                <div class="aktivitas-container">
+                    <div class="aktivitas-card" id="absenMasukCard">
+                        <i class="fa-solid fa-clock icon"></i>
+                        <h3>Absen Masuk</h3>
+                    </div>
+                    <div class="aktivitas-card izin" id="izinCard">
+                        <i class="fa-solid fa-person-walking-arrow-right icon"></i>
+                        <h3>Izin</h3>
+                    </div>
+                    <div class="aktivitas-card pulang" id="absenPulangCard">
+                        <i class="fa-solid fa-door-closed icon"></i>
+                        <h3>Absen Pulang</h3>
+                    </div>
+                </div>
+                <div id="izinTimerContainer"></div>
+            `;
+            
+            // Event listeners for activity cards
+            document.getElementById('absenMasukCard').addEventListener('click', () => {
+                if (!hasAbsenMasuk) {
+                    openModal('modalAbsenMasuk');
+                } else {
+                    alert('Anda sudah absen masuk hari ini.');
+                }
+            });
+            document.getElementById('izinCard').addEventListener('click', () => {
+                if (hasAbsenMasuk) {
+                    openModal('modalPilihanIzin');
+                } else {
+                    alert('Silakan absen masuk terlebih dahulu.');
+                }
+            });
+            document.getElementById('absenPulangCard').addEventListener('click', () => {
+                 if (hasAbsenMasuk) {
+                    openModal('modalAbsenPulang');
+                } else {
+                    alert('Silakan absen masuk terlebih dahulu.');
+                }
+            });
+        }
+        
+        // Fungsi generateHistoryAktivitas yang telah diperbarui
+        function generateHistoryAktivitas() {
+            const contentArea = document.getElementById('contentArea');
+            const currentUser = localStorage.getItem("currentUser");
+            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
+            const today = new Date().toDateString();
+            
+            let historyHTML = `
+                <div class="content-header">
+                    <h1>History Aktivitas</h1>
+                </div>
+                <div class="floating-box">
+                    <h2>Riwayat Aktivitas Anda</h2>
+                    <p>Waktu Izin Hari Ini: <strong id="totalIzinTime">00:00:00</strong></p>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Aktivitas</th>
+                            <th>Keterangan</th>
+                            <th>Waktu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                    </tbody>
+                </table>
+            `;
+            contentArea.innerHTML = historyHTML;
 
-                const activity = {
-                    nama: currentUser,
-                    waktu: new Date().toLocaleString('id-ID'),
-                    jenis: 'Absen Masuk',
-                    keterangan: `Shift ${shift}`
-                };
-                saveActivity(activity);
+            const activitiesForUser = userActivities[currentUser] || {};
+            const historyTableBody = document.getElementById('historyTableBody');
+            
+            let izinTimeToday = 0;
+            const todayActivities = activitiesForUser[today] || {};
+
+            if (todayActivities.izin) {
+                todayActivities.izin.forEach(izin => {
+                    izinTimeToday += parseDurationToSeconds(izin.durasi);
+                });
+            }
+            
+            document.getElementById('totalIzinTime').textContent = formatTime(izinTimeToday);
+            
+            // Generate full history table
+            for (const date in activitiesForUser) {
+                const activities = activitiesForUser[date];
+                if (activities.absenMasuk) {
+                    const absensiMasukRow = `
+                        <tr>
+                            <td>${date}</td>
+                            <td>Absen Masuk</td>
+                            <td>Shift ${activities.absenMasuk.shift}</td>
+                            <td>${activities.absenMasuk.waktu}</td>
+                        </tr>
+                    `;
+                    historyTableBody.innerHTML += absensiMasukRow;
+                }
                 
-                alert(`Absen masuk untuk shift ${shift} berhasil!`);
-                closeModal('modalAbsenMasuk');
-                showPage('aktivitasBaru');
+                if (activities.izin) {
+                    activities.izin.forEach(izin => {
+                        const izinRow = `
+                            <tr>
+                                <td>${date}</td>
+                                <td>Izin</td>
+                                <td>${izin.keterangan} (${izin.durasi})</td>
+                                <td>${izin.waktuMulai}</td>
+                            </tr>
+                        `;
+                        historyTableBody.innerHTML += izinRow;
+                    });
+                }
+                
+                if (activities.absenPulang) {
+                     const absensiPulangRow = `
+                        <tr>
+                            <td>${date}</td>
+                            <td>Absen Pulang</td>
+                            <td>-</td>
+                            <td>${activities.absenPulang.waktu}</td>
+                        </tr>
+                    `;
+                    historyTableBody.innerHTML += absensiPulangRow;
+                }
             }
         }
 
-        let timerStartTime = 0;
-        let timerReason = "";
+        // --- CRUD Operations for Users (Admin Only) ---
+        function editUser(usernameToEdit) {
+            const users = JSON.parse(localStorage.getItem("userAccounts"));
+            const user = users.find(u => u.username === usernameToEdit);
+            if (!user) return;
 
-        function startIzinTimer(reason) {
-            timerReason = reason;
-            timerStartTime = Date.now();
-            localStorage.setItem('timerRunning', 'true');
-            localStorage.setItem('timerStartTime', timerStartTime);
-            localStorage.setItem('timerReason', reason);
-            closeModal('modalPilihanIzin');
-            showPage('aktivitasBaru');
-            renderTimer();
+            document.getElementById('editOriginalUsername').value = user.username;
+            document.getElementById('editRole').value = user.role;
+            document.getElementById('editShift').value = user.shift;
+            document.getElementById('editUsername').value = user.username;
+            document.getElementById('editPassword').value = user.password;
+            document.getElementById('editDivisi').value = user.divisi;
+            document.getElementById('editEmail').value = user.email;
+
+            openModal('modalEditUser');
+        }
+
+        function submitEditUser(e) {
+            e.preventDefault();
+            const originalUsername = document.getElementById('editOriginalUsername').value;
+            const newRole = document.getElementById('editRole').value;
+            const newShift = document.getElementById('editShift').value;
+            const newUsername = document.getElementById('editUsername').value;
+            const newPassword = document.getElementById('editPassword').value;
+            const newDivisi = document.getElementById('editDivisi').value;
+            const newEmail = document.getElementById('editEmail').value;
+            const editMessage = document.getElementById('editMessage');
+
+            let users = JSON.parse(localStorage.getItem("userAccounts"));
+            const userIndex = users.findIndex(u => u.username === originalUsername);
+            if (userIndex === -1) {
+                editMessage.textContent = "User tidak ditemukan.";
+                editMessage.style.color = 'var(--danger-color)';
+                return;
+            }
+
+            // Check for duplicate username/email if they are changed
+            if (newUsername !== originalUsername && users.find(u => u.username === newUsername)) {
+                 editMessage.textContent = 'Username sudah ada.';
+                 editMessage.style.color = 'var(--danger-color)';
+                 return;
+            }
+            if (newEmail !== users[userIndex].email && users.find(u => u.email === newEmail)) {
+                 editMessage.textContent = 'Email sudah ada.';
+                 editMessage.style.color = 'var(--danger-color)';
+                 return;
+            }
+
+            users[userIndex].role = newRole;
+            users[userIndex].shift = newShift;
+            users[userIndex].username = newUsername;
+            users[userIndex].password = newPassword;
+            users[userIndex].divisi = newDivisi;
+            users[userIndex].email = newEmail;
+            
+            localStorage.setItem("userAccounts", JSON.stringify(users));
+            editMessage.textContent = "Data user berhasil diupdate!";
+            editMessage.style.color = 'var(--success-color)';
+            
+            // Reload user table to show changes
+            setTimeout(() => {
+                closeModal('modalEditUser');
+                showPage('tambahPemain');
+            }, 1000);
+        }
+
+        function deleteUser(usernameToDelete) {
+            if (usernameToDelete === "admin") {
+                alert("Tidak bisa menghapus akun admin.");
+                return;
+            }
+            if (confirm(`Apakah Anda yakin ingin menghapus user ${usernameToDelete}?`)) {
+                let users = JSON.parse(localStorage.getItem("userAccounts"));
+                users = users.filter(user => user.username !== usernameToDelete);
+                localStorage.setItem("userAccounts", JSON.stringify(users));
+                showPage('tambahPemain'); // Reload user table
+            }
         }
         
-        function renderTimer() {
-            const timerContainer = document.getElementById("izinTimerContainer");
-            if (!timerContainer) return;
+        // --- Activity and Timer Functions ---
+        function submitShift(shift) {
+            const currentUser = localStorage.getItem("currentUser");
+            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
+            const today = new Date().toDateString();
+            const now = new Date();
 
-            const now = Date.now();
-            const elapsedSeconds = Math.floor((now - timerStartTime) / 1000);
-            const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+            if (!userActivities[currentUser]) {
+                userActivities[currentUser] = {};
+            }
+            if (!userActivities[currentUser][today]) {
+                 userActivities[currentUser][today] = {};
+            }
+
+            userActivities[currentUser][today].absenMasuk = {
+                shift: shift,
+                waktu: now.toLocaleString('id-ID')
+            };
+
+            userActivities[currentUser][today].totalWorkTime = "00:00:00"; // Initialize total work time
             
-            let hours = Math.floor(elapsedSeconds / 3600);
-            let minutes = Math.floor((elapsedSeconds % 3600) / 60);
-            let seconds = elapsedSeconds % 60;
-
-            hours = hours.toString().padStart(2, '0');
-            minutes = minutes.toString().padStart(2, '0');
-            seconds = seconds.toString().padStart(2, '0');
+            localStorage.setItem("userActivities", JSON.stringify(userActivities));
+            closeModal('modalAbsenMasuk');
             
-            const isWarning = elapsedMinutes >= 15;
-            const timerWarningHtml = isWarning ? `<div id="timer-alert">Melebihi Batas Waktu Izin!</div>` : '';
-
-            const timerHtml = `
-                <div class="timer-wrapper">
-                    <div id="timer-container" class="${isWarning ? 'warning' : ''}">
-                        <p id="timer-info">Timer untuk Izin: <strong>${timerReason}</strong></p>
-                        <div id="timer-display">${hours}:${minutes}:${seconds}</div>
-                        ${timerWarningHtml}
-                    </div>
-                    <button class="timer-btn stop" onclick="stopIzinTimer()">Stop Timer</button>
-                </div>
-            `;
-            timerContainer.innerHTML = timerHtml;
-            timerContainer.classList.add('start-timer');
+            const welcomeMessage = document.getElementById("welcomeMessage");
+            welcomeMessage.innerHTML = `Anda telah absen untuk **Shift ${shift}**. Selamat bekerja!`;
         }
 
-        function checkRunningTimer() {
-            if (localStorage.getItem('timerRunning') === 'true') {
-                timerStartTime = parseInt(localStorage.getItem('timerStartTime'));
-                timerReason = localStorage.getItem('timerReason');
-                
-                renderTimer();
-                timerInterval = setInterval(() => {
-                    renderTimer();
-                }, 1000);
+        function startIzinTimer(izinType) {
+            const container = document.getElementById('izinTimerContainer');
+            container.innerHTML = `
+                <div id="timer-container">
+                    <p id="timer-info">Waktu Izin: ${izinType}</p>
+                    <h3 id="timer-display">00:00:00</h3>
+                    <button class="timer-btn stop" onclick="stopIzinTimer()">Selesai Izin</button>
+                    <div id="timer-alert"></div>
+                </div>
+            `;
+            container.classList.add('start-timer');
+            currentIzinType = izinType;
+            izinTimerSeconds = 0;
+            timerWarningShown = false;
+            
+            timerInterval = setInterval(updateIzinTimer, 1000);
+            
+            closeModal('modalPilihanIzin');
+        }
+
+        function updateIzinTimer() {
+            izinTimerSeconds++;
+            const display = document.getElementById('timer-display');
+            const alert = document.getElementById('timer-alert');
+            const container = document.getElementById('timer-container');
+
+            display.textContent = formatTime(izinTimerSeconds);
+
+            // Show warning at 20 minutes
+            if (izinTimerSeconds >= 20 * 60 && !timerWarningShown) {
+                alert.textContent = "Waktu izin Anda sudah 20 menit!";
+                container.classList.add('warning');
+                timerWarningShown = true;
             }
         }
 
         function stopIzinTimer() {
-            const elapsedSeconds = Math.floor((Date.now() - timerStartTime) / 1000);
-            const minutes = Math.floor(elapsedSeconds / 60);
+            clearInterval(timerInterval);
             
-            if (confirm(`Izin selesai. Durasi: ${minutes} menit. Simpan aktivitas ini?`)) {
-                const activity = {
-                    nama: localStorage.getItem("currentUser"),
-                    waktu: new Date().toLocaleString('id-ID'),
-                    jenis: 'Izin',
-                    keterangan: `${timerReason} selama ${minutes} menit`
-                };
-                saveActivity(activity);
+            const currentUser = localStorage.getItem("currentUser");
+            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
+            const today = new Date().toDateString();
+            const now = new Date();
+
+            if (userActivities[currentUser] && userActivities[currentUser][today]) {
+                if (!userActivities[currentUser][today].izin) {
+                    userActivities[currentUser][today].izin = [];
+                }
+                userActivities[currentUser][today].izin.push({
+                    keterangan: currentIzinType,
+                    waktuMulai: now.toLocaleString('id-ID'),
+                    durasi: formatTime(izinTimerSeconds)
+                });
+                
+                localStorage.setItem("userActivities", JSON.stringify(userActivities));
             }
             
-            clearInterval(timerInterval);
-            timerInterval = null;
-            localStorage.removeItem('timerRunning');
-            localStorage.removeItem('timerStartTime');
-            localStorage.removeItem('timerReason');
-            
-            const timerContainer = document.getElementById("izinTimerContainer");
-            timerContainer.classList.remove('start-timer');
-            timerContainer.classList.add('stop-timer');
+            const container = document.getElementById('izinTimerContainer');
+            container.classList.add('stop-timer');
             setTimeout(() => {
-                timerContainer.innerHTML = '';
-                timerContainer.classList.remove('stop-timer');
+                 container.innerHTML = '';
+                 container.classList.remove('start-timer', 'stop-timer');
             }, 500);
         }
 
         function confirmAbsenPulang() {
             const currentUser = localStorage.getItem("currentUser");
-            const activity = {
-                nama: currentUser,
-                waktu: new Date().toLocaleString('id-ID'),
-                jenis: 'Absen Pulang',
-                keterangan: 'Selesai kerja'
-            };
-            saveActivity(activity);
-            
-            alert('Absen pulang berhasil! Sampai jumpa besok.');
-            closeModal('modalAbsenPulang');
+            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
+            const today = new Date().toDateString();
+            const now = new Date();
+
+            if (userActivities[currentUser] && userActivities[currentUser][today] && userActivities[currentUser][today].absenMasuk) {
+                const absenMasukTime = new Date(userActivities[currentUser][today].absenMasuk.waktu);
+                const timeDiffSeconds = Math.floor((now - absenMasukTime) / 1000);
+                
+                userActivities[currentUser][today].absenPulang = {
+                    waktu: now.toLocaleString('id-ID')
+                };
+                userActivities[currentUser][today].totalWorkTime = formatTime(timeDiffSeconds);
+                
+                localStorage.setItem("userActivities", JSON.stringify(userActivities));
+                closeModal('modalAbsenPulang');
+                showPage('historyAktivitas');
+            } else {
+                alert("Anda belum absen masuk hari ini.");
+                closeModal('modalAbsenPulang');
+            }
         }
 
-        function saveActivity(activity) {
-            const history = JSON.parse(localStorage.getItem("activityHistory") || "[]");
-            history.push(activity);
-            localStorage.setItem("activityHistory", JSON.stringify(history));
+        // --- Helper Functions ---
+        function formatTime(seconds) {
+            const h = String(Math.floor(seconds / 3600)).padStart(2, '0');
+            const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+            const s = String(seconds % 60).padStart(2, '0');
+            return `${h}:${m}:${s}`;
         }
-
-        function renderHistoryAktivitas() {
-            const table = document.getElementById("historyAktivitasTable");
-            const history = JSON.parse(localStorage.getItem("activityHistory") || "[]");
-            
-            let html = `
-                <thead>
-                    <tr>
-                        <th>Nama Karyawan</th>
-                        <th>Waktu</th>
-                        <th>Jenis Aktivitas</th>
-                        <th>Keterangan</th>
-                    </tr>
-                </thead>
-                <tbody>
-            `;
-            history.reverse().forEach(log => {
-                html += `
-                    <tr>
-                        <td>${log.nama}</td>
-                        <td>${log.waktu}</td>
-                        <td>${log.jenis}</td>
-                        <td>${log.keterangan}</td>
-                    </tr>
-                `;
-            });
-            html += `</tbody>`;
-            table.innerHTML = html;
+        
+        function parseDurationToSeconds(duration) {
+            const parts = duration.split(':').map(Number);
+            return parts[0] * 3600 + parts[1] * 60 + parts[2];
         }
 
     </script>
-
 </body>
 </html>
