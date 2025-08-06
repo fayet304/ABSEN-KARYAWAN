@@ -829,6 +829,10 @@
     </div>
 
     <script>
+        // --- Configuration ---
+        // GANTI DENGAN URL APPS SCRIPT ANDA DI SINI
+        const appsScriptUrl = "https://script.google.com/macros/s/AKfycbwmUAO57AYDgQvB3TY0nNMInV9NPZvCF2tap8PHD9lG8JFS8ml_ZXNDzYlCUu-01CYo_w/exec";
+
         // Global variable for the timer interval
         let timerInterval = null;
         let captchaCode = '';
@@ -854,16 +858,16 @@
             setTimeout(() => {
                 modal.style.display = "none";
             }, 400);
-            
+
             // Reset messages and forms on close
-            if(id === "modalDaftar") {
+            if (id === "modalDaftar") {
                 document.getElementById("formDaftar").reset();
                 document.getElementById("daftarMessage").textContent = "";
             }
         }
 
         // Tutup modal jika klik di luar konten modal
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             const modalDaftar = document.getElementById("modalDaftar");
             const modalLupa = document.getElementById("modalLupa");
             const modalEdit = document.getElementById("modalEditUser");
@@ -905,16 +909,16 @@
             const currentUser = localStorage.getItem("currentUser");
             const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
             const user = users.find(u => u.username === currentUser);
-            
+
             const menuDataUser = document.getElementById("menuDataUser");
             if (menuDataUser) {
-                 if (user && user.role === "Admin") {
+                if (user && user.role === "Admin") {
                     menuDataUser.style.display = "list-item";
                 } else {
                     menuDataUser.style.display = "none";
                 }
             }
-           
+
         }
 
         function handleLogin(e) {
@@ -923,8 +927,8 @@
             const password = document.getElementById('password').value;
 
             let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const adminUser = {username: "admin", password: "12345", role: "Admin", nama: "Admin", divisi: "Admin", email: "admin@example.com", shift: ""};
-            
+            const adminUser = { username: "admin", password: "12345", role: "Admin", nama: "Admin", divisi: "Admin", email: "admin@example.com", shift: "" };
+
             if (!users.find(u => u.username === "admin")) {
                 users.unshift(adminUser);
                 localStorage.setItem("userAccounts", JSON.stringify(users));
@@ -955,7 +959,7 @@
                 alert("Login gagal! Username atau password salah.");
             }
         }
-        
+
         function generateCaptcha() {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let captcha = '';
@@ -966,7 +970,7 @@
             document.getElementById('captchaText').textContent = captchaCode;
         }
 
-        function handleDaftar(e) {
+        async function handleDaftar(e) {
             e.preventDefault();
             const namaLengkap = document.getElementById('daftarNamaLengkap').value.trim();
             const password = document.getElementById('daftarPassword').value;
@@ -983,8 +987,7 @@
             }
 
             let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            // Menggunakan nama lengkap sebagai username
-            const existingUser = users.find(u => u.nama === namaLengkap);
+            const existingUser = users.find(u => u.username === namaLengkap);
             const existingEmail = users.find(u => u.email === email);
 
             if (existingUser) {
@@ -992,16 +995,16 @@
                 daftarMessage.style.color = 'var(--danger-color)';
                 return;
             }
-            
+
             if (existingEmail) {
                 daftarMessage.textContent = 'Email sudah terdaftar.';
                 daftarMessage.style.color = 'var(--danger-color)';
                 return;
             }
-            
+
             const newUser = {
                 nama: namaLengkap,
-                username: namaLengkap, // Set username to be the same as namaLengkap
+                username: namaLengkap,
                 password: password,
                 divisi: divisi,
                 email: email,
@@ -1009,12 +1012,19 @@
                 shift: ''
             };
             
+            // Save to Google Sheet
+            const result = await saveRegistration(newUser);
+            if (!result.success) {
+                 daftarMessage.textContent = result.message;
+                 daftarMessage.style.color = 'var(--danger-color)';
+                 return;
+            }
+
             users.push(newUser);
             localStorage.setItem("userAccounts", JSON.stringify(users));
-
-            daftarMessage.innerHTML = `Pendaftaran berhasil! Akun Anda telah dibuat. Silakan login.`;
+            daftarMessage.innerHTML = `Pendaftaran berhasil! Akun Anda telah dibuat dengan username **${namaLengkap}**. Silakan login.`;
             daftarMessage.style.color = 'var(--success-color)';
-            
+
             document.getElementById("formDaftar").reset();
             generateCaptcha();
         }
@@ -1030,7 +1040,7 @@
         function showPage(pageName) {
             const contentArea = document.getElementById('contentArea');
             contentArea.innerHTML = '';
-            
+
             switch (pageName) {
                 case 'tambahPemain':
                     if (localStorage.getItem("currentUser") === "admin") {
@@ -1103,7 +1113,7 @@
             `;
             contentArea.innerHTML = tableHTML;
         }
-        
+
         function generateLoginHistory() {
             const contentArea = document.getElementById('contentArea');
             const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
@@ -1173,7 +1183,7 @@
                 </div>
                 <div id="izinTimerContainer"></div>
             `;
-            
+
             // Event listeners for activity cards
             document.getElementById('absenMasukCard').addEventListener('click', () => {
                 if (!hasAbsenMasuk) {
@@ -1190,19 +1200,18 @@
                 }
             });
             document.getElementById('absenPulangCard').addEventListener('click', () => {
-                 if (hasAbsenMasuk) {
+                if (hasAbsenMasuk) {
                     openModal('modalAbsenPulang');
                 } else {
                     alert('Silakan absen masuk terlebih dahulu.');
                 }
             });
         }
-        
+
         function generateHistoryAktivitas() {
             const contentArea = document.getElementById('contentArea');
             const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
             const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const currentUser = localStorage.getItem("currentUser");
             
             let historyHTML = `
                 <div class="content-header">
@@ -1327,14 +1336,14 @@
 
             // Check for duplicate username/email if they are changed
             if (newUsername !== originalUsername && users.find(u => u.username === newUsername)) {
-                 editMessage.textContent = 'Username sudah ada.';
-                 editMessage.style.color = 'var(--danger-color)';
-                 return;
+                editMessage.textContent = 'Username sudah ada.';
+                editMessage.style.color = 'var(--danger-color)';
+                return;
             }
             if (newEmail !== users[userIndex].email && users.find(u => u.email === newEmail)) {
-                 editMessage.textContent = 'Email sudah ada.';
-                 editMessage.style.color = 'var(--danger-color)';
-                 return;
+                editMessage.textContent = 'Email sudah ada.';
+                editMessage.style.color = 'var(--danger-color)';
+                return;
             }
 
             users[userIndex].role = newRole;
@@ -1343,11 +1352,11 @@
             users[userIndex].password = newPassword;
             users[userIndex].divisi = newDivisi;
             users[userIndex].email = newEmail;
-            
+
             localStorage.setItem("userAccounts", JSON.stringify(users));
             editMessage.textContent = "Data user berhasil diupdate!";
             editMessage.style.color = 'var(--success-color)';
-            
+
             // Reload user table to show changes
             setTimeout(() => {
                 closeModal('modalEditUser');
@@ -1367,9 +1376,9 @@
                 showPage('tambahPemain'); // Reload user table
             }
         }
-        
+
         // --- Activity and Timer Functions ---
-        function submitShift(shift) {
+        async function submitShift(shift) {
             const currentUser = localStorage.getItem("currentUser");
             const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
             const today = new Date().toDateString();
@@ -1379,7 +1388,7 @@
                 userActivities[currentUser] = {};
             }
             if (!userActivities[currentUser][today]) {
-                 userActivities[currentUser][today] = {};
+                userActivities[currentUser][today] = {};
             }
 
             userActivities[currentUser][today].absenMasuk = {
@@ -1388,10 +1397,13 @@
             };
 
             userActivities[currentUser][today].totalWorkTime = "00:00:00"; // Initialize total work time
-            
+
             localStorage.setItem("userActivities", JSON.stringify(userActivities));
             closeModal('modalAbsenMasuk');
-            
+
+            // Save to Google Sheet
+            await saveActivity(currentUser, 'Absen Masuk', `Shift ${shift}`, now.toLocaleString('id-ID'), '-');
+
             const welcomeMessage = document.getElementById("welcomeMessage");
             welcomeMessage.innerHTML = `Anda telah absen untuk **Shift ${shift}**. Selamat bekerja!`;
         }
@@ -1410,9 +1422,9 @@
             currentIzinType = izinType;
             izinTimerSeconds = 0;
             timerWarningShown = false;
-            
+
             timerInterval = setInterval(updateIzinTimer, 1000);
-            
+
             closeModal('modalPilihanIzin');
         }
 
@@ -1432,13 +1444,14 @@
             }
         }
 
-        function stopIzinTimer() {
+        async function stopIzinTimer() {
             clearInterval(timerInterval);
-            
+
             const currentUser = localStorage.getItem("currentUser");
             const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
             const today = new Date().toDateString();
             const now = new Date();
+            const formattedDuration = formatTime(izinTimerSeconds);
 
             if (userActivities[currentUser] && userActivities[currentUser][today]) {
                 if (!userActivities[currentUser][today].izin) {
@@ -1447,21 +1460,24 @@
                 userActivities[currentUser][today].izin.push({
                     keterangan: currentIzinType,
                     waktuMulai: now.toLocaleString('id-ID'),
-                    durasi: formatTime(izinTimerSeconds)
+                    durasi: formattedDuration
                 });
-                
+
                 localStorage.setItem("userActivities", JSON.stringify(userActivities));
+                
+                // Save to Google Sheet
+                await saveActivity(currentUser, 'Izin', `${currentIzinType} (${formattedDuration})`, now.toLocaleString('id-ID'), formattedDuration);
             }
-            
+
             const container = document.getElementById('izinTimerContainer');
             container.classList.add('stop-timer');
             setTimeout(() => {
-                 container.innerHTML = '';
-                 container.classList.remove('start-timer', 'stop-timer');
+                container.innerHTML = '';
+                container.classList.remove('start-timer', 'stop-timer');
             }, 500);
         }
 
-        function confirmAbsenPulang() {
+        async function confirmAbsenPulang() {
             const currentUser = localStorage.getItem("currentUser");
             const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
             const today = new Date().toDateString();
@@ -1470,14 +1486,18 @@
             if (userActivities[currentUser] && userActivities[currentUser][today] && userActivities[currentUser][today].absenMasuk) {
                 const absenMasukTime = new Date(userActivities[currentUser][today].absenMasuk.waktu);
                 const timeDiffSeconds = Math.floor((now - absenMasukTime) / 1000);
-                
+
                 userActivities[currentUser][today].absenPulang = {
                     waktu: now.toLocaleString('id-ID')
                 };
                 userActivities[currentUser][today].totalWorkTime = formatTime(timeDiffSeconds);
-                
+
                 localStorage.setItem("userActivities", JSON.stringify(userActivities));
                 closeModal('modalAbsenPulang');
+                
+                // Save to Google Sheet
+                await saveActivity(currentUser, 'Absen Pulang', '-', now.toLocaleString('id-ID'), '-');
+                
                 showPage('historyAktivitas');
             } else {
                 alert("Anda belum absen masuk hari ini.");
@@ -1492,12 +1512,51 @@
             const s = String(seconds % 60).padStart(2, '0');
             return `${h}:${m}:${s}`;
         }
-        
+
         function parseDurationToSeconds(duration) {
             const parts = duration.split(':').map(Number);
             return parts[0] * 3600 + parts[1] * 60 + parts[2];
         }
+        
+        // --- New functions to send data to Apps Script ---
+        async function sendDataToAppsScript(data) {
+            try {
+                const response = await fetch(appsScriptUrl, {
+                    method: 'POST',
+                    body: new URLSearchParams(data)
+                });
+                const result = await response.json();
+                console.log(result.message);
+                return result;
+            } catch (error) {
+                console.error('Error sending data to Apps Script:', error);
+                return { success: false, message: 'Failed to connect to server.' };
+            }
+        }
 
+        function saveRegistration(userData) {
+            const data = {
+                action: 'register',
+                namaLengkap: userData.nama,
+                username: userData.username,
+                password: userData.password,
+                divisi: userData.divisi,
+                email: userData.email,
+            };
+            return sendDataToAppsScript(data);
+        }
+        
+        function saveActivity(username, activity, description, startTime, duration) {
+            const data = {
+                action: 'submitActivity',
+                username: username,
+                aktivitas: activity,
+                keterangan: description,
+                waktuMulai: startTime,
+                durasi: duration,
+            };
+            return sendDataToAppsScript(data);
+        }
     </script>
 </body>
 </html>
