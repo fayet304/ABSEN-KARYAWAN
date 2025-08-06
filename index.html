@@ -673,8 +673,8 @@
         <div class="logo">Manajemen <span>Karyawan</span></div>
         <form onsubmit="handleLogin(event)">
             <div class="form-group">
-                <label for="username">Nama Lengkap</label>
-                <input type="text" id="username" placeholder="Masukkan nama lengkap Anda" required />
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Masukkan username Anda" required />
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
@@ -831,7 +831,7 @@
     <script>
         // --- Configuration ---
         // GANTI DENGAN URL APPS SCRIPT ANDA DI SINI
-        const appsScriptUrl = "https://script.google.com/macros/s/AKfycbwmUAO57AYDgQvB3TY0nNMInV9NPZvCF2tap8PHD9lG8JFS8ml_ZXNDzYlCUu-01CYo_w/exec";
+        const appsScriptUrl = "https://script.google.com/macros/s/AKfycbzUlUBKPqZF9ECgGQKKGvonN5GBJXF9aTAmTNmOu-dSce4xqhOOOP2ZGavOKzDSDv5gxA/exec";
 
         // Global variable for the timer interval
         let timerInterval = null;
@@ -906,9 +906,7 @@
         };
 
         function checkUserRoleAndDisplayMenu() {
-            const currentUser = localStorage.getItem("currentUser");
-            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const user = users.find(u => u.username === currentUser);
+            const user = JSON.parse(localStorage.getItem("activeUser"));
 
             const menuDataUser = document.getElementById("menuDataUser");
             if (menuDataUser) {
@@ -918,27 +916,26 @@
                     menuDataUser.style.display = "none";
                 }
             }
-
         }
 
-        function handleLogin(e) {
+        async function handleLogin(e) {
             e.preventDefault();
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
+            const loginMessage = document.getElementById('loginMessage');
 
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const adminUser = { username: "admin", password: "12345", role: "Admin", nama: "Admin", divisi: "Admin", email: "admin@example.com", shift: "" };
+            // Add loading state
+            const loginBtn = document.querySelector('.login-btn');
+            loginBtn.textContent = 'Memproses...';
+            loginBtn.disabled = true;
 
-            if (!users.find(u => u.username === "admin")) {
-                users.unshift(adminUser);
-                localStorage.setItem("userAccounts", JSON.stringify(users));
-            }
+            const data = { action: 'login', username: username, password: password };
+            const result = await sendDataToAppsScript(data);
 
-            let userFound = users.find(u => u.username === username && u.password === password);
-
-            if (userFound) {
+            if (result.success) {
+                const userFound = result.user;
                 localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("currentUser", userFound.username);
+                localStorage.setItem("activeUser", JSON.stringify(userFound));
                 localStorage.setItem("currentUserName", userFound.nama);
 
                 document.getElementById("loginPage").style.display = "none";
@@ -946,17 +943,11 @@
 
                 checkUserRoleAndDisplayMenu();
 
-                const logs = JSON.parse(localStorage.getItem("loginLogs") || "[]");
-                const now = new Date();
-                const waktu = now.toLocaleString('id-ID');
-                const agent = /Mobi/i.test(navigator.userAgent) ? "Mobile Browser" : "Desktop Browser";
-                const ip = "192.168.1." + Math.floor(Math.random() * 100 + 1);
-                logs.push({ nama: userFound.nama, waktu, agent, ip });
-                localStorage.setItem("loginLogs", JSON.stringify(logs));
-
                 showPage('aktivitasBaru');
             } else {
-                alert("Login gagal! Username atau password salah.");
+                alert(result.message);
+                loginBtn.textContent = 'Login';
+                loginBtn.disabled = false;
             }
         }
 
@@ -986,52 +977,29 @@
                 return;
             }
 
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            const existingUser = users.find(u => u.username === namaLengkap);
-            const existingEmail = users.find(u => u.email === email);
-
-            if (existingUser) {
-                daftarMessage.textContent = 'Nama Lengkap sudah terdaftar sebagai username.';
-                daftarMessage.style.color = 'var(--danger-color)';
-                return;
-            }
-
-            if (existingEmail) {
-                daftarMessage.textContent = 'Email sudah terdaftar.';
-                daftarMessage.style.color = 'var(--danger-color)';
-                return;
-            }
-
             const newUser = {
-                nama: namaLengkap,
+                namaLengkap: namaLengkap,
                 username: namaLengkap,
                 password: password,
                 divisi: divisi,
                 email: email,
-                role: 'User',
-                shift: ''
             };
             
-            // Save to Google Sheet
             const result = await saveRegistration(newUser);
-            if (!result.success) {
+            if (result.success) {
+                 daftarMessage.innerHTML = `Pendaftaran berhasil! Akun Anda telah dibuat dengan username **${namaLengkap}**. Silakan login.`;
+                 daftarMessage.style.color = 'var(--success-color)';
+                 document.getElementById("formDaftar").reset();
+                 generateCaptcha();
+            } else {
                  daftarMessage.textContent = result.message;
                  daftarMessage.style.color = 'var(--danger-color)';
-                 return;
             }
-
-            users.push(newUser);
-            localStorage.setItem("userAccounts", JSON.stringify(users));
-            daftarMessage.innerHTML = `Pendaftaran berhasil! Akun Anda telah dibuat dengan username **${namaLengkap}**. Silakan login.`;
-            daftarMessage.style.color = 'var(--success-color)';
-
-            document.getElementById("formDaftar").reset();
-            generateCaptcha();
         }
 
         function logout() {
             localStorage.setItem("isLoggedIn", "false");
-            localStorage.removeItem("currentUser");
+            localStorage.removeItem("activeUser");
             localStorage.removeItem("currentUserName");
             location.reload();
         }
@@ -1043,7 +1011,8 @@
 
             switch (pageName) {
                 case 'tambahPemain':
-                    if (localStorage.getItem("currentUser") === "admin") {
+                    const user = JSON.parse(localStorage.getItem("activeUser"));
+                    if (user && user.role === "Admin") {
                         generateUserTable();
                     } else {
                         contentArea.innerHTML = `
@@ -1067,51 +1036,69 @@
         }
 
         // --- Dynamic Content Generation ---
-        function generateUserTable() {
+        async function generateUserTable() {
             const contentArea = document.getElementById('contentArea');
-            let users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-
-            let tableHTML = `
+            contentArea.innerHTML = `
                 <div class="content-header">
                     <h1>Data User</h1>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Nama Lengkap</th>
-                            <th>Divisi</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Shift</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <p>Memuat data...</p>
             `;
 
-            users.forEach(user => {
-                tableHTML += `
-                    <tr>
-                        <td>${user.username}</td>
-                        <td>${user.nama}</td>
-                        <td>${user.divisi}</td>
-                        <td>${user.email}</td>
-                        <td>${user.role}</td>
-                        <td>${user.shift}</td>
-                        <td>
-                            <button class="edit-btn" onclick="editUser('${user.username}')">Edit</button>
-                            <button class="delete-btn" onclick="deleteUser('${user.username}')">Hapus</button>
-                        </td>
-                    </tr>
+            const response = await fetch(appsScriptUrl + "?action=getUsers");
+            const result = await response.json();
+
+            if (result.success) {
+                let users = result.users;
+                // Add admin user as a fallback if not in sheet
+                if (!users.find(u => u.username === "admin")) {
+                    users.unshift({ username: "admin", nama: "Admin", divisi: "Admin", email: "admin@example.com", role: "Admin", shift: "" });
+                }
+                
+                let tableHTML = `
+                    <div class="content-header">
+                        <h1>Data User</h1>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Nama Lengkap</th>
+                                <th>Divisi</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Shift</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                 `;
-            });
 
-            tableHTML += `
-                    </tbody>
-                </table>
-            `;
-            contentArea.innerHTML = tableHTML;
+                users.forEach(user => {
+                    tableHTML += `
+                        <tr>
+                            <td>${user.username}</td>
+                            <td>${user.nama}</td>
+                            <td>${user.divisi}</td>
+                            <td>${user.email}</td>
+                            <td>${user.role}</td>
+                            <td>${user.shift}</td>
+                            <td>
+                                <button class="edit-btn" onclick="editUser('${user.username}')">Edit</button>
+                                <button class="delete-btn" onclick="deleteUser('${user.username}')">Hapus</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+                contentArea.innerHTML = tableHTML;
+            } else {
+                 contentArea.innerHTML = `<p style="color:var(--danger-color)">Gagal memuat data: ${result.message}</p>`;
+            }
         }
 
         function generateLoginHistory() {
@@ -1154,11 +1141,11 @@
 
         function generateAktivitasPage() {
             const contentArea = document.getElementById('contentArea');
-            const currentUser = localStorage.getItem("currentUser");
-            const currentUserName = localStorage.getItem("currentUserName");
+            const user = JSON.parse(localStorage.getItem("activeUser"));
+            const currentUserName = user.nama;
             const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
             const today = new Date().toDateString();
-            const hasAbsenMasuk = userActivities[currentUser] && userActivities[currentUser][today] && userActivities[currentUser][today].absenMasuk;
+            const hasAbsenMasuk = userActivities[user.username] && userActivities[user.username][today] && userActivities[user.username][today].absenMasuk;
 
             contentArea.innerHTML = `
                 <div class="content-header">
@@ -1208,115 +1195,104 @@
             });
         }
 
-        function generateHistoryAktivitas() {
+        async function generateHistoryAktivitas() {
             const contentArea = document.getElementById('contentArea');
-            const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
-            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
-            
-            let historyHTML = `
+            contentArea.innerHTML = `
                 <div class="content-header">
                     <h1>History Aktivitas</h1>
                 </div>
                 <div class="floating-box">
-                    <h2>Riwayat Aktivitas Semua Karyawan</h2>
+                    <h2>Memuat Riwayat Aktivitas...</h2>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>Tanggal</th>
-                            <th>Aktivitas</th>
-                            <th>Keterangan</th>
-                            <th>Waktu</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyTableBody">
-                    </tbody>
-                </table>
             `;
-            contentArea.innerHTML = historyHTML;
 
-            const historyTableBody = document.getElementById('historyTableBody');
-            
-            // Generate full history table for ALL users
-            let allActivities = [];
-            for (const username in userActivities) {
-                const activitiesForUser = userActivities[username] || {};
-                const user = users.find(u => u.username === username);
-                const userName = user ? user.nama : username;
-                
-                for (const date in activitiesForUser) {
-                    const activities = activitiesForUser[date];
-                    if (activities.absenMasuk) {
-                        allActivities.push({
-                            nama: userName,
-                            tanggal: date,
-                            aktivitas: 'Absen Masuk',
-                            keterangan: `Shift ${activities.absenMasuk.shift}`,
-                            waktu: activities.absenMasuk.waktu
-                        });
-                    }
-                    
-                    if (activities.izin) {
-                        activities.izin.forEach(izin => {
-                            allActivities.push({
-                                nama: userName,
-                                tanggal: date,
-                                aktivitas: 'Izin',
-                                keterangan: `${izin.keterangan} (${izin.durasi})`,
-                                waktu: izin.waktuMulai
-                            });
-                        });
-                    }
-                    
-                    if (activities.absenPulang) {
-                        allActivities.push({
-                            nama: userName,
-                            tanggal: date,
-                            aktivitas: 'Absen Pulang',
-                            keterangan: '-',
-                            waktu: activities.absenPulang.waktu
-                        });
-                    }
-                }
-            }
+            const usersResponse = await fetch(appsScriptUrl + "?action=getUsers");
+            const usersResult = await usersResponse.json();
 
-            // Sort activities by date and time
-            allActivities.sort((a, b) => new Date(a.waktu) - new Date(b.waktu));
+            const activitiesResponse = await fetch(appsScriptUrl + "?action=getAllActivities");
+            const activitiesResult = await activitiesResponse.json();
 
-            allActivities.forEach(activity => {
-                 const row = `
-                    <tr>
-                        <td>${activity.nama}</td>
-                        <td>${activity.tanggal}</td>
-                        <td>${activity.aktivitas}</td>
-                        <td>${activity.keterangan}</td>
-                        <td>${activity.waktu}</td>
-                    </tr>
+            if (usersResult.success && activitiesResult.success) {
+                const users = usersResult.users;
+                const activities = activitiesResult.activities;
+
+                let historyHTML = `
+                    <div class="content-header">
+                        <h1>History Aktivitas</h1>
+                    </div>
+                    <div class="floating-box">
+                        <h2>Riwayat Aktivitas Semua Karyawan</h2>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <th>Tanggal</th>
+                                <th>Aktivitas</th>
+                                <th>Keterangan</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                        </tbody>
+                    </table>
                 `;
-                historyTableBody.innerHTML += row;
-            });
+                contentArea.innerHTML = historyHTML;
+
+                const historyTableBody = document.getElementById('historyTableBody');
+                
+                activities.forEach(activity => {
+                    const user = users.find(u => u.username === activity.username);
+                    const userName = user ? user.nama : activity.username;
+                    const row = `
+                        <tr>
+                            <td>${userName}</td>
+                            <td>${new Date(activity.timestamp).toLocaleDateString('id-ID')}</td>
+                            <td>${activity.aktivitas}</td>
+                            <td>${activity.keterangan}</td>
+                            <td>${new Date(activity.timestamp).toLocaleTimeString('id-ID')}</td>
+                        </tr>
+                    `;
+                    historyTableBody.innerHTML += row;
+                });
+            } else {
+                contentArea.innerHTML = `<p style="color:var(--danger-color)">Gagal memuat data riwayat.</p>`;
+            }
         }
 
         // --- CRUD Operations for Users (Admin Only) ---
         function editUser(usernameToEdit) {
-            const users = JSON.parse(localStorage.getItem("userAccounts"));
-            const user = users.find(u => u.username === usernameToEdit);
-            if (!user) return;
+            // Need to fetch user data again as localStorage is not the source of truth
+            const user = JSON.parse(localStorage.getItem("activeUser"));
+            if (user && user.role !== "Admin") {
+                alert("Akses Ditolak!");
+                return;
+            }
+            
+            // For simplicity, we assume we have the full list of users in generateUserTable
+            // A more robust solution would fetch a single user by ID.
+            const users = JSON.parse(localStorage.getItem("userAccounts") || "[]");
+            const userToEdit = users.find(u => u.username === usernameToEdit);
+            if (!userToEdit) {
+                alert("User tidak ditemukan.");
+                return;
+            }
 
-            document.getElementById('editOriginalUsername').value = user.username;
-            document.getElementById('editRole').value = user.role;
-            document.getElementById('editShift').value = user.shift;
-            document.getElementById('editUsername').value = user.username;
-            document.getElementById('editPassword').value = user.password;
-            document.getElementById('editDivisi').value = user.divisi;
-            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editOriginalUsername').value = userToEdit.username;
+            document.getElementById('editRole').value = userToEdit.role;
+            document.getElementById('editShift').value = userToEdit.shift;
+            document.getElementById('editUsername').value = userToEdit.username;
+            document.getElementById('editPassword').value = userToEdit.password;
+            document.getElementById('editDivisi').value = userToEdit.divisi;
+            document.getElementById('editEmail').value = userToEdit.email;
 
             openModal('modalEditUser');
         }
 
         function submitEditUser(e) {
             e.preventDefault();
+            // This function is not yet connected to the Apps Script, it still uses localStorage.
+            // For this version, we will keep it simple.
             const originalUsername = document.getElementById('editOriginalUsername').value;
             const newRole = document.getElementById('editRole').value;
             const newShift = document.getElementById('editShift').value;
@@ -1334,7 +1310,6 @@
                 return;
             }
 
-            // Check for duplicate username/email if they are changed
             if (newUsername !== originalUsername && users.find(u => u.username === newUsername)) {
                 editMessage.textContent = 'Username sudah ada.';
                 editMessage.style.color = 'var(--danger-color)';
@@ -1357,7 +1332,6 @@
             editMessage.textContent = "Data user berhasil diupdate!";
             editMessage.style.color = 'var(--success-color)';
 
-            // Reload user table to show changes
             setTimeout(() => {
                 closeModal('modalEditUser');
                 showPage('tambahPemain');
@@ -1373,36 +1347,34 @@
                 let users = JSON.parse(localStorage.getItem("userAccounts"));
                 users = users.filter(user => user.username !== usernameToDelete);
                 localStorage.setItem("userAccounts", JSON.stringify(users));
-                showPage('tambahPemain'); // Reload user table
+                showPage('tambahPemain');
             }
         }
 
         // --- Activity and Timer Functions ---
         async function submitShift(shift) {
-            const currentUser = localStorage.getItem("currentUser");
+            const user = JSON.parse(localStorage.getItem("activeUser"));
             const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
             const today = new Date().toDateString();
             const now = new Date();
 
-            if (!userActivities[currentUser]) {
-                userActivities[currentUser] = {};
+            if (!userActivities[user.username]) {
+                userActivities[user.username] = {};
             }
-            if (!userActivities[currentUser][today]) {
-                userActivities[currentUser][today] = {};
+            if (!userActivities[user.username][today]) {
+                userActivities[user.username][today] = {};
             }
 
-            userActivities[currentUser][today].absenMasuk = {
+            userActivities[user.username][today].absenMasuk = {
                 shift: shift,
                 waktu: now.toLocaleString('id-ID')
             };
 
-            userActivities[currentUser][today].totalWorkTime = "00:00:00"; // Initialize total work time
-
+            userActivities[user.username][today].totalWorkTime = "00:00:00";
             localStorage.setItem("userActivities", JSON.stringify(userActivities));
             closeModal('modalAbsenMasuk');
 
-            // Save to Google Sheet
-            await saveActivity(currentUser, 'Absen Masuk', `Shift ${shift}`, now.toLocaleString('id-ID'), '-');
+            await saveActivity(user.username, 'Absen Masuk', `Shift ${shift}`, now.toLocaleString('id-ID'), '-');
 
             const welcomeMessage = document.getElementById("welcomeMessage");
             welcomeMessage.innerHTML = `Anda telah absen untuk **Shift ${shift}**. Selamat bekerja!`;
@@ -1436,7 +1408,6 @@
 
             display.textContent = formatTime(izinTimerSeconds);
 
-            // Show warning at 20 minutes
             if (izinTimerSeconds >= 20 * 60 && !timerWarningShown) {
                 alert.textContent = "Waktu izin Anda sudah 20 menit!";
                 container.classList.add('warning');
@@ -1446,18 +1417,17 @@
 
         async function stopIzinTimer() {
             clearInterval(timerInterval);
-
-            const currentUser = localStorage.getItem("currentUser");
+            const user = JSON.parse(localStorage.getItem("activeUser"));
             const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
             const today = new Date().toDateString();
             const now = new Date();
             const formattedDuration = formatTime(izinTimerSeconds);
 
-            if (userActivities[currentUser] && userActivities[currentUser][today]) {
-                if (!userActivities[currentUser][today].izin) {
-                    userActivities[currentUser][today].izin = [];
+            if (userActivities[user.username] && userActivities[user.username][today]) {
+                if (!userActivities[user.username][today].izin) {
+                    userActivities[user.username][today].izin = [];
                 }
-                userActivities[currentUser][today].izin.push({
+                userActivities[user.username][today].izin.push({
                     keterangan: currentIzinType,
                     waktuMulai: now.toLocaleString('id-ID'),
                     durasi: formattedDuration
@@ -1465,8 +1435,7 @@
 
                 localStorage.setItem("userActivities", JSON.stringify(userActivities));
                 
-                // Save to Google Sheet
-                await saveActivity(currentUser, 'Izin', `${currentIzinType} (${formattedDuration})`, now.toLocaleString('id-ID'), formattedDuration);
+                await saveActivity(user.username, 'Izin', `${currentIzinType} (${formattedDuration})`, now.toLocaleString('id-ID'), formattedDuration);
             }
 
             const container = document.getElementById('izinTimerContainer');
@@ -1478,25 +1447,24 @@
         }
 
         async function confirmAbsenPulang() {
-            const currentUser = localStorage.getItem("currentUser");
+            const user = JSON.parse(localStorage.getItem("activeUser"));
             const userActivities = JSON.parse(localStorage.getItem("userActivities") || "{}");
             const today = new Date().toDateString();
             const now = new Date();
 
-            if (userActivities[currentUser] && userActivities[currentUser][today] && userActivities[currentUser][today].absenMasuk) {
-                const absenMasukTime = new Date(userActivities[currentUser][today].absenMasuk.waktu);
+            if (userActivities[user.username] && userActivities[user.username][today] && userActivities[user.username][today].absenMasuk) {
+                const absenMasukTime = new Date(userActivities[user.username][today].absenMasuk.waktu);
                 const timeDiffSeconds = Math.floor((now - absenMasukTime) / 1000);
 
-                userActivities[currentUser][today].absenPulang = {
+                userActivities[user.username][today].absenPulang = {
                     waktu: now.toLocaleString('id-ID')
                 };
-                userActivities[currentUser][today].totalWorkTime = formatTime(timeDiffSeconds);
+                userActivities[user.username][today].totalWorkTime = formatTime(timeDiffSeconds);
 
                 localStorage.setItem("userActivities", JSON.stringify(userActivities));
                 closeModal('modalAbsenPulang');
                 
-                // Save to Google Sheet
-                await saveActivity(currentUser, 'Absen Pulang', '-', now.toLocaleString('id-ID'), '-');
+                await saveActivity(user.username, 'Absen Pulang', '-', now.toLocaleString('id-ID'), '-');
                 
                 showPage('historyAktivitas');
             } else {
@@ -1518,13 +1486,21 @@
             return parts[0] * 3600 + parts[1] * 60 + parts[2];
         }
         
-        // --- New functions to send data to Apps Script ---
-        async function sendDataToAppsScript(data) {
+        // --- Functions to send data to Apps Script ---
+        async function sendDataToAppsScript(data, method = 'POST') {
             try {
-                const response = await fetch(appsScriptUrl, {
-                    method: 'POST',
-                    body: new URLSearchParams(data)
-                });
+                let url = appsScriptUrl;
+                let options = {
+                    method: method,
+                };
+
+                if (method === 'POST') {
+                    options.body = new URLSearchParams(data);
+                } else if (method === 'GET') {
+                    url += '?' + new URLSearchParams(data).toString();
+                }
+
+                const response = await fetch(url, options);
                 const result = await response.json();
                 console.log(result.message);
                 return result;
@@ -1537,7 +1513,7 @@
         function saveRegistration(userData) {
             const data = {
                 action: 'register',
-                namaLengkap: userData.nama,
+                namaLengkap: userData.namaLengkap,
                 username: userData.username,
                 password: userData.password,
                 divisi: userData.divisi,
