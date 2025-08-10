@@ -835,67 +835,6 @@
 </div>
 
 <script>
-    // === CONFIG: ganti dengan Web App URL setelah kamu deploy Apps Script ===
-    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyvZOZkeLYvOlq-8_IdoP6ycVMZcZgPXgEGt99p-8EhsJPL4QPrDXX_VzcaVU4hzsY85w/exec';
-
-    
-
-    /* ==== API helper functions ==== */
-    async function apiPost(action, payload) {
-        try {
-            const body = Object.assign({ action: action }, payload || {});
-            const resp = await fetch(WEB_APP_URL, {
-                method: 'POST',
-                mode: 'cors',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(body)
-            });
-            const result = await resp.json();
-            if (result && result.status === 'success') return result;
-            else throw new Error(result && result.message ? result.message : 'Server error');
-        } catch (err) {
-            console.error('API error:', err);
-            throw err;
-        }
-    }
-
-    async function apiAddEmployee(emp) {
-        await apiPost('addEmployee', { name: emp.name, division: emp.division, shift: emp.shift });
-        // refresh employees from server
-        await loadData();
-    }
-
-    async function apiAddHistory(item) {
-        await apiPost('addHistory', {
-            employee: item.employee, date: item.date, time: item.time,
-            type: item.type, status: item.status, keterangan: item.keterangan
-        });
-        // prepend locally for immediate UX
-        history.unshift(item);
-        saveData();
-        renderHistory();
-        updateDashboardCards();
-    }
-
-    async function apiAddPending(req) {
-        await apiPost('addPending', {
-            employee: req.employee, jenis: req.jenis, tanggalMulai: req.tanggalMulai,
-            tanggalSelesai: req.tanggalSelesai, alasan: req.alasan
-        });
-        await loadData();
-    }
-
-    async function apiUpdatePendingStatus(req, status) {
-        await apiPost('updatePendingStatus', {
-            employee: req.employee, jenis: req.jenis, tanggalMulai: req.tanggalMulai,
-            tanggalSelesai: req.tanggalSelesai, status: status
-        });
-        await loadData();
-    }
-
-    /* ==== End API helper ==== */
-
-
     const defaultEmployees = [
         { name: 'MUHAMMAD RIDWAN HIDAYAT', division: 'Marketing', shift: 'Pagi' },
         { name: 'MUHAMMAD ALFAYET', division: 'Operator Kasir', shift: 'Siang' },
@@ -932,25 +871,14 @@
     const CORRECT_PASSWORD = "admin123";
 
     // Fungsi untuk memuat semua data dari localStorage
-    async function loadData() {
-        // Ambil data dari Google Apps Script (doGet)
-        try {
-            const resp = await fetch(WEB_APP_URL, { method: 'GET', mode: 'cors' });
-            const data = await resp.json();
-            // data should contain employees, pendingRequests, history as arrays of objects
-            employees = Array.isArray(data.employees) ? data.employees : [];
-            pendingRequests = Array.isArray(data.pendingRequests) ? data.pendingRequests : [];
-            history = Array.isArray(data.history) ? data.history : [];
-        } catch (err) {
-            // jika gagal, fallback ke localStorage (sebelumnya)
-            const savedEmployees = localStorage.getItem('employees');
-            const savedPendingRequests = localStorage.getItem('pendingRequests');
-            const savedHistory = localStorage.getItem('history');
-            employees = savedEmployees ? JSON.parse(savedEmployees) : defaultEmployees;
-            pendingRequests = savedPendingRequests ? JSON.parse(savedPendingRequests) : [];
-            history = savedHistory ? JSON.parse(savedHistory) : [];
-            console.warn('Gagal ambil data dari server, menggunakan cache/localStorage.', err);
-        }
+    function loadData() {
+        const savedEmployees = localStorage.getItem('employees');
+        const savedPendingRequests = localStorage.getItem('pendingRequests');
+        const savedHistory = localStorage.getItem('history');
+        
+        employees = savedEmployees ? JSON.parse(savedEmployees) : defaultEmployees;
+        pendingRequests = savedPendingRequests ? JSON.parse(savedPendingRequests) : [];
+        history = savedHistory ? JSON.parse(savedHistory) : [];
 
         // Inisialisasi tampilan
         renderEmployees();
@@ -961,11 +889,9 @@
     
     // Fungsi untuk menyimpan semua data ke localStorage
     function saveData() {
-        // Save locally for backup (timer uses localStorage)
         localStorage.setItem('employees', JSON.stringify(employees));
         localStorage.setItem('pendingRequests', JSON.stringify(pendingRequests));
         localStorage.setItem('history', JSON.stringify(history));
-        // Note: for persistence we call APIs per-action (see individual functions)
     }
     
     document.addEventListener('DOMContentLoaded', function() {
@@ -1182,7 +1108,6 @@
             keterangan: `Durasi: ${durationText}`
         };
         addHistoryItem(newHistoryItem);
-        try { apiAddHistory(newHistoryItem); } catch(e){ console.warn('Sync absensi failed', e); }
 
         document.getElementById('timer-display').textContent = "00:00:00";
         localStorage.removeItem('startTime');
@@ -1275,7 +1200,6 @@
             keterangan: keterangan
         };
         addHistoryItem(newHistoryItem);
-        try { apiAddHistory(newHistoryItem); } catch(e){ console.warn('Sync absensi failed', e); }
         showCustomPopup(popupTitle, popupMessage, popupStatusClass);
     }
     
@@ -1303,7 +1227,9 @@
                 status: "Menunggu Persetujuan"
             };
             // Tambahkan permintaan ke daftar pending dan simpan ke localStorage
-            try { await apiAddPending(newRequest); showCustomPopup("Berhasil!", "Pengajuan izin berhasil diajukan dan menunggu persetujuan.", "popup-success"); } catch(e){ pendingRequests.push(newRequest); saveData(); showCustomPopup("Gagal sinkron, tersimpan lokal", "Pengajuan izin disimpan di cache.", "popup-late"); }
+            pendingRequests.push(newRequest);
+            saveData();
+            showCustomPopup("Berhasil!", "Pengajuan izin berhasil diajukan dan menunggu persetujuan.", "popup-success");
         } else {
             const newHistoryItem = {
                 employee: selectedEmployee,
@@ -1314,7 +1240,6 @@
                 keterangan: alasan
             };
             addHistoryItem(newHistoryItem);
-        try { apiAddHistory(newHistoryItem); } catch(e){ console.warn('Sync absensi failed', e); }
             showCustomPopup("Berhasil!", "Pengajuan izin berhasil diajukan.", "popup-success");
         }
         
@@ -1360,7 +1285,6 @@
             keterangan: request.alasan
         };
         addHistoryItem(newHistoryItem);
-        try { apiAddHistory(newHistoryItem); } catch(e){ console.warn('Sync absensi failed', e); }
         
         // Hapus permintaan dari daftar pending dan simpan
         pendingRequests.splice(index, 1);
@@ -1386,7 +1310,6 @@
             keterangan: request.alasan
         };
         addHistoryItem(newHistoryItem);
-        try { apiAddHistory(newHistoryItem); } catch(e){ console.warn('Sync absensi failed', e); }
 
         // Hapus permintaan dari daftar pending dan simpan
         pendingRequests.splice(index, 1);
@@ -1499,7 +1422,18 @@
         const division = document.getElementById('employee-division').value;
         const shift = document.getElementById('employee-shift').value;
         
-        try { await apiAddEmployee({name, division, shift}); showCustomPopup("Berhasil!", "Karyawan baru berhasil ditambahkan!", "popup-success"); } catch(e){ employees.push({ name, division, shift }); saveData(); renderEmployees(); populateAllEmployeeDropdowns(); updateDashboardCards(); showCustomPopup("Gagal sinkron, tersimpan lokal", "Karyawan ditambahkan ke cache.", "popup-late"); } hideAddEmployeeForm(); return false;
+        employees.push({ name, division, shift });
+        saveData();
+        
+        renderEmployees();
+        populateAllEmployeeDropdowns();
+        updateDashboardCards();
+        
+        hideAddEmployeeForm();
+        
+        showCustomPopup("Berhasil!", "Karyawan baru berhasil ditambahkan!", "popup-success");
+        
+        return false;
     }
 
     function checkPassword(action, element) {
