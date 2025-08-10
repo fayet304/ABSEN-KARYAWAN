@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <!-- Font Awesome untuk Ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -578,26 +577,24 @@
     </div>
 
     <div class="main-content">
-        <!-- Absensi Hari Ini -->
         <div id="absensi" class="tab-content active">
             <h1>Absensi Hari Ini</h1>
             <div class="card-grid">
                 <div class="card">
                     <h3>Hadir</h3>
-                    <p>87%</p>
+                    <p>0%</p>
                 </div>
                 <div class="card">
                     <h3>Izin</h3>
-                    <p>5</p>
+                    <p>0</p>
                 </div>
                 <div class="card">
                     <h3>Tidak Hadir</h3>
-                    <p>3</p>
+                    <p>0</p>
                 </div>
             </div>
             
             <div class="absensi-controls">
-                <!-- Dropdown Nama Karyawan untuk Absensi -->
                 <div class="form-group">
                     <label for="employee-select-absensi"><i class="fas fa-user"></i> Nama Karyawan</label>
                     <select id="employee-select-absensi" name="employee-select-absensi" required>
@@ -619,7 +616,6 @@
             </div>
         </div>
 
-        <!-- Pengajuan Izin -->
         <div id="izin" class="tab-content">
             <h1>Formulir Pengajuan Izin</h1>
             <div class="form-group">
@@ -642,7 +638,6 @@
                 </select>
             </div>
             
-            <!-- Tambahkan Kontainer untuk Durasi Izin Khusus -->
             <div id="special-izin-container" style="display: none;">
                 <h3 style="text-align: center;">Durasi Izin</h3>
                 <div class="timer-container">
@@ -654,7 +649,6 @@
                 </div>
             </div>
 
-            <!-- Formulir Izin Biasa -->
             <form id="izin-form" onsubmit="return submitGeneralIzin(event)">
                 <div class="form-group">
                     <label for="tanggal-mulai"><i class="fas fa-calendar-alt"></i> Tanggal Mulai</label>
@@ -672,7 +666,6 @@
             </form>
         </div>
 
-        <!-- Halaman Persetujuan Off Day & Cuti -->
         <div id="persetujuan-izin" class="tab-content">
             <h1>Persetujuan Off Day & Cuti</h1>
             <div id="approval-content" style="display: none;">
@@ -698,11 +691,9 @@
             </p>
         </div>
 
-        <!-- Riwayat Absensi & Izin -->
         <div id="histori" class="tab-content">
             <h1>Riwayat Absensi & Izin</h1>
             
-            <!-- Pencarian Riwayat -->
             <div class="history-search-container">
                 <div class="form-group" style="flex-grow: 1;">
                     <label for="employee-select-history"><i class="fas fa-user-circle"></i> Cari Riwayat Karyawan</label>
@@ -713,7 +704,6 @@
                 <button class="btn-primary" onclick="searchHistory()">Cari</button>
             </div>
             
-            <!-- Tabel Riwayat Lengkap -->
             <div id="full-history-container" class="table-responsive">
                 <table class="history-table">
                     <thead>
@@ -730,7 +720,6 @@
                 </table>
             </div>
             
-            <!-- Kontainer Hasil Pencarian -->
             <div id="history-results-container" style="display: none;">
                 <button class="btn-secondary" onclick="backToFullHistory()"><i class="fas fa-arrow-left"></i> Kembali</button>
                 <div class="table-responsive">
@@ -751,7 +740,6 @@
             </div>
         </div>
         
-        <!-- Daftar Karyawan -->
         <div id="daftar-karyawan" class="tab-content">
             <h1>Daftar Karyawan</h1>
             <button class="btn-primary" onclick="showAddEmployeeForm()">Tambah Karyawan</button>
@@ -799,7 +787,6 @@
     </div>
 </div>
 
-<!-- Custom Pop-up HTML -->
 <div id="custom-popup" class="popup-container">
     <div class="popup-content">
         <h3 id="popup-title"></h3>
@@ -808,7 +795,6 @@
     </div>
 </div>
 
-<!-- Pop-up untuk Izin Khusus -->
 <div id="special-izin-popup" class="popup-container">
     <div class="popup-content">
         <h3 id="special-izin-title">Pilih Jenis Izin Khusus</h3>
@@ -821,7 +807,6 @@
     </div>
 </div>
 
-<!-- Password Modal -->
 <div id="password-modal">
     <div id="password-modal-content">
         <h3>Masukkan Kata Sandi</h3>
@@ -835,72 +820,28 @@
 </div>
 
 <script>
-    const defaultEmployees = [
-        { name: 'MUHAMMAD RIDWAN HIDAYAT', division: 'Marketing', shift: 'Pagi' },
-        { name: 'MUHAMMAD ALFAYET', division: 'Operator Kasir', shift: 'Siang' },
-        { name: 'CUSYATI', division: 'Marketing', shift: 'Pagi' },
-        { name: 'RIZKY HENDRA', division: 'Operator Kasir', shift: 'Siang' },
-        { name: 'PUTRI AJI MEINASARI', division: 'Marketing', shift: 'Pagi' },
-        { name: 'YUSRIL ARDIANSYAH', division: 'Operator Kasir', shift: 'Siang' },
-        { name: 'INDAH WULAN JULI', division: 'Marketing', shift: 'Pagi' },
-        { name: 'HERMAN SUGITO', division: 'Operator Kasir', shift: 'Siang' },
-        { name: 'JEFRI SUPRIANTO', division: 'Marketing', shift: 'Pagi' },
-        { name: 'DIFI ZIANKA LISTIAWAN', division: 'Marketing', shift: 'Pagi' },
-        { name: 'MUHAMMAD NURHADI', division: 'Operator Kasir', shift: 'Siang' },
-        { name: 'DEDEN SURYANA', division: 'Operator Kasir', shift: 'Siang' },
-        { name: 'ARISON', division: 'Operator Kasir', shift: 'Siang' },
-        { name: 'ANGEL KUSNITA PERMATA DEWI', division: 'Admin', shift: 'Pagi' },
-        { name: 'AGUNG RAFIANSYAH', division: 'Operator Kasir', shift: 'Siang' },
-        { name: 'SARAH SITOMPUL', division: 'Marketing', shift: 'Pagi' },
-        { name: 'AUREL ADHITYA ANDIK', division: 'Operator Kasir', shift: 'Siang' },
-        { name: 'SAIPUL BAHRI SIREGAR', division: 'Marketing', shift: 'Pagi' },
-        { name: 'GALANG TRI RISKI', division: 'Operator Kasir', shift: 'Siang' },
-        { name: 'MALEK RAHMAD', division: 'Operator Kasir', shift: 'Siang' },
-        { name: 'ARIK DINATA KUSUMA', division: 'Operator Kasir', shift: 'Siang' }
-    ];
+    // GANTI URL INI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzz6XN9iCq35f4jN6r7F_g6O3hG_gD7/exec'; // Ganti dengan URL skrip Anda
+    const CORRECT_PASSWORD = "admin123";
+
+    let employees = [];
+    let history = [];
+    let pendingRequests = [];
+    let isApprovalTabUnlocked = false;
 
     let timerInterval = null;
     let startTime = null;
     let isTimerRunning = false;
     let selectedIzinType = null;
-    let employees = [];
-    let pendingRequests = [];
-    let history = [];
-    let isApprovalTabUnlocked = false; // Status untuk tab persetujuan
+    let employeeForIzin = null;
 
-    const CORRECT_PASSWORD = "admin123";
-
-    // Fungsi untuk memuat semua data dari localStorage
-    function loadData() {
-        const savedEmployees = localStorage.getItem('employees');
-        const savedPendingRequests = localStorage.getItem('pendingRequests');
-        const savedHistory = localStorage.getItem('history');
-        
-        employees = savedEmployees ? JSON.parse(savedEmployees) : defaultEmployees;
-        pendingRequests = savedPendingRequests ? JSON.parse(savedPendingRequests) : [];
-        history = savedHistory ? JSON.parse(savedHistory) : [];
-
-        // Inisialisasi tampilan
-        renderEmployees();
-        renderHistory();
-        populateAllEmployeeDropdowns();
-        updateDashboardCards();
-    }
-    
-    // Fungsi untuk menyimpan semua data ke localStorage
-    function saveData() {
-        localStorage.setItem('employees', JSON.stringify(employees));
-        localStorage.setItem('pendingRequests', JSON.stringify(pendingRequests));
-        localStorage.setItem('history', JSON.stringify(history));
-    }
-    
     document.addEventListener('DOMContentLoaded', function() {
-        loadData();
+        // Muat data saat halaman dimuat
+        loadAllData();
 
         const tabLinks = document.querySelectorAll('.tab-link');
         const tabContents = document.querySelectorAll('.tab-content');
         
-        // Penanganan klik untuk tab non-protected
         document.querySelectorAll('.tab-link:not(.protected-link)').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -917,13 +858,11 @@
             });
         });
         
-        // Penanganan klik khusus untuk tab yang dilindungi kata sandi
         document.querySelector('.protected-link').addEventListener('click', function(e) {
             e.preventDefault();
             if (!isApprovalTabUnlocked) {
                 showPasswordModal();
             } else {
-                // Jika sudah terbuka, langsung tampilkan tab
                 tabLinks.forEach(item => item.classList.remove('active'));
                 this.classList.add('active');
                 tabContents.forEach(content => content.classList.remove('active'));
@@ -961,70 +900,59 @@
         });
 
         document.getElementById('start-timer-btn').addEventListener('click', startTimer);
-
         document.getElementById('stop-timer-btn').addEventListener('click', stopTimer);
-        
         document.getElementById('submit-password-btn').addEventListener('click', verifyApprovalPassword);
         
         document.getElementById('cancel-password-btn').addEventListener('click', function() {
             document.getElementById('password-modal').classList.remove('show');
-            // Kembali ke tab absensi jika batal
             document.querySelector(`a[data-tab="absensi"]`).click();
         });
-
-        checkSavedTimer();
     });
 
-    // Fungsi untuk menampilkan modal kata sandi
-    function showPasswordModal() {
-        document.getElementById('password-modal').classList.add('show');
-        document.getElementById('password-input').focus();
-    }
-    
-    // Fungsi untuk memverifikasi kata sandi dari modal
-    function verifyApprovalPassword() {
-        const passwordInput = document.getElementById('password-input');
-        const password = passwordInput.value;
-
-        if (password === CORRECT_PASSWORD) {
-            isApprovalTabUnlocked = true;
-            document.getElementById('password-modal').classList.remove('show');
-            document.getElementById('approval-content').style.display = 'block';
-            document.getElementById('approval-placeholder').style.display = 'none';
-            passwordInput.value = ''; // Reset input
-
-            // Pindahkan ke tab persetujuan
-            const tabLinks = document.querySelectorAll('.tab-link');
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabLinks.forEach(item => item.classList.remove('active'));
-            document.querySelector(`a[data-tab="persetujuan-izin"]`).classList.add('active');
-            tabContents.forEach(content => content.classList.remove('active'));
-            document.getElementById("persetujuan-izin").classList.add('active');
+    async function loadAllData() {
+        try {
+            const response = await fetch(`${SCRIPT_URL}?action=getAllData`);
+            const data = await response.json();
             
-            renderPendingRequests();
-            showCustomPopup("Berhasil!", "Akses disetujui. Selamat datang di menu Persetujuan Off Day & Cuti.", "popup-success");
-        } else {
-            showCustomPopup("Akses Ditolak", "Kata sandi salah. Silakan coba lagi.", "popup-late");
-            passwordInput.value = ''; // Reset input
+            if (data.status === 'success') {
+                employees = data.employees || [];
+                history = data.history || [];
+                pendingRequests = data.pendingRequests || [];
+            } else {
+                showCustomPopup("Gagal!", "Gagal memuat data awal dari server.", "popup-late");
+                console.error('Error loading data:', data.message);
+            }
+        } catch (error) {
+            showCustomPopup("Gagal!", "Gagal terhubung ke server. Pastikan URL skrip sudah benar.", "popup-late");
+            console.error('Error fetching data:', error);
+        } finally {
+            // Selalu render UI terlepas dari berhasil atau tidaknya pemuatan
+            renderEmployees();
+            renderHistory();
+            populateAllEmployeeDropdowns();
+            updateDashboardCards();
         }
     }
 
-
-    // Fungsi untuk memperbarui kartu di dashboard
-    function updateDashboardCards() {
+    async function updateDashboardCards() {
         const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-        const hadirCount = history.filter(item => item.status === 'Hadir' && item.date === today).length;
-        const izinCount = history.filter(item => (item.type.startsWith('Izin') && (item.status === 'Disetujui' || item.status === 'Selesai'))).length;
-        const totalEmployees = employees.length;
-        const tidakHadirCount = totalEmployees - hadirCount - izinCount;
-        const hadirPercentage = totalEmployees > 0 ? ((hadirCount / totalEmployees) * 100).toFixed(0) : 0;
+        
+        const todayHistory = await fetch(`${SCRIPT_URL}?action=getTodayHistory`);
+        const result = await todayHistory.json();
+        
+        if (result.status === 'success') {
+            const todayRecords = result.data;
+            const hadirCount = todayRecords.filter(item => item.status === 'Hadir').length;
+            const izinCount = todayRecords.filter(item => item.type.startsWith('Izin') && item.status !== 'Ditolak').length;
+            const tidakHadirCount = employees.length - hadirCount - izinCount;
+            const hadirPercentage = employees.length > 0 ? ((hadirCount / employees.length) * 100).toFixed(0) : 0;
 
-        document.querySelector('#absensi .card-grid .card:nth-child(1) p').textContent = `${hadirPercentage}%`;
-        document.querySelector('#absensi .card-grid .card:nth-child(2) p').textContent = izinCount;
-        document.querySelector('#absensi .card-grid .card:nth-child(3) p').textContent = tidakHadirCount > 0 ? tidakHadirCount : 0;
+            document.querySelector('#absensi .card-grid .card:nth-child(1) p').textContent = `${hadirPercentage}%`;
+            document.querySelector('#absensi .card-grid .card:nth-child(2) p').textContent = izinCount;
+            document.querySelector('#absensi .card-grid .card:nth-child(3) p').textContent = tidakHadirCount > 0 ? tidakHadirCount : 0;
+        }
     }
 
-    // Fungsi untuk menampilkan pop-up kustom
     function showCustomPopup(title, message, statusClass) {
         const popup = document.getElementById('custom-popup');
         const popupTitle = document.getElementById('popup-title');
@@ -1037,27 +965,55 @@
         if (statusClass) {
             popup.classList.add(statusClass);
         }
-
         popup.classList.add('show');
     }
 
-    // Fungsi untuk memilih jenis izin khusus
+    function showPasswordModal() {
+        document.getElementById('password-modal').classList.add('show');
+        document.getElementById('password-input').focus();
+    }
+    
+    async function verifyApprovalPassword() {
+        const passwordInput = document.getElementById('password-input');
+        const password = passwordInput.value;
+
+        if (password === CORRECT_PASSWORD) {
+            isApprovalTabUnlocked = true;
+            document.getElementById('password-modal').classList.remove('show');
+            document.getElementById('approval-content').style.display = 'block';
+            document.getElementById('approval-placeholder').style.display = 'none';
+            passwordInput.value = '';
+
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabLinks.forEach(item => item.classList.remove('active'));
+            document.querySelector(`a[data-tab="persetujuan-izin"]`).classList.add('active');
+            tabContents.forEach(content => content.classList.remove('active'));
+            document.getElementById("persetujuan-izin").classList.add('active');
+            
+            await renderPendingRequests();
+            showCustomPopup("Berhasil!", "Akses disetujui. Selamat datang di menu Persetujuan Off Day & Cuti.", "popup-success");
+        } else {
+            showCustomPopup("Akses Ditolak", "Kata sandi salah. Silakan coba lagi.", "popup-late");
+            passwordInput.value = '';
+        }
+    }
+
     function selectSpecialIzin(type) {
         selectedIzinType = type;
+        employeeForIzin = document.getElementById('employee-select-izin').value;
         document.getElementById('special-izin-popup').classList.remove('show');
         document.getElementById('special-izin-container').style.display = 'block';
         document.getElementById('izin-form').style.display = 'none';
     }
 
-    // Fungsi untuk memulai timer
     function startTimer() {
         if (!selectedIzinType) {
             showCustomPopup("Peringatan!", "Harap pilih jenis izin khusus terlebih dahulu.", "popup-late");
             return;
         }
         
-        const selectedEmployee = document.getElementById('employee-select-izin').value;
-        if (!selectedEmployee) {
+        if (!employeeForIzin) {
             showCustomPopup("Peringatan!", "Harap pilih nama karyawan sebelum memulai timer.", "popup-late");
             return;
         }
@@ -1065,17 +1021,13 @@
         if (isTimerRunning) return;
 
         startTime = Date.now();
-        localStorage.setItem('startTime', startTime);
-        localStorage.setItem('selectedIzinType', selectedIzinType);
-        localStorage.setItem('employeeForIzin', selectedEmployee);
         isTimerRunning = true;
         
         timerInterval = setInterval(updateTimer, 1000);
-        showCustomPopup("Berhasil!", `Timer izin "${selectedIzinType}" dimulai untuk ${selectedEmployee}.`, "popup-success");
+        showCustomPopup("Berhasil!", `Timer izin "${selectedIzinType}" dimulai untuk ${employeeForIzin}.`, "popup-success");
     }
 
-    // Fungsi untuk menghentikan timer dan mencatat ke riwayat
-    function stopTimer() {
+    async function stopTimer() {
         if (!isTimerRunning) return;
         
         clearInterval(timerInterval);
@@ -1089,31 +1041,27 @@
         const durationText = `${minutes} menit ${seconds} detik`;
 
         const now = new Date();
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        const formattedDate = now.toLocaleDateString('id-ID', options);
+        const formattedDate = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         const formattedTime = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         
-        const selectedEmployee = localStorage.getItem('employeeForIzin');
-        if (!selectedEmployee) {
+        if (!employeeForIzin) {
             showCustomPopup("Peringatan!", "Data karyawan tidak ditemukan untuk izin ini.", "popup-late");
             return;
         }
 
         const newHistoryItem = {
-            employee: selectedEmployee,
+            employee: employeeForIzin,
             date: formattedDate,
             time: formattedTime,
             type: `Izin (${selectedIzinType})`,
             status: "Selesai",
             keterangan: `Durasi: ${durationText}`
         };
-        addHistoryItem(newHistoryItem);
+        await addHistoryItem(newHistoryItem);
 
         document.getElementById('timer-display').textContent = "00:00:00";
-        localStorage.removeItem('startTime');
-        localStorage.removeItem('selectedIzinType');
-        localStorage.removeItem('employeeForIzin');
         selectedIzinType = null;
+        employeeForIzin = null;
         document.getElementById('employee-select-izin').value = "";
 
         showCustomPopup("Berhasil!", `Izin "${selectedIzinType}" selesai. Durasi: ${durationText}.`, "popup-success");
@@ -1122,7 +1070,6 @@
         document.getElementById('izin-form').style.display = 'block';
     }
 
-    // Fungsi untuk memperbarui tampilan timer
     function updateTimer() {
         const now = Date.now();
         const elapsed = now - startTime;
@@ -1139,26 +1086,7 @@
         document.getElementById('timer-display').textContent = formattedTime;
     }
 
-    // Fungsi untuk mengecek dan melanjutkan timer setelah refresh
-    function checkSavedTimer() {
-        const savedStartTime = localStorage.getItem('startTime');
-        const savedIzinType = localStorage.getItem('selectedIzinType');
-        const savedEmployee = localStorage.getItem('employeeForIzin');
-
-        if (savedStartTime && savedIzinType && savedEmployee) {
-            startTime = parseInt(savedStartTime);
-            selectedIzinType = savedIzinType;
-            isTimerRunning = true;
-            document.getElementById('employee-select-izin').value = savedEmployee;
-            document.getElementById('special-izin-container').style.display = 'block';
-            document.getElementById('izin-form').style.display = 'none';
-            timerInterval = setInterval(updateTimer, 1000);
-            showCustomPopup("Info!", `Timer izin "${savedIzinType}" sedang berjalan untuk ${savedEmployee}.`, "popup-info");
-        }
-    }
-
-    // Fungsi untuk absensi hari ini
-    function recordAbsence() {
+    async function recordAbsence() {
         const selectedEmployee = document.getElementById('employee-select-absensi').value;
         const selectedShift = document.getElementById('shift-select').value;
 
@@ -1199,12 +1127,12 @@
             status: "Hadir",
             keterangan: keterangan
         };
-        addHistoryItem(newHistoryItem);
+        
+        await addHistoryItem(newHistoryItem);
         showCustomPopup(popupTitle, popupMessage, popupStatusClass);
     }
     
-    // Fungsi untuk pengajuan izin biasa
-    function submitGeneralIzin(event) {
+    async function submitGeneralIzin(event) {
         event.preventDefault();
         const selectedEmployee = document.getElementById('employee-select-izin').value;
         const jenisIzin = document.getElementById('jenis-izin').value;
@@ -1226,10 +1154,23 @@
                 alasan: alasan,
                 status: "Menunggu Persetujuan"
             };
-            // Tambahkan permintaan ke daftar pending dan simpan ke localStorage
-            pendingRequests.push(newRequest);
-            saveData();
-            showCustomPopup("Berhasil!", "Pengajuan izin berhasil diajukan dan menunggu persetujuan.", "popup-success");
+            
+            const formData = new FormData();
+            formData.append('action', 'addPendingRequest');
+            formData.append('data', JSON.stringify(newRequest));
+            
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                pendingRequests.push(newRequest); // Tambahkan ke array lokal
+                showCustomPopup("Berhasil!", "Pengajuan izin berhasil diajukan dan menunggu persetujuan.", "popup-success");
+            } else {
+                showCustomPopup("Gagal!", "Pengajuan izin gagal.", "popup-late");
+            }
         } else {
             const newHistoryItem = {
                 employee: selectedEmployee,
@@ -1239,125 +1180,172 @@
                 status: "Menunggu Persetujuan",
                 keterangan: alasan
             };
-            addHistoryItem(newHistoryItem);
+            await addHistoryItem(newHistoryItem);
             showCustomPopup("Berhasil!", "Pengajuan izin berhasil diajukan.", "popup-success");
         }
         
-        event.target.reset(); // Reset form
+        event.target.reset();
         return false;
     }
     
-    // Fungsi untuk memuat permintaan yang menunggu persetujuan
-    function renderPendingRequests() {
+    async function renderPendingRequests() {
         const tableBody = document.getElementById('approval-table-body');
         tableBody.innerHTML = '';
         
-        // Loop melalui array pendingRequests untuk menampilkan semua permintaan
-        pendingRequests.forEach((request, index) => {
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${request.employee}</td>
-                <td>${request.jenis}</td>
-                <td>${request.tanggalMulai}</td>
-                <td>${request.tanggalSelesai}</td>
-                <td>${request.alasan}</td>
-                <td>
-                    <button class="btn-action approve" onclick="approveRequest(${index})">Setujui</button>
-                    <button class="btn-action reject" onclick="rejectRequest(${index})">Tolak</button>
-                </td>
-            `;
-            tableBody.appendChild(newRow);
-        });
+        try {
+            const response = await fetch(`${SCRIPT_URL}?action=getPendingRequests`);
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                pendingRequests = result.data;
+                pendingRequests.forEach((request, index) => {
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td>${request.employee}</td>
+                        <td>${request.jenis}</td>
+                        <td>${request.tanggalMulai}</td>
+                        <td>${request.tanggalSelesai}</td>
+                        <td>${request.alasan}</td>
+                        <td>
+                            <button class="btn-action approve" onclick="approveRequest(${index})">Setujui</button>
+                            <button class="btn-action reject" onclick="rejectRequest(${index})">Tolak</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(newRow);
+                });
+            }
+        } catch (error) {
+            console.error('Failed to fetch pending requests:', error);
+            showCustomPopup("Gagal!", "Gagal memuat daftar pengajuan izin.", "popup-late");
+        }
     }
 
-    // Fungsi untuk menyetujui permintaan
-    function approveRequest(index) {
-        // Ambil permintaan dari daftar pending
+    async function approveRequest(index) {
         const request = pendingRequests[index];
-        
-        // Tambahkan ke riwayat sebagai "Disetujui"
-        const newHistoryItem = {
-            employee: request.employee,
-            date: `${request.tanggalMulai} s/d ${request.tanggalSelesai}`,
-            time: '-',
-            type: `Izin (${request.jenis})`,
-            status: "Disetujui",
-            keterangan: request.alasan
-        };
-        addHistoryItem(newHistoryItem);
-        
-        // Hapus permintaan dari daftar pending dan simpan
-        pendingRequests.splice(index, 1);
-        saveData();
-        
-        // Perbarui tampilan tabel
-        renderPendingRequests();
-        showCustomPopup("Berhasil!", `Pengajuan izin dari ${request.employee} telah disetujui.`, "popup-success");
+        const formData = new FormData();
+        formData.append('action', 'approveRequest');
+        formData.append('index', index);
+        formData.append('requestData', JSON.stringify(request));
+
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                await renderPendingRequests();
+                showCustomPopup("Berhasil!", `Pengajuan izin dari ${request.employee} telah disetujui.`, "popup-success");
+            } else {
+                showCustomPopup("Gagal!", `Gagal menyetujui pengajuan izin.`, "popup-late");
+            }
+        } catch (error) {
+            console.error('Approval failed:', error);
+            showCustomPopup("Gagal!", `Gagal menyetujui pengajuan izin.`, "popup-late");
+        }
     }
 
-    // Fungsi untuk menolak permintaan
-    function rejectRequest(index) {
-        // Ambil permintaan dari daftar pending
+    async function rejectRequest(index) {
         const request = pendingRequests[index];
+        const formData = new FormData();
+        formData.append('action', 'rejectRequest');
+        formData.append('index', index);
+        formData.append('requestData', JSON.stringify(request));
 
-        // Tambahkan ke riwayat sebagai "Ditolak"
-        const newHistoryItem = {
-            employee: request.employee,
-            date: `${request.tanggalMulai} s/d ${request.tanggalSelesai}`,
-            time: '-',
-            type: `Izin (${request.jenis})`,
-            status: "Ditolak",
-            keterangan: request.alasan
-        };
-        addHistoryItem(newHistoryItem);
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
 
-        // Hapus permintaan dari daftar pending dan simpan
-        pendingRequests.splice(index, 1);
-        saveData();
-
-        // Perbarui tampilan tabel
-        renderPendingRequests();
-        showCustomPopup("Berhasil!", `Pengajuan izin dari ${request.employee} telah ditolak.`, "popup-late");
+            const result = await response.json();
+            if (result.status === 'success') {
+                await renderPendingRequests();
+                showCustomPopup("Berhasil!", `Pengajuan izin dari ${request.employee} telah ditolak.`, "popup-late");
+            } else {
+                showCustomPopup("Gagal!", `Gagal menolak pengajuan izin.`, "popup-late");
+            }
+        } catch (error) {
+            console.error('Rejection failed:', error);
+            showCustomPopup("Gagal!", `Gagal menolak pengajuan izin.`, "popup-late");
+        }
     }
     
-    // Fungsi untuk menambahkan item ke riwayat dan menyimpannya
-    function addHistoryItem(item) {
-        history.unshift(item); // Tambahkan ke awal array
-        saveData();
-        renderHistory();
-        updateDashboardCards();
+    async function addHistoryItem(item) {
+        const formData = new FormData();
+        formData.append('action', 'addHistory');
+        formData.append('data', JSON.stringify(item));
+        
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                await loadAllData(); // Muat ulang semua data
+            } else {
+                showCustomPopup("Gagal!", "Gagal menyimpan data ke server.", "popup-late");
+                console.error('Failed to add history:', result.message);
+            }
+        } catch (error) {
+            console.error('Failed to connect to server:', error);
+            showCustomPopup("Gagal!", "Gagal terhubung ke server.", "popup-late");
+        }
     }
     
-    // Fungsi untuk menampilkan riwayat
-    function renderHistory() {
+    async function renderHistory() {
         const historyTableBody = document.getElementById('history-table-body');
         historyTableBody.innerHTML = '';
-        history.forEach(item => {
-            const newRow = createHistoryRow(item);
-            historyTableBody.appendChild(newRow);
-        });
+        
+        try {
+            const response = await fetch(`${SCRIPT_URL}?action=getHistory`);
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                history = result.data; // Perbarui data lokal
+                history.forEach(item => {
+                    const newRow = createHistoryRow(item);
+                    historyTableBody.appendChild(newRow);
+                });
+            }
+        } catch (error) {
+            console.error('Failed to fetch history:', error);
+        }
     }
     
-    // Fungsi untuk mencari riwayat berdasarkan nama karyawan
-    function searchHistory() {
+    async function searchHistory() {
         const selectedEmployee = document.getElementById('employee-select-history').value;
         if (selectedEmployee === "") {
             showCustomPopup("Peringatan!", "Harap pilih nama karyawan untuk mencari riwayat.", "popup-late");
             return;
         }
 
-        // Filter riwayat berdasarkan nama karyawan yang dipilih
-        const searchResults = history.filter(item => item.employee === selectedEmployee);
+        const formData = new FormData();
+        formData.append('action', 'searchHistory');
+        formData.append('employeeName', selectedEmployee);
         
-        // Tampilkan hasil pencarian
-        renderSearchResults(searchResults);
-        
-        // Sembunyikan tabel riwayat penuh dan tampilkan hasil pencarian
-        document.getElementById('full-history-container').style.display = 'none';
-        document.getElementById('history-results-container').style.display = 'block';
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                renderSearchResults(result.data);
+                document.getElementById('full-history-container').style.display = 'none';
+                document.getElementById('history-results-container').style.display = 'block';
+            } else {
+                showCustomPopup("Gagal!", `Gagal mencari riwayat untuk ${selectedEmployee}.`, "popup-late");
+            }
+        } catch (error) {
+            console.error('Search failed:', error);
+        }
     }
     
-    // Fungsi untuk menampilkan hasil pencarian
     function renderSearchResults(results) {
         const tableBody = document.getElementById('search-results-body');
         tableBody.innerHTML = '';
@@ -1374,13 +1362,11 @@
         }
     }
     
-    // Fungsi untuk kembali ke tampilan riwayat lengkap
     function backToFullHistory() {
         document.getElementById('history-results-container').style.display = 'none';
         document.getElementById('full-history-container').style.display = 'block';
     }
 
-    // Fungsi pembantu untuk membuat baris riwayat
     function createHistoryRow(item) {
         const newRow = document.createElement('tr');
         let statusClass = '';
@@ -1404,7 +1390,6 @@
         return newRow;
     }
 
-    // Fungsi untuk daftar karyawan
     function showAddEmployeeForm() {
         document.getElementById('add-employee-form').style.display = 'block';
     }
@@ -1414,31 +1399,42 @@
         document.getElementById('employee-form').reset();
     }
     
-    // Fungsi untuk menambah karyawan baru
-    function addNewEmployee(event) {
+    async function addNewEmployee(event) {
         event.preventDefault();
 
         const name = document.getElementById('employee-name-input').value;
         const division = document.getElementById('employee-division').value;
         const shift = document.getElementById('employee-shift').value;
         
-        employees.push({ name, division, shift });
-        saveData();
+        const newEmployee = { name, division, shift };
+        const formData = new FormData();
+        formData.append('action', 'addEmployee');
+        formData.append('data', JSON.stringify(newEmployee));
         
-        renderEmployees();
-        populateAllEmployeeDropdowns();
-        updateDashboardCards();
-        
-        hideAddEmployeeForm();
-        
-        showCustomPopup("Berhasil!", "Karyawan baru berhasil ditambahkan!", "popup-success");
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                await loadAllData();
+                hideAddEmployeeForm();
+                showCustomPopup("Berhasil!", "Karyawan baru berhasil ditambahkan!", "popup-success");
+            } else {
+                showCustomPopup("Gagal!", "Gagal menambahkan karyawan.", "popup-late");
+            }
+        } catch (error) {
+            console.error('Failed to add new employee:', error);
+            showCustomPopup("Gagal!", "Gagal terhubung ke server.", "popup-late");
+        }
         
         return false;
     }
 
-    function checkPassword(action, element) {
+    async function checkPassword(action, element) {
         const password = prompt("Masukkan kata sandi untuk melanjutkan:");
-
         if (password === CORRECT_PASSWORD) {
             if (action === 'edit') {
                 showCustomPopup("Info!", "Aksi edit diaktifkan. Silakan edit data.", "popup-info");
@@ -1447,22 +1443,38 @@
                 const nameToDelete = row.cells[0].textContent;
                 
                 if (confirm(`Apakah Anda yakin ingin menghapus data karyawan ${nameToDelete}?`)) {
-                    employees = employees.filter(emp => emp.name !== nameToDelete);
-                    saveData();
-                    
-                    renderEmployees();
-                    populateAllEmployeeDropdowns();
-                    updateDashboardCards();
-                    
-                    showCustomPopup("Berhasil!", "Data karyawan berhasil dihapus!", "popup-success");
+                    await deleteEmployee(nameToDelete);
                 }
             }
         } else {
             showCustomPopup("Gagal!", "Kata sandi salah. Aksi dibatalkan.", "popup-late");
         }
     }
+    
+    async function deleteEmployee(name) {
+        const formData = new FormData();
+        formData.append('action', 'deleteEmployee');
+        formData.append('employeeName', name);
 
-    // Fungsi untuk menampilkan daftar karyawan
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                await loadAllData();
+                showCustomPopup("Berhasil!", "Data karyawan berhasil dihapus!", "popup-success");
+            } else {
+                showCustomPopup("Gagal!", "Gagal menghapus karyawan.", "popup-late");
+            }
+        } catch (error) {
+            console.error('Failed to delete employee:', error);
+            showCustomPopup("Gagal!", "Gagal terhubung ke server.", "popup-late");
+        }
+    }
+
     function renderEmployees() {
         const tableBody = document.getElementById('employee-table-body');
         tableBody.innerHTML = '';
@@ -1483,32 +1495,18 @@
         });
     }
     
-    // Fungsi untuk mengisi semua dropdown karyawan
     function populateAllEmployeeDropdowns() {
-        const dropdownAbsensi = document.getElementById('employee-select-absensi');
-        const dropdownIzin = document.getElementById('employee-select-izin');
-        const dropdownHistory = document.getElementById('employee-select-history');
-
-        // Bersihkan dropdown sebelumnya
-        dropdownAbsensi.innerHTML = '<option value="">Pilih Karyawan</option>';
-        dropdownIzin.innerHTML = '<option value="">Pilih Karyawan</option>';
-        dropdownHistory.innerHTML = '<option value="">Pilih Karyawan</option>';
+        const dropdowns = ['employee-select-absensi', 'employee-select-izin', 'employee-select-history'];
         
-        employees.forEach(employee => {
-            const optionAbsensi = document.createElement('option');
-            optionAbsensi.value = employee.name;
-            optionAbsensi.textContent = employee.name;
-            dropdownAbsensi.appendChild(optionAbsensi);
-            
-            const optionIzin = document.createElement('option');
-            optionIzin.value = employee.name;
-            optionIzin.textContent = employee.name;
-            dropdownIzin.appendChild(optionIzin);
-
-            const optionHistory = document.createElement('option');
-            optionHistory.value = employee.name;
-            optionHistory.textContent = employee.name;
-            dropdownHistory.appendChild(optionHistory);
+        dropdowns.forEach(dropdownId => {
+            const dropdown = document.getElementById(dropdownId);
+            dropdown.innerHTML = '<option value="">Pilih Karyawan</option>';
+            employees.forEach(employee => {
+                const option = document.createElement('option');
+                option.value = employee.name;
+                option.textContent = employee.name;
+                dropdown.appendChild(option);
+            });
         });
     }
 </script>
