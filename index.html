@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Font Awesome untuk Ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -577,6 +578,7 @@
     </div>
 
     <div class="main-content">
+        <!-- Absensi Hari Ini -->
         <div id="absensi" class="tab-content active">
             <h1>Absensi Hari Ini</h1>
             <div class="card-grid">
@@ -595,6 +597,7 @@
             </div>
             
             <div class="absensi-controls">
+                <!-- Dropdown Nama Karyawan untuk Absensi -->
                 <div class="form-group">
                     <label for="employee-select-absensi"><i class="fas fa-user"></i> Nama Karyawan</label>
                     <select id="employee-select-absensi" name="employee-select-absensi" required>
@@ -616,6 +619,7 @@
             </div>
         </div>
 
+        <!-- Pengajuan Izin -->
         <div id="izin" class="tab-content">
             <h1>Formulir Pengajuan Izin</h1>
             <div class="form-group">
@@ -638,6 +642,7 @@
                 </select>
             </div>
             
+            <!-- Tambahkan Kontainer untuk Durasi Izin Khusus -->
             <div id="special-izin-container" style="display: none;">
                 <h3 style="text-align: center;">Durasi Izin</h3>
                 <div class="timer-container">
@@ -649,6 +654,7 @@
                 </div>
             </div>
 
+            <!-- Formulir Izin Biasa -->
             <form id="izin-form" onsubmit="return submitGeneralIzin(event)">
                 <div class="form-group">
                     <label for="tanggal-mulai"><i class="fas fa-calendar-alt"></i> Tanggal Mulai</label>
@@ -666,6 +672,7 @@
             </form>
         </div>
 
+        <!-- Halaman Persetujuan Off Day & Cuti -->
         <div id="persetujuan-izin" class="tab-content">
             <h1>Persetujuan Off Day & Cuti</h1>
             <div id="approval-content" style="display: none;">
@@ -691,9 +698,11 @@
             </p>
         </div>
 
+        <!-- Riwayat Absensi & Izin -->
         <div id="histori" class="tab-content">
             <h1>Riwayat Absensi & Izin</h1>
             
+            <!-- Pencarian Riwayat -->
             <div class="history-search-container">
                 <div class="form-group" style="flex-grow: 1;">
                     <label for="employee-select-history"><i class="fas fa-user-circle"></i> Cari Riwayat Karyawan</label>
@@ -704,6 +713,7 @@
                 <button class="btn-primary" onclick="searchHistory()">Cari</button>
             </div>
             
+            <!-- Tabel Riwayat Lengkap -->
             <div id="full-history-container" class="table-responsive">
                 <table class="history-table">
                     <thead>
@@ -720,6 +730,7 @@
                 </table>
             </div>
             
+            <!-- Kontainer Hasil Pencarian -->
             <div id="history-results-container" style="display: none;">
                 <button class="btn-secondary" onclick="backToFullHistory()"><i class="fas fa-arrow-left"></i> Kembali</button>
                 <div class="table-responsive">
@@ -740,6 +751,7 @@
             </div>
         </div>
         
+        <!-- Daftar Karyawan -->
         <div id="daftar-karyawan" class="tab-content">
             <h1>Daftar Karyawan</h1>
             <button class="btn-primary" onclick="showAddEmployeeForm()">Tambah Karyawan</button>
@@ -787,6 +799,7 @@
     </div>
 </div>
 
+<!-- Custom Pop-up HTML -->
 <div id="custom-popup" class="popup-container">
     <div class="popup-content">
         <h3 id="popup-title"></h3>
@@ -795,6 +808,7 @@
     </div>
 </div>
 
+<!-- Pop-up untuk Izin Khusus -->
 <div id="special-izin-popup" class="popup-container">
     <div class="popup-content">
         <h3 id="special-izin-title">Pilih Jenis Izin Khusus</h3>
@@ -807,6 +821,7 @@
     </div>
 </div>
 
+<!-- Password Modal -->
 <div id="password-modal">
     <div id="password-modal-content">
         <h3>Masukkan Kata Sandi</h3>
