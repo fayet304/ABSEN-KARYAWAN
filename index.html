@@ -3,1554 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Absensi & Izin Karyawan</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Enterprise Presence System | Cloud Sync v6</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --dark-color: #1A1A1A;
-            --accent-color: #D4AF37;
-            --light-color: #F5F5F5;
-            --white-color: #FFFFFF;
-            --info-color: #3498DB;
-            --success-color: #2ECC71;
-            --danger-color: #E74C3C;
-            --warning-color: #F39C12;
+            --primary: #00f2fe;
+            --accent: #4facfe;
+            --success: #00ff88;
+            --warning: #f9d423;
+            --danger: #ff4b2b;
+            --glass: rgba(10, 25, 47, 0.9);
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--light-color);
+            font-family: 'Space Grotesk', sans-serif;
             margin: 0;
-            padding: 0;
-            color: var(--dark-color);
+            background: #020617;
+            color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        h1, h2, h3 {
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
+        .bg-animate {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #020617 100%);
         }
 
         .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: var(--white-color);
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            display: grid;
-            grid-template-columns: 1fr 3fr;
-            gap: 40px;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                margin: 20px;
-                padding: 10px;
-            }
-        }
-
-        .sidebar {
-            background-color: var(--dark-color);
-            color: var(--light-color);
-            padding: 20px;
-            border-radius: 8px;
-        }
-
-        .sidebar h2 {
-            color: var(--accent-color);
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 15px 10px;
-            text-decoration: none;
-            color: var(--light-color);
-            border-radius: 5px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .sidebar a:hover, .sidebar a.active {
-            background-color: var(--accent-color);
-            color: var(--dark-color);
-        }
-        
-        .sidebar a i {
-            margin-right: 10px;
-        }
-
-        .main-content {
-            padding: 20px;
-        }
-        
-        .main-content h1 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 2em;
-        }
-        
-        .absensi-form-group {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .absensi-form-group select {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        
-        .absensi-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .absensi-controls .absensi-form-group {
-            margin-bottom: 0;
-        }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .card {
-            background-color: var(--light-color);
-            padding: 25px;
-            border-radius: 8px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            margin-top: 0;
-            color: var(--accent-color);
-        }
-
-        .card p {
-            font-size: 2.5em;
-            font-weight: 600;
-            margin: 10px 0 0;
-        }
-
-        .btn-primary {
-            display: inline-block;
-            background-color: var(--accent-color);
-            color: var(--dark-color);
-            padding: 15px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: transform 0.2s ease, background-color 0.2s ease;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .absensi-controls .btn-primary {
-            width: fit-content;
-            align-self: flex-end;
-        }
-
-        .btn-primary:hover {
-            transform: scale(1.05);
-            background-color: #C0A033;
-        }
-        
-        .btn-small {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            text-transform: none;
-            margin-left: 5px;
-        }
-
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: var(--white-color);
-        }
-        
-        .btn-danger:hover {
-            background-color: #C0392B;
-        }
-        
-        .btn-success {
-            background-color: var(--success-color);
-            color: var(--white-color);
-        }
-        
-        .btn-success:hover {
-            background-color: #27AE60;
-        }
-        
-        .btn-action {
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 0.9em;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-        }
-        
-        .btn-action.approve {
-            background-color: var(--success-color);
-            color: var(--white-color);
-        }
-        
-        .btn-action.reject {
-            background-color: var(--danger-color);
-            color: var(--white-color);
-        }
-        
-        .btn-action:hover {
-            opacity: 0.8;
-        }
-        
-        .btn-secondary {
-            background-color: #bbb;
-            color: #444;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #999;
-        }
-
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .history-search-container {
-            display: flex;
-            align-items: flex-end;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-        }
-
-        .history-search-container .form-group {
-            flex: 1;
-            margin-bottom: 0;
-        }
-
-        .form-group label {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        
-        .form-group label i {
-            margin-right: 10px;
-            color: var(--accent-color);
-        }
-
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-        
-        .form-group select.special-izin-trigger {
-            cursor: pointer;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-        }
-        
-        .add-employee-form {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .history-table, .employee-list-table, .approval-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .history-table th, .history-table td, .employee-list-table th, .employee-list-table td, .approval-table th, .approval-table td {
-            text-align: left;
-            padding: 15px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .history-table th, .employee-list-table th, .approval-table th {
-            background-color: var(--light-color);
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-
-        .history-table tr:nth-child(even), .employee-list-table tr:nth-child(even), .approval-table tr:nth-child(even) {
-            background-color: #F9F9F9;
-        }
-        
-        .history-table tr:hover, .employee-list-table tr:hover, .approval-table tr:hover {
-            background-color: #F1F1F1;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-        
-        .status-hadir {
-            color: var(--success-color);
-            font-weight: bold;
-        }
-        
-        .status-absen {
-            color: var(--danger-color);
-            font-weight: bold;
-        }
-        
-        .status-izin {
-            color: var(--info-color);
-            font-weight: bold;
-        }
-        
-        .status-menunggu {
-            color: var(--warning-color);
-            font-weight: bold;
-        }
-        
-        .statu_sift {
-            font-weight: 500;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 5px;
-        }
-        
-        /* Custom Pop-up Styles */
-        .popup-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: none; /* Hidden by default */
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-
-        .popup-content {
-            background-color: var(--white-color);
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
             padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-            width: 90%;
-            max-width: 400px;
-            transform: scale(0.9);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .popup-container.show {
-            display: flex;
-        }
-
-        .popup-container.show .popup-content {
-            transform: scale(1);
-        }
-
-        #popup-title {
-            font-size: 1.8em;
-            margin-top: 0;
-        }
-
-        #popup-message {
-            font-size: 1.1em;
-            margin-bottom: 20px;
-        }
-
-        .popup-success #popup-title {
-            color: var(--success-color);
-        }
-
-        .popup-late #popup-title {
-            color: var(--danger-color);
-        }
-        
-        .popup-info #popup-title {
-            color: var(--info-color);
-        }
-        
-        /* New Pop-up for Special Izin */
-        .special-izin-options {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .special-izin-options button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            background-color: var(--light-color);
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            font-size: 1.1em;
-            font-weight: 500;
-        }
-        
-        .special-izin-options button:hover {
-            background-color: #e0e0e0;
-        }
-        
-        .special-izin-options button i {
-            margin-right: 10px;
-            font-size: 1.2em;
-        }
-        
-        /* New timer display and controls */
-        .timer-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .timer-display {
-            font-size: 3em;
-            font-weight: 700;
-            color: var(--dark-color);
-        }
-        
-        .timer-controls {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .timer-controls button {
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        #start-timer-btn {
-            background-color: var(--success-color);
-            color: var(--white-color);
-        }
-
-        #start-timer-btn:hover {
-            background-color: #27ae60;
-        }
-
-        #stop-timer-btn {
-            background-color: var(--danger-color);
-            color: var(--white-color);
-        }
-
-        #stop-timer-btn:hover {
-            background-color: #c0392b;
-        }
-        
-        /* Password Modal Styles */
-        #password-modal {
-            position: fixed;
-            z-index: 1001;
-            left: 0;
-            top: 0;
             width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-            display: none;
-            justify-content: center;
-            align-items: center;
+            max-width: 850px;
+            box-shadow: 0 0 50px rgba(0, 242, 254, 0.2);
         }
 
-        #password-modal.show {
-            display: flex;
+        h2 { text-align: center; letter-spacing: 4px; background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 20px 0; }
+
+        .schedule-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px; margin-bottom: 20px;
         }
 
-        #password-modal-content {
-            background-color: #fefefe;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
+        .schedule-item {
+            background: rgba(255,255,255,0.05); padding: 10px; border-radius: 10px;
+            font-size: 0.65rem; text-align: center; border: 1px solid rgba(255,255,255,0.1);
         }
 
-        #password-modal h3 {
-            margin-top: 0;
-            color: var(--dark-color);
+        .schedule-item span { display: block; color: var(--primary); font-weight: bold; font-size: 0.8rem; }
+
+        .input-group { margin-bottom: 15px; }
+        label { font-size: 0.7rem; color: var(--primary); font-weight: 700; margin-bottom: 6px; display: block; letter-spacing: 1px; }
+
+        input, select {
+            width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px;
+            color: white; font-size: 0.9rem; box-sizing: border-box;
         }
 
-        #password-input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0 20px 0;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+
+        #shift-container { display: none; }
+
+        .btn-glow {
+            width: 100%; background: linear-gradient(to right, var(--primary), var(--accent));
+            border: none; padding: 16px; border-radius: 10px; color: #020617;
+            font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase;
         }
-        
-        .modal-buttons {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        
-        .modal-buttons button {
-            flex: 1;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            border: none;
-            font-weight: 600;
-        }
-        
-        .modal-buttons .btn-submit {
-            background-color: var(--accent-color);
-            color: var(--dark-color);
-        }
-        
-        .modal-buttons .btn-cancel {
-            background-color: #ccc;
-            color: var(--dark-color);
-        }
+
+        .btn-glow:disabled { background: #475569; cursor: not-allowed; box-shadow: none; }
+
+        .table-wrap { margin-top: 25px; max-height: 300px; overflow-y: auto; border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: rgba(0,0,0,0.6); padding: 12px; color: var(--primary); font-size: 0.75rem; text-align: left; position: sticky; top: 0; }
+        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+
+        .status-pill { padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; border: 1px solid currentColor; }
+        .Hadir { color: var(--success); }
+        .Izin { color: var(--warning); }
+        .Sakit { color: var(--danger); }
+        .late-alert { color: var(--danger); font-weight: bold; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .footer { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-alt { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: white; cursor: pointer; font-size: 0.75rem; }
     </style>
 </head>
 <body>
 
+<div class="bg-animate"></div>
+
 <div class="container">
-    <div class="sidebar">
-        <h2>Dashboard Karyawan</h2>
-        <a href="#" class="tab-link active" data-tab="absensi"><i class="fas fa-fingerprint"></i> Absensi Hari Ini</a>
-        <a href="#" class="tab-link" data-tab="izin"><i class="fas fa-edit"></i> Pengajuan Izin</a>
-        <a href="#" class="tab-link protected-link" data-tab="persetujuan-izin"><i class="fas fa-lock"></i> Persetujuan Off Day & Cuti</a>
-        <a href="#" class="tab-link" data-tab="histori"><i class="fas fa-history"></i> Riwayat</a>
-        <a href="#" class="tab-link" data-tab="daftar-karyawan"><i class="fas fa-users"></i> Daftar Karyawan</a>
+    <h2>📡 ABSENSI KARYAWAN</h2>
+    
+    <div class="schedule-grid">
+        <div class="schedule-item">KASIR (Pagi/Siang/Malam) <span>10:30/13:00/22:30</span></div>
+        <div class="schedule-item">CS / CRM <span>11:15</span></div>
+        <div class="schedule-item">ADMIN / MKT <span>10:30</span></div>
+    </div>
+    
+    <div class="input-group">
+        <label>SEARCH & SELECT KARYAWAN</label>
+        <input type="text" id="search" placeholder="Cari nama..." onkeyup="filter()">
+        <select id="nama" size="4" style="margin-top:8px">
+            <option value="AGUNG RAFIANSYAH">AGUNG RAFIANSYAH</option>
+            <option value="ANGEL KUSNITA PERMATA DEWI">ANGEL KUSNITA PERMATA DEWI</option>
+            <option value="ARIK DINATA KUSUMA">ARIK DINATA KUSUMA</option>
+            <option value="ARISON">ARISON</option>
+            <option value="AUREL ADHITYA ANDIK">AUREL ADHITYA ANDIK</option>
+            <option value="CUSYATI">CUSYATI</option>
+            <option value="DEDEN SURYANA">DEDEN SURYANA</option>
+            <option value="DIFI ZIANKA LISTIAWAN">DIFI ZIANKA LISTIAWAN</option>
+            <option value="DIVA PINKY">DIVA PINKY</option>
+            <option value="GALANG TRI RISKI">GALANG TRI RISKI</option>
+            <option value="HERMAN SUGITO">HERMAN SUGITO</option>
+            <option value="INDAH WULAN JULI">INDAH WULAN JULI</option>
+            <option value="INEZ WULANDARI">INEZ WULANDARI</option>
+            <option value="M GADAVI">M GADAVI</option>
+            <option value="MALEK RAHMAD">MALEK RAHMAD</option>
+            <option value="MUHAMMAD ALFAYET">MUHAMMAD ALFAYET</option>
+            <option value="MUHAMMAD NURHADI">MUHAMMAD NURHADI</option>
+            <option value="MUHAMMAD RIDWAN HIDAYAT">MUHAMMAD RIDWAN HIDAYAT</option>
+            <option value="NANDI RAMDAS SAPUTRA">NANDI RAMDAS SAPUTRA</option>
+            <option value="NOVRIAN SAPUTRA">NOVRIAN SAPUTRA</option>
+            <option value="PUTRI AJI MEINASARI">PUTRI AJI MEINASARI</option>
+            <option value="RIAN APRIANSYAH">RIAN APRIANSYAH</option>
+            <option value="RIZKY HENDRA">RIZKY HENDRA</option>
+            <option value="SAHFIRA DEWI MARPAUNG">SAHFIRA DEWI MARPAUNG</option>
+            <option value="SARAH SITOMPUL">SARAH SITOMPUL</option>
+            <option value="SAYUTI">SAYUTI</option>
+            <option value="YOGI HENDAR PRASETYA">YOGI HENDAR PRASETYA</option>
+            <option value="YUSRIL ARDIANSYAH">YUSRIL ARDIANSYAH</option>
+        </select>
     </div>
 
-    <div class="main-content">
-        <div id="absensi" class="tab-content active">
-            <h1>Absensi Hari Ini</h1>
-            <div class="card-grid">
-                <div class="card">
-                    <h3>Hadir</h3>
-                    <p>0%</p>
-                </div>
-                <div class="card">
-                    <h3>Izin</h3>
-                    <p>0</p>
-                </div>
-                <div class="card">
-                    <h3>Tidak Hadir</h3>
-                    <p>0</p>
-                </div>
-            </div>
-            
-            <div class="absensi-controls">
-                <div class="form-group">
-                    <label for="employee-select-absensi"><i class="fas fa-user"></i> Nama Karyawan</label>
-                    <select id="employee-select-absensi" name="employee-select-absensi" required>
-                        <option value="">Pilih Karyawan</option>
-                    </select>
-                </div>
-
-                <div class="absensi-form-group">
-                    <label for="shift-select" style="white-space: nowrap; margin-bottom: 0;">Pilih Shift:</label>
-                    <select id="shift-select">
-                        <option value="">Pilih Shift</option>
-                        <option value="Pagi">Pagi</option>
-                        <option value="Siang">Siang</option>
-                        <option value="Malam">Malam</option>
-                    </select>
-                </div>
-                
-                <button class="btn-primary" onclick="recordAbsence()">Absen Sekarang</button>
-            </div>
+    <div class="form-row">
+        <div class="input-group">
+            <label>DIVISI</label>
+            <select id="divisi" onchange="toggleShift()">
+                <option value="kasir">KASIR</option>
+                <option value="cs">CS</option>
+                <option value="admin">ADMIN</option>
+                <option value="marketing">MARKETING</option>
+                <option value="crm">CRM</option>
+            </select>
         </div>
-
-        <div id="izin" class="tab-content">
-            <h1>Formulir Pengajuan Izin</h1>
-            <div class="form-group">
-                <label for="employee-select-izin"><i class="fas fa-user"></i> Nama Karyawan</label>
-                <select id="employee-select-izin" name="employee-select-izin" required>
-                    <option value="">Pilih Karyawan</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="jenis-izin"><i class="fas fa-file-alt"></i> Jenis Izin</label>
-                <select id="jenis-izin" name="jenis-izin" class="special-izin-trigger">
-                    <option value="">Pilih Jenis Izin</option>
-                    <option value="khusus">Izin Khusus (Makan/Toilet/Merokok)</option>
-                    <option value="sakit">Sakit</option>
-                    <option value="cuti">Cuti</option>
-                    <option value="offday">Off Day</option>
-                    <option value="dinas">Dinas</option>
-                    <option value="lainnya">Lainnya</option>
-                </select>
-            </div>
-            
-            <div id="special-izin-container" style="display: none;">
-                <h3 style="text-align: center;">Durasi Izin</h3>
-                <div class="timer-container">
-                    <div id="timer-display" class="timer-display">00:00:00</div>
-                    <div class="timer-controls">
-                        <button id="start-timer-btn">Mulai</button>
-                        <button id="stop-timer-btn">Selesai</button>
-                    </div>
-                </div>
-            </div>
-
-            <form id="izin-form" onsubmit="return submitGeneralIzin(event)">
-                <div class="form-group">
-                    <label for="tanggal-mulai"><i class="fas fa-calendar-alt"></i> Tanggal Mulai</label>
-                    <input type="date" id="tanggal-mulai" name="tanggal-mulai" required>
-                </div>
-                <div class="form-group">
-                    <label for="tanggal-selesai"><i class="fas fa-calendar-alt"></i> Tanggal Selesai</label>
-                    <input type="date" id="tanggal-selesai" name="tanggal-selesai" required>
-                </div>
-                <div class="form-group">
-                    <label for="alasan"><i class="fas fa-pen-alt"></i> Alasan</label>
-                    <textarea id="alasan" name="alasan" rows="5" required></textarea>
-                </div>
-                <button type="submit" class="btn-primary">Ajukan Izin</button>
-            </form>
+        <div class="input-group" id="shift-container">
+            <label>SHIFT (KHUSUS KASIR)</label>
+            <select id="shift">
+                <option value="pagi">SHIFT PAGI</option>
+                <option value="siang">SHIFT SIANG</option>
+                <option value="malam">SHIFT MALAM</option>
+            </select>
         </div>
-
-        <div id="persetujuan-izin" class="tab-content">
-            <h1>Persetujuan Off Day & Cuti</h1>
-            <div id="approval-content" style="display: none;">
-                <div class="table-responsive">
-                    <table class="approval-table">
-                        <thead>
-                            <tr>
-                                <th>Nama Karyawan</th>
-                                <th>Jenis Izin</th>
-                                <th>Tanggal Mulai</th>
-                                <th>Tanggal Selesai</th>
-                                <th>Alasan</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="approval-table-body">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <p id="approval-placeholder" style="text-align: center; margin-top: 50px; font-style: italic;">
-                Masukkan kata sandi untuk melihat konten ini.
-            </p>
-        </div>
-
-        <div id="histori" class="tab-content">
-            <h1>Riwayat Absensi & Izin</h1>
-            
-            <div class="history-search-container">
-                <div class="form-group" style="flex-grow: 1;">
-                    <label for="employee-select-history"><i class="fas fa-user-circle"></i> Cari Riwayat Karyawan</label>
-                    <select id="employee-select-history" name="employee-select-history" required>
-                        <option value="">Pilih Karyawan</option>
-                    </select>
-                </div>
-                <button class="btn-primary" onclick="searchHistory()">Cari</button>
-            </div>
-            
-            <div id="full-history-container" class="table-responsive">
-    <table class="history-table">
-        <thead>
-            <tr>
-                <th>Nama Karyawan</th>
-                <th>Tanggal & Waktu</th>
-                <th>Tipe</th>
-                <th>Status</th>
-                <th>Keterangan</th>
-            </tr>
-        </thead>
-        <tbody id="history-table-body">
-        </tbody>
-    </table>
-    <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
-        <button id="prev-page-btn" class="btn-secondary btn-small" onclick="changePage(-1)" style="margin-right: 10px;">&laquo; Sebelumnya</button>
-        <span id="page-info" style="font-weight: 500;">Halaman 1 dari 1</span>
-        <button id="next-page-btn" class="btn-secondary btn-small" onclick="changePage(1)" style="margin-left: 10px;">Selanjutnya &raquo;</button>
-    </div>
-</div>
-            
-            <div id="history-results-container" style="display: none;">
-                <button class="btn-secondary" onclick="backToFullHistory()"><i class="fas fa-arrow-left"></i> Kembali</button>
-                <div class="table-responsive">
-                    <table class="history-table">
-                        <thead>
-                            <tr>
-                                <th>Nama Karyawan</th>
-                                <th>Tanggal & Waktu</th>
-                                <th>Tipe</th>
-                                <th>Status</th>
-                                <th>Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody id="search-results-body">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        
-        <div id="daftar-karyawan" class="tab-content">
-            <h1>Daftar Karyawan</h1>
-            <button class="btn-primary" onclick="showAddEmployeeForm()">Tambah Karyawan</button>
-            
-            <div id="add-employee-form" class="add-employee-form">
-                <h3>Tambah Karyawan Baru</h3>
-                <form id="employee-form" onsubmit="return addNewEmployee(event)">
-                    <div class="form-group">
-                        <label for="employee-name-input">Nama Karyawan</label>
-                        <input type="text" id="employee-name-input" name="employee-name-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="employee-division">Divisi</label>
-                        <input type="text" id="employee-division" name="employee-division" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="employee-shift">Shift</label>
-                        <select id="employee-shift" name="employee-shift" required>
-                            <option value="">Pilih Shift</option>
-                            <option value="Pagi">Pagi</option>
-                            <option value="Siang">Siang</option>
-                            <option value="Malam">Malam</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn-primary btn-small btn-success">Simpan</button>
-                    <button type="button" class="btn-primary btn-small btn-danger" onclick="hideAddEmployeeForm()">Batal</button>
-                </form>
-            </div>
-            
-            <div class="table-responsive">
-                <table class="employee-list-table">
-                    <thead>
-                        <tr>
-                            <th>Nama Karyawan</th>
-                            <th>Divisi</th>
-                            <th>Shift</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="employee-table-body">
-                    </tbody>
-                </table>
-            </div>
+        <div class="input-group">
+            <label>STATUS</label>
+            <select id="status">
+                <option value="Hadir">HADIR</option>
+                <option value="Izin">IZIN</option>
+                <option value="Sakit">SAKIT</option>
+            </select>
         </div>
     </div>
-</div>
 
-<div id="custom-popup" class="popup-container">
-    <div class="popup-content">
-        <h3 id="popup-title"></h3>
-        <p id="popup-message"></p>
-        <button id="close-popup-btn" class="btn-primary">OK</button>
+    <button class="btn-glow" id="btnAbsen" onclick="absen()">AUTHORIZE PRESENCE</button>
+
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>NAMA</th><th>DIVISI/SHIFT</th><th>STATUS</th><th>TIME LOG</th></tr></thead>
+            <tbody id="list"></tbody>
+        </table>
     </div>
-</div>
 
-<div id="special-izin-popup" class="popup-container">
-    <div class="popup-content">
-        <h3 id="special-izin-title">Pilih Jenis Izin Khusus</h3>
-        <div class="special-izin-options">
-            <button onclick="selectSpecialIzin('Beli Makan')"><i class="fas fa-utensils"></i> Beli Makan</button>
-            <button onclick="selectSpecialIzin('Toilet')"><i class="fas fa-toilet"></i> Toilet</button>
-            <button onclick="selectSpecialIzin('Merokok')"><i class="fas fa-smoking"></i> Merokok</button>
-        </div>
-        <button id="close-special-popup-btn" class="btn-primary btn-danger btn-small" style="margin-top: 20px;">Batal</button>
-    </div>
-</div>
-
-<div id="password-modal">
-    <div id="password-modal-content">
-        <h3>Masukkan Kata Sandi</h3>
-        <p>Akses menu ini membutuhkan otorisasi.</p>
-        <input type="password" id="password-input" placeholder="Kata Sandi">
-        <div class="modal-buttons">
-            <button id="submit-password-btn" class="btn-submit">Masuk</button>
-            <button id="cancel-password-btn" class="btn-cancel">Batal</button>
-        </div>
+    <div class="footer">
+        <button class="btn-alt" onclick="download()">EXPORT CSV</button>
+        <button class="btn-alt" onclick="reset()" style="color:var(--danger)">WIPE SYSTEM</button>
     </div>
 </div>
 
 <script>
-    // GANTI URL INI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPPdJGaPbV5M955SgGJWQSUUDc_DkC6iTrpEuPoLMOT2_mn24p6u8ihRjZzRCuatmOyQ/exec'; // Ganti dengan URL skrip Anda
-    const CORRECT_PASSWORD = "admin123";
+    const JADWAL_NORMAL = {
+        cs: { h: 11, m: 15 },
+        admin: { h: 10, m: 30 },
+        marketing: { h: 10, m: 30 },
+        crm: { h: 11, m: 15 }
+    };
 
-    let employees = [];
-    let history = [];
-    let pendingRequests = [];
-    let isApprovalTabUnlocked = false;
+    const JADWAL_KASIR = {
+        pagi: { h: 10, m: 30 },
+        siang: { h: 13, m: 0 },
+        malam: { h: 22, m: 30 }
+    };
 
-    let timerInterval = null;
-    let startTime = null;
-    let isTimerRunning = false;
-    let selectedIzinType = null;
-    let employeeForIzin = null;
-
-    // Tambahan untuk Pagination
-    let currentPage = 1;
-    const recordsPerPage = 20;
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Muat data saat halaman dimuat
-        loadAllData();
-
-        const tabLinks = document.querySelectorAll('.tab-link');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        document.querySelectorAll('.tab-link:not(.protected-link)').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const tabId = this.getAttribute('data-tab');
-                
-                tabLinks.forEach(item => item.classList.remove('active'));
-                this.classList.add('active');
-
-                tabContents.forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                document.getElementById(tabId).classList.add('active');
-            });
-        });
-        
-        document.querySelector('.protected-link').addEventListener('click', function(e) {
-            e.preventDefault();
-            if (!isApprovalTabUnlocked) {
-                showPasswordModal();
-            } else {
-                tabLinks.forEach(item => item.classList.remove('active'));
-                this.classList.add('active');
-                tabContents.forEach(content => content.classList.remove('active'));
-                document.getElementById('persetujuan-izin').classList.add('active');
-                renderPendingRequests();
-            }
-        });
-        
-        document.getElementById('close-popup-btn').addEventListener('click', function() {
-            document.getElementById('custom-popup').classList.remove('show');
-        });
-
-        document.getElementById('jenis-izin').addEventListener('change', function() {
-            const employeeSelect = document.getElementById('employee-select-izin');
-            if (employeeSelect.value === "") {
-                showCustomPopup("Peringatan!", "Harap pilih nama karyawan terlebih dahulu.", "popup-late");
-                this.value = "";
-                return;
-            }
-
-            if (this.value === 'khusus') {
-                document.getElementById('special-izin-popup').classList.add('show');
-                document.getElementById('izin-form').style.display = 'none';
-            } else {
-                document.getElementById('special-izin-popup').classList.remove('show');
-                document.getElementById('izin-form').style.display = 'block';
-                document.getElementById('special-izin-container').style.display = 'none';
-            }
-        });
-        
-        document.getElementById('close-special-popup-btn').addEventListener('click', function() {
-            document.getElementById('special-izin-popup').classList.remove('show');
-            document.getElementById('jenis-izin').value = "";
-            document.getElementById('izin-form').style.display = 'block';
-        });
-
-        document.getElementById('start-timer-btn').addEventListener('click', startTimer);
-        document.getElementById('stop-timer-btn').addEventListener('click', stopTimer);
-        document.getElementById('submit-password-btn').addEventListener('click', verifyApprovalPassword);
-        
-        document.getElementById('cancel-password-btn').addEventListener('click', function() {
-            document.getElementById('password-modal').classList.remove('show');
-            document.querySelector(`a[data-tab="absensi"]`).click();
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+        load();
+        toggleShift();
     });
 
-    async function loadAllData() {
-        try {
-            const response = await fetch(`${SCRIPT_URL}?action=getAllData`);
-            const data = await response.json();
-            
-            if (data.status === 'success') {
-                employees = data.employees || [];
-                history = data.history || [];
-                pendingRequests = data.pendingRequests || [];
+    function toggleShift() {
+        const div = document.getElementById('divisi').value;
+        const shiftCont = document.getElementById('shift-container');
+        shiftCont.style.display = (div === 'kasir') ? 'block' : 'none';
+    }
+
+    function filter() {
+        let v = document.getElementById('search').value.toUpperCase();
+        let opts = document.getElementById('nama').options;
+        for(let o of opts) o.style.display = o.text.includes(v) ? "" : "none";
+    }
+
+    function absen() {
+        const n = document.getElementById('nama');
+        const d = document.getElementById('divisi');
+        const sh = document.getElementById('shift');
+        const s = document.getElementById('status');
+        const btn = document.getElementById('btnAbsen');
+        
+        if(!n.value) return alert("PILIH NAMA!");
+
+        const sekarang = new Date();
+        const jam = sekarang.getHours();
+        const menit = sekarang.getMinutes();
+        
+        let terlambat = false;
+        let infoDivisi = d.value.toUpperCase();
+
+        if(s.value === "Hadir") {
+            if(d.value === 'kasir') {
+                const batas = JADWAL_KASIR[sh.value];
+                infoDivisi += ` (${sh.value.toUpperCase()})`;
+                if(jam > batas.h || (jam === batas.h && menit > batas.m)) terlambat = true;
             } else {
-                showCustomPopup("Gagal!", "Gagal memuat data awal dari server.", "popup-late");
-                console.error('Error loading data:', data.message);
+                const batas = JADWAL_NORMAL[d.value];
+                if(jam > batas.h || (jam === batas.h && menit > batas.m)) terlambat = true;
             }
-        } catch (error) {
-            showCustomPopup("Gagal!", "Gagal terhubung ke server. Pastikan URL skrip sudah benar.", "popup-late");
-            console.error('Error fetching data:', error);
-        } finally {
-            // Selalu render UI terlepas dari berhasil atau tidaknya pemuatan
-            renderEmployees();
-            renderHistory(currentPage);
-            populateAllEmployeeDropdowns();
-            updateDashboardCards();
-        }
-    }
-
-    async function updateDashboardCards() {
-        const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-        
-        const todayHistory = await fetch(`${SCRIPT_URL}?action=getTodayHistory`);
-        const result = await todayHistory.json();
-        
-        if (result.status === 'success') {
-            const todayRecords = result.data;
-            const hadirCount = todayRecords.filter(item => item.status === 'Hadir').length;
-            const izinCount = todayRecords.filter(item => item.type.startsWith('Izin') && item.status !== 'Ditolak').length;
-            const tidakHadirCount = employees.length - hadirCount - izinCount;
-            const hadirPercentage = employees.length > 0 ? ((hadirCount / employees.length) * 100).toFixed(0) : 0;
-
-            document.querySelector('#absensi .card-grid .card:nth-child(1) p').textContent = `${hadirPercentage}%`;
-            document.querySelector('#absensi .card-grid .card:nth-child(2) p').textContent = izinCount;
-            document.querySelector('#absensi .card-grid .card:nth-child(3) p').textContent = tidakHadirCount > 0 ? tidakHadirCount : 0;
-        }
-    }
-
-    function showCustomPopup(title, message, statusClass) {
-        const popup = document.getElementById('custom-popup');
-        const popupTitle = document.getElementById('popup-title');
-        const popupMessage = document.getElementById('popup-message');
-
-        popupTitle.textContent = title;
-        popupMessage.textContent = message;
-        
-        popup.classList.remove('popup-success', 'popup-late', 'popup-info');
-        if (statusClass) {
-            popup.classList.add(statusClass);
-        }
-        popup.classList.add('show');
-    }
-
-    function showPasswordModal() {
-        document.getElementById('password-modal').classList.add('show');
-        document.getElementById('password-input').focus();
-    }
-    
-    async function verifyApprovalPassword() {
-        const passwordInput = document.getElementById('password-input');
-        const password = passwordInput.value;
-
-        if (password === CORRECT_PASSWORD) {
-            isApprovalTabUnlocked = true;
-            document.getElementById('password-modal').classList.remove('show');
-            document.getElementById('approval-content').style.display = 'block';
-            document.getElementById('approval-placeholder').style.display = 'none';
-            passwordInput.value = '';
-
-            const tabLinks = document.querySelectorAll('.tab-link');
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabLinks.forEach(item => item.classList.remove('active'));
-            document.querySelector(`a[data-tab="persetujuan-izin"]`).classList.add('active');
-            tabContents.forEach(content => content.classList.remove('active'));
-            document.getElementById("persetujuan-izin").classList.add('active');
-            
-            await renderPendingRequests();
-            showCustomPopup("Berhasil!", "Akses disetujui. Selamat datang di menu Persetujuan Off Day & Cuti.", "popup-success");
-        } else {
-            showCustomPopup("Akses Ditolak", "Kata sandi salah. Silakan coba lagi.", "popup-late");
-            passwordInput.value = '';
-        }
-    }
-
-    function selectSpecialIzin(type) {
-        selectedIzinType = type;
-        employeeForIzin = document.getElementById('employee-select-izin').value;
-        document.getElementById('special-izin-popup').classList.remove('show');
-        document.getElementById('special-izin-container').style.display = 'block';
-        document.getElementById('izin-form').style.display = 'none';
-    }
-
-    function startTimer() {
-        if (!selectedIzinType) {
-            showCustomPopup("Peringatan!", "Harap pilih jenis izin khusus terlebih dahulu.", "popup-late");
-            return;
-        }
-        
-        if (!employeeForIzin) {
-            showCustomPopup("Peringatan!", "Harap pilih nama karyawan sebelum memulai timer.", "popup-late");
-            return;
         }
 
-        if (isTimerRunning) return;
-
-        startTime = Date.now();
-        isTimerRunning = true;
+        const waktuStr = sekarang.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}) + " | " + sekarang.toLocaleDateString('id-ID');
         
-        timerInterval = setInterval(updateTimer, 1000);
-        showCustomPopup("Berhasil!", `Timer izin "${selectedIzinType}" dimulai untuk ${employeeForIzin}.`, "popup-success");
-    }
-
-    async function stopTimer() {
-        if (!isTimerRunning) return;
-        
-        clearInterval(timerInterval);
-        isTimerRunning = false;
-
-        const endTime = Date.now();
-        const duration = endTime - startTime;
-        
-        const minutes = Math.floor(duration / 60000);
-        const seconds = Math.floor((duration % 60000) / 1000);
-        const durationText = `${minutes} menit ${seconds} detik`;
-
-        const now = new Date();
-        const formattedDate = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-        const formattedTime = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-        
-        if (!employeeForIzin) {
-            showCustomPopup("Peringatan!", "Data karyawan tidak ditemukan untuk izin ini.", "popup-late");
-            return;
-        }
-
-        const newHistoryItem = {
-            employee: employeeForIzin,
-            date: formattedDate,
-            time: formattedTime,
-            type: `Izin (${selectedIzinType})`,
-            status: "Selesai",
-            keterangan: `Durasi: ${durationText}`
+        const data = { 
+            nama: n.value, 
+            divisi: infoDivisi, 
+            status: s.value, 
+            waktu: waktuStr, 
+            late: terlambat 
         };
-        await addHistoryItem(newHistoryItem);
 
-        document.getElementById('timer-display').textContent = "00:00:00";
-        selectedIzinType = null;
-        employeeForIzin = null;
-        document.getElementById('employee-select-izin').value = "";
+        // --- BAGIAN SYNC KE GOOGLE SHEETS ---
+        btn.disabled = true;
+        btn.innerText = "SYNCING...";
 
-        showCustomPopup("Berhasil!", `Izin "${selectedIzinType}" selesai. Durasi: ${durationText}.`, "popup-success");
-        
-        document.getElementById('special-izin-container').style.display = 'none';
-        document.getElementById('izin-form').style.display = 'block';
-    }
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw1rKF7UeITZBkghQU1NMVZ8I-7IQuQsExeWNDKPk_Ur5skYmJRxX3HPr4E-EuRxv8z1g/exec'; // Masukkan URL Web App kamu di sini
 
-    function updateTimer() {
-        const now = Date.now();
-        const elapsed = now - startTime;
-        
-        const hours = Math.floor(elapsed / (1000 * 60 * 60));
-        const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
-
-        const formattedTime = 
-            String(hours).padStart(2, '0') + ":" + 
-            String(minutes).padStart(2, '0') + ":" + 
-            String(seconds).padStart(2, '0');
-
-        document.getElementById('timer-display').textContent = formattedTime;
-    }
-
-    async function recordAbsence() {
-        const selectedEmployee = document.getElementById('employee-select-absensi').value;
-        const selectedShift = document.getElementById('shift-select').value;
-
-        if (selectedEmployee === "" || selectedShift === "") {
-            showCustomPopup("Peringatan!", "Harap pilih karyawan dan shift terlebih dahulu.", "popup-late");
-            return;
-        }
-
-        const now = new Date();
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        const formattedDate = now.toLocaleDateString('id-ID', options);
-        const formattedTime = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
-        let keterangan = "-";
-        let popupTitle = "Selamat Datang!";
-        let popupMessage = `Absensi untuk ${selectedEmployee} (${selectedShift}) berhasil dicatat.`;
-        let popupStatusClass = "popup-success";
-
-        const currentHour = now.getHours();
-        const currentMinute = now.getMinutes();
-
-        if (
-            (selectedShift === "Pagi" && (currentHour > 10 || (currentHour === 10 && currentMinute > 0))) ||
-            (selectedShift === "Siang" && (currentHour > 14 || (currentHour === 14 && currentMinute > 30))) ||
-            (selectedShift === "Malam" && (currentHour > 22 || (currentHour === 22 && currentMinute > 0)))
-        ) {
-            keterangan = "Terlambat";
-            popupTitle = "Absen Terlambat";
-            popupMessage = `Mohon maaf, absensi untuk ${selectedEmployee} (${selectedShift}) tercatat terlambat.`;
-            popupStatusClass = "popup-late";
-        }
-        
-        const newHistoryItem = {
-            employee: selectedEmployee,
-            date: formattedDate,
-            time: formattedTime,
-            type: `Absensi`,
-            status: "Hadir",
-            keterangan: keterangan
-        };
-        
-        await addHistoryItem(newHistoryItem);
-        showCustomPopup(popupTitle, popupMessage, popupStatusClass);
-    }
-    
-    async function submitGeneralIzin(event) {
-        event.preventDefault();
-        const selectedEmployee = document.getElementById('employee-select-izin').value;
-        const jenisIzin = document.getElementById('jenis-izin').value;
-        const tanggalMulai = document.getElementById('tanggal-mulai').value;
-        const tanggalSelesai = document.getElementById('tanggal-selesai').value;
-        const alasan = document.getElementById('alasan').value;
-        
-        if (selectedEmployee === "") {
-            showCustomPopup("Peringatan!", "Harap pilih nama karyawan terlebih dahulu.", "popup-late");
-            return false;
-        }
-
-        if (jenisIzin === "cuti" || jenisIzin === "offday") {
-            const newRequest = {
-                employee: selectedEmployee,
-                jenis: jenisIzin,
-                tanggalMulai: tanggalMulai,
-                tanggalSelesai: tanggalSelesai,
-                alasan: alasan,
-                status: "Menunggu Persetujuan"
-            };
-            
-            const formData = new FormData();
-            formData.append('action', 'addPendingRequest');
-            formData.append('data', JSON.stringify(newRequest));
-            
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            if (result.status === 'success') {
-                pendingRequests.push(newRequest); // Tambahkan ke array lokal
-                showCustomPopup("Berhasil!", "Pengajuan izin berhasil diajukan dan menunggu persetujuan.", "popup-success");
-            } else {
-                showCustomPopup("Gagal!", "Pengajuan izin gagal.", "popup-late");
-            }
-        } else {
-            const newHistoryItem = {
-                employee: selectedEmployee,
-                date: `${tanggalMulai} s/d ${tanggalSelesai}`,
-                time: '-',
-                type: `Izin (${jenisIzin})`,
-                status: "Menunggu Persetujuan",
-                keterangan: alasan
-            };
-            await addHistoryItem(newHistoryItem);
-            showCustomPopup("Berhasil!", "Pengajuan izin berhasil diajukan.", "popup-success");
-        }
-        
-        event.target.reset();
-        return false;
-    }
-    
-    async function renderPendingRequests() {
-        const tableBody = document.getElementById('approval-table-body');
-        tableBody.innerHTML = '';
-        
-        try {
-            const response = await fetch(`${SCRIPT_URL}?action=getPendingRequests`);
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                pendingRequests = result.data;
-                pendingRequests.forEach((request, index) => {
-                    const newRow = document.createElement('tr');
-                    newRow.innerHTML = `
-                        <td>${request.employee}</td>
-                        <td>${request.jenis}</td>
-                        <td>${request.tanggalMulai}</td>
-                        <td>${request.tanggalSelesai}</td>
-                        <td>${request.alasan}</td>
-                        <td>
-                            <button class="btn-action approve" onclick="approveRequest(${index})">Setujui</button>
-                            <button class="btn-action reject" onclick="rejectRequest(${index})">Tolak</button>
-                        </td>
-                    `;
-                    tableBody.appendChild(newRow);
-                });
-            }
-        } catch (error) {
-            console.error('Failed to fetch pending requests:', error);
-            showCustomPopup("Gagal!", "Gagal memuat daftar pengajuan izin.", "popup-late");
-        }
-    }
-
-    async function approveRequest(index) {
-        const request = pendingRequests[index];
-        const formData = new FormData();
-        formData.append('action', 'approveRequest');
-        formData.append('index', index);
-        formData.append('requestData', JSON.stringify(request));
-
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            if (result.status === 'success') {
-                await renderPendingRequests();
-                showCustomPopup("Berhasil!", `Pengajuan izin dari ${request.employee} telah disetujui.`, "popup-success");
-            } else {
-                showCustomPopup("Gagal!", `Gagal menyetujui pengajuan izin.`, "popup-late");
-            }
-        } catch (error) {
-            console.error('Approval failed:', error);
-            showCustomPopup("Gagal!", `Gagal menyetujui pengajuan izin.`, "popup-late");
-        }
-    }
-
-    async function rejectRequest(index) {
-        const request = pendingRequests[index];
-        const formData = new FormData();
-        formData.append('action', 'rejectRequest');
-        formData.append('index', index);
-        formData.append('requestData', JSON.stringify(request));
-
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            if (result.status === 'success') {
-                await renderPendingRequests();
-                showCustomPopup("Berhasil!", `Pengajuan izin dari ${request.employee} telah ditolak.`, "popup-late");
-            } else {
-                showCustomPopup("Gagal!", `Gagal menolak pengajuan izin.`, "popup-late");
-            }
-        } catch (error) {
-            console.error('Rejection failed:', error);
-            showCustomPopup("Gagal!", `Gagal menolak pengajuan izin.`, "popup-late");
-        }
-    }
-    
-    async function addHistoryItem(item) {
-        const formData = new FormData();
-        formData.append('action', 'addHistory');
-        formData.append('data', JSON.stringify(item));
-        
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                await loadAllData(); // Muat ulang semua data
-            } else {
-                showCustomPopup("Gagal!", "Gagal menyimpan data ke server.", "popup-late");
-                console.error('Failed to add history:', result.message);
-            }
-        } catch (error) {
-            console.error('Failed to connect to server:', error);
-            showCustomPopup("Gagal!", "Gagal terhubung ke server.", "popup-late");
-        }
-    }
-    
-    // Fungsi renderHistory yang diubah untuk pagination
-    async function renderHistory() {
-        const historyTableBody = document.getElementById('history-table-body');
-        historyTableBody.innerHTML = '';
-        
-        try {
-            const response = await fetch(`${SCRIPT_URL}?action=getHistory`);
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                history = result.data; // Perbarui data lokal
-                
-                const totalPages = Math.ceil(history.length / recordsPerPage);
-                
-                // Ambil data untuk halaman saat ini
-                const startIndex = (currentPage - 1) * recordsPerPage;
-                const endIndex = startIndex + recordsPerPage;
-                const paginatedHistory = history.slice(startIndex, endIndex);
-
-                // Tampilkan data ke tabel
-                paginatedHistory.forEach(item => {
-                    const newRow = createHistoryRow(item);
-                    historyTableBody.appendChild(newRow);
-                });
-
-                // Update info halaman
-                document.getElementById('page-info').textContent = `Halaman ${currentPage} dari ${totalPages}`;
-                
-                // Atur status tombol pagination
-                document.getElementById('prev-page-btn').disabled = currentPage === 1;
-                document.getElementById('next-page-btn').disabled = currentPage === totalPages || totalPages === 0;
-
-            }
-        } catch (error) {
-            console.error('Failed to fetch history:', error);
-        }
-    }
-    
-    // Fungsi baru untuk mengganti halaman
-    function changePage(direction) {
-        const totalPages = Math.ceil(history.length / recordsPerPage);
-        currentPage += direction;
-        
-        if (currentPage < 1) {
-            currentPage = 1;
-        } else if (currentPage > totalPages) {
-            currentPage = totalPages;
-        }
-        
-        renderHistory();
-    }
-    
-    async function searchHistory() {
-        const selectedEmployee = document.getElementById('employee-select-history').value;
-        if (selectedEmployee === "") {
-            showCustomPopup("Peringatan!", "Harap pilih nama karyawan untuk mencari riwayat.", "popup-late");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('action', 'searchHistory');
-        formData.append('employeeName', selectedEmployee);
-        
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                renderSearchResults(result.data);
-                document.getElementById('full-history-container').style.display = 'none';
-                document.getElementById('history-results-container').style.display = 'block';
-            } else {
-                showCustomPopup("Gagal!", `Gagal mencari riwayat untuk ${selectedEmployee}.`, "popup-late");
-            }
-        } catch (error) {
-            console.error('Search failed:', error);
-        }
-    }
-    
-    function renderSearchResults(results) {
-        const tableBody = document.getElementById('search-results-body');
-        tableBody.innerHTML = '';
-
-        if (results.length === 0) {
-            const noResultRow = document.createElement('tr');
-            noResultRow.innerHTML = `<td colspan="5" style="text-align: center;">Tidak ada riwayat untuk karyawan ini.</td>`;
-            tableBody.appendChild(noResultRow);
-        } else {
-            results.forEach(item => {
-                const newRow = createHistoryRow(item);
-                tableBody.appendChild(newRow);
-            });
-        }
-    }
-    
-    function backToFullHistory() {
-        document.getElementById('history-results-container').style.display = 'none';
-        document.getElementById('full-history-container').style.display = 'block';
-    }
-
-    function createHistoryRow(item) {
-        const newRow = document.createElement('tr');
-        let statusClass = '';
-        if (item.status === 'Hadir') {
-            statusClass = 'status-hadir';
-        } else if (item.status === 'Selesai' || item.status === 'Disetujui') {
-            statusClass = 'status-izin';
-        } else if (item.status === 'Ditolak' || item.status === 'Tidak Hadir') {
-            statusClass = 'status-absen';
-        } else if (item.status === 'Menunggu Persetujuan') {
-            statusClass = 'status-menunggu';
-        }
-
-        newRow.innerHTML = `
-            <td>${item.employee}</td>
-            <td>${item.date} ${item.time !== '-' ? '- ' + item.time : ''}</td>
-            <td>${item.type}</td>
-            <td><span class="${statusClass}">${item.status}</span></td>
-            <td>${item.keterangan}</td>
-        `;
-        return newRow;
-    }
-
-    function showAddEmployeeForm() {
-        document.getElementById('add-employee-form').style.display = 'block';
-    }
-
-    function hideAddEmployeeForm() {
-        document.getElementById('add-employee-form').style.display = 'none';
-        document.getElementById('employee-form').reset();
-    }
-    
-    async function addNewEmployee(event) {
-        event.preventDefault();
-
-        const name = document.getElementById('employee-name-input').value;
-        const division = document.getElementById('employee-division').value;
-        const shift = document.getElementById('employee-shift').value;
-        
-        const newEmployee = { name, division, shift };
-        const formData = new FormData();
-        formData.append('action', 'addEmployee');
-        formData.append('data', JSON.stringify(newEmployee));
-        
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            if (result.status === 'success') {
-                await loadAllData();
-                hideAddEmployeeForm();
-                showCustomPopup("Berhasil!", "Karyawan baru berhasil ditambahkan!", "popup-success");
-            } else {
-                showCustomPopup("Gagal!", "Gagal menambahkan karyawan.", "popup-late");
-            }
-        } catch (error) {
-            console.error('Failed to add new employee:', error);
-            showCustomPopup("Gagal!", "Gagal terhubung ke server.", "popup-late");
-        }
-        
-        return false;
-    }
-
-    async function checkPassword(action, element) {
-        const password = prompt("Masukkan kata sandi untuk melanjutkan:");
-        if (password === CORRECT_PASSWORD) {
-            if (action === 'edit') {
-                showCustomPopup("Info!", "Aksi edit diaktifkan. Silakan edit data.", "popup-info");
-            } else if (action === 'delete') {
-                const row = element.closest('tr');
-                const nameToDelete = row.cells[0].textContent;
-                
-                if (confirm(`Apakah Anda yakin ingin menghapus data karyawan ${nameToDelete}?`)) {
-                    await deleteEmployee(nameToDelete);
-                }
-            }
-        } else {
-            showCustomPopup("Gagal!", "Kata sandi salah. Aksi dibatalkan.", "popup-late");
-        }
-    }
-    
-    async function deleteEmployee(name) {
-        const formData = new FormData();
-        formData.append('action', 'deleteEmployee');
-        formData.append('employeeName', name);
-
-        try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-
-            if (result.status === 'success') {
-                await loadAllData();
-                showCustomPopup("Berhasil!", "Data karyawan berhasil dihapus!", "popup-success");
-            } else {
-                showCustomPopup("Gagal!", "Gagal menghapus karyawan.", "popup-late");
-            }
-        } catch (error) {
-            console.error('Failed to delete employee:', error);
-            showCustomPopup("Gagal!", "Gagal terhubung ke server.", "popup-late");
-        }
-    }
-
-    function renderEmployees() {
-        const tableBody = document.getElementById('employee-table-body');
-        tableBody.innerHTML = '';
-        employees.forEach(employee => {
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${employee.name}</td>
-                <td>${employee.division}</td>
-                <td><span class="statu_sift">${employee.shift}</span></td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="btn-primary btn-small" onclick="checkPassword('edit', this)">Edit</button>
-                        <button class="btn-primary btn-small btn-danger" onclick="checkPassword('delete', this)">Hapus</button>
-                    </div>
-                </td>
-            `;
-            tableBody.appendChild(newRow);
+        fetch(scriptURL, { 
+            method: 'POST', 
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data) 
+        })
+        .then(() => {
+            alert("Absen Berhasil Terkirim ke Cloud!");
+            btn.disabled = false;
+            btn.innerText = "AUTHORIZE PRESENCE";
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            alert("Gagal Sinkron, Data hanya tersimpan lokal.");
+            btn.disabled = false;
+            btn.innerText = "AUTHORIZE PRESENCE";
         });
-    }
-    
-    function populateAllEmployeeDropdowns() {
-        const dropdowns = ['employee-select-absensi', 'employee-select-izin', 'employee-select-history'];
+
+        // Simpan Lokal sebagai cadangan
+        let logs = JSON.parse(localStorage.getItem('tech_shift_v5')) || [];
+        logs.unshift(data);
+        localStorage.setItem('tech_shift_v5', JSON.stringify(logs));
         
-        dropdowns.forEach(dropdownId => {
-            const dropdown = document.getElementById(dropdownId);
-            dropdown.innerHTML = '<option value="">Pilih Karyawan</option>';
-            employees.forEach(employee => {
-                const option = document.createElement('option');
-                option.value = employee.name;
-                option.textContent = employee.name;
-                dropdown.appendChild(option);
-            });
-        });
+        n.value = "";
+        load();
+    }
+
+    function load() {
+        const container = document.getElementById('list');
+        const logs = JSON.parse(localStorage.getItem('tech_shift_v5')) || [];
+        container.innerHTML = logs.map(l => `
+            <tr>
+                <td><strong>${l.nama}</strong></td>
+                <td style="font-size:0.7rem; color:var(--primary)">${l.divisi}</td>
+                <td><span class="status-pill ${l.status}">${l.status.toUpperCase()}</span></td>
+                <td class="${l.late ? 'late-alert' : ''}">${l.waktu} ${l.late ? ' [LATE]' : ''}</td>
+            </tr>
+        `).join('');
+    }
+
+    function download() {
+        const logs = JSON.parse(localStorage.getItem('tech_shift_v5')) || [];
+        if(!logs.length) return;
+        let csv = "Nama,Divisi/Shift,Status,Waktu,Terlambat\n" + logs.map(l => `${l.nama},${l.divisi},${l.status},${l.waktu},${l.late}`).join("\n");
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+        a.download = 'Rekap_Absensi.csv';
+        a.click();
+    }
+
+    function reset() {
+        if(confirm("WIPE DATA?")) { localStorage.removeItem('tech_shift_v5'); load(); }
     }
 </script>
-
 </body>
 </html>
